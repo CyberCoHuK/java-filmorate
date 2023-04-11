@@ -40,10 +40,9 @@ public class UserController {
 
     @PutMapping()
     public User update(@Valid @RequestBody User user) {
-        if(users.containsValue(user)){
+        if (users.containsValue(user)) {
             throw new ValidationException();
-        }
-        else if (users.containsKey(user.getId())) {
+        } else if (users.containsKey(user.getId())) {
             log.info("Обновлен пользователь:{}", user);
             users.replace(user.getId(), user);
         } else {
@@ -54,6 +53,7 @@ public class UserController {
         }
         return user;
     }
+
     private void validate(User user) {
         if (user.getName() == null || user.getName().isBlank()) user.setName(user.getLogin());
     }
