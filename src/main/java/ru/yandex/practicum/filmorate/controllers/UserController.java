@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
+import javax.validation.Valid;
+import javax.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.UserAlreadyExistException;
