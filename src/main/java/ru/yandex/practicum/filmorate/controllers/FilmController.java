@@ -25,7 +25,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         validate(film);
-        if(films.containsValue(film)){
+        if (films.containsValue(film)) {
             throw new ValidationException();
         } else if (films.containsKey(film.getId())) {
             log.info("Информация о фильме {} обновлена", film.getName());
