@@ -57,6 +57,8 @@ public class UserController {
     }
 
     private void validate(User user) {
-        if (StringUtils.isEmpty(user.getName())) user.setName(user.getLogin());
+        if (StringUtils.isEmpty(user.getName())) {
+            user.setName(user.getLogin());
+        }
     }
 }

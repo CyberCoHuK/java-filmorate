@@ -14,7 +14,7 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    private static final LocalDate DATE = LocalDate.of(1895, 12, 28);
+    private static final LocalDate FIRSTFILMDATE = LocalDate.of(1895, 12, 28);
     private final Map<Integer, Film> films = new HashMap<>();
     private static int filmId = 1;
 
@@ -27,6 +27,7 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         validate(film);
         if (films.containsValue(film)) {
+            log.info("Фильм {} уже добавлен", film.getName());
             throw new ValidationException("Такой фильм уже существует");
         } else if (films.containsKey(film.getId())) {
             log.info("Информация о фильме {} обновлена", film.getName());
@@ -49,8 +50,8 @@ public class FilmController {
         return film;
     }
 
-    private void validate(@Valid @RequestBody Film film) {
-        if (film.getReleaseDate().isBefore(DATE)) {
+    private void validate(Film film) {
+        if (film.getReleaseDate().isBefore(FIRSTFILMDATE)) {
             throw new ValidationException("В то время кино еще не было изобретено");
         }
     }
