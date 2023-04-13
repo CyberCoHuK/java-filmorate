@@ -15,8 +15,8 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
-        <org.apache.commons.version>3.12.0</org.apache.commons.version>
-        <org.springframework.restdocs.version>3.0.0</org.springframework.restdocs.version>
+        <apache.commons.version>3.12.0</apache.commons.version>
+        <springframework.restdocs.version>3.0.0</springframework.restdocs.version>
     </properties>
 
     <dependencies>
@@ -45,13 +45,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${org.apache.commons.version}</version>
+            <version>${apache.commons.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.restdocs</groupId>
             <artifactId>spring-restdocs-mockmvc</artifactId>
-            <version>${org.springframework.restdocs.version}</version>
+            <version>${springframework.restdocs.version}</version>
             <scope>test</scope>
         </dependency>
 
