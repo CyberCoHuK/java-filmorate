@@ -1,20 +1,21 @@
 package ru.yandex.practicum.filmorate.model;
 
 import javax.validation.constraints.*;
+
 import lombok.*;
 
 import java.time.LocalDate;
 
+@Builder
 @Data
-@RequiredArgsConstructor
 public class User {
-    @PositiveOrZero
+    @PositiveOrZero(message = "ID не может быть меньше ноля")
     @EqualsAndHashCode.Exclude
     private int id;
-    @NotBlank
-    @Email
+    @NotBlank(message = "Почта не должна быть пустой")
+    @Email(message = "Некорректная почта")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Логин не должен быть пустой")
     private String login;
     private String name;
     @NotNull

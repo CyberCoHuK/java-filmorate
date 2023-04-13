@@ -1,15 +1,13 @@
 package ru.yandex.practicum.filmorate.model;
 
 import javax.validation.constraints.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+
+import lombok.*;
 
 import java.time.LocalDate;
 
-
+@Builder
 @Data
-@RequiredArgsConstructor
 public class Film {
     @PositiveOrZero
     @EqualsAndHashCode.Exclude
@@ -21,7 +19,6 @@ public class Film {
     private String description;
     @NotNull
     private LocalDate releaseDate;
-    @Min(value = 1, message = "Неправильная продолжительность фильма")
-    @Positive
+    @Positive(message = "Неправильная продолжительность фильма")
     private int duration;
 }

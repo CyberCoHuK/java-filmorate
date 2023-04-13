@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -14,8 +15,8 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
     private static final LocalDate DATE = LocalDate.of(1895, 12, 28);
-    private int filmId = 1;
     private final Map<Integer, Film> films = new HashMap<>();
+    private static int filmId = 1;
 
     @GetMapping
     public Collection<Film> getAllFilms() {
@@ -26,7 +27,7 @@ public class FilmController {
     public Film updateFilm(@Valid @RequestBody Film film) {
         validate(film);
         if (films.containsValue(film)) {
-            throw new ValidationException();
+            throw new ValidationException("Такой фильм уже существует");
         } else if (films.containsKey(film.getId())) {
             log.info("Информация о фильме {} обновлена", film.getName());
             films.replace(film.getId(), film);
