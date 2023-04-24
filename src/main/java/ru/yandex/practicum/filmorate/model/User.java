@@ -5,9 +5,13 @@ import javax.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@Builder
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @PositiveOrZero(message = "ID не может быть меньше ноля")
     @EqualsAndHashCode.Exclude
@@ -21,4 +25,6 @@ public class User {
     @NotNull
     @PastOrPresent(message = "Некоректная дата рождения")
     private LocalDate birthday;
+    private Set<Integer> friendsList = new HashSet<>();
+
 }

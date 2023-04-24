@@ -5,9 +5,13 @@ import javax.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@Builder
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Film {
     @PositiveOrZero
     @EqualsAndHashCode.Exclude
@@ -20,5 +24,6 @@ public class Film {
     @NotNull
     private LocalDate releaseDate;
     @Positive(message = "Неправильная продолжительность фильма")
-    private int duration;
+    private long duration;
+    private Set<Integer> likesList = new HashSet<>();
 }
