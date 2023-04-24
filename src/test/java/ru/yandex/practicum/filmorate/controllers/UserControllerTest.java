@@ -125,7 +125,7 @@ public class UserControllerTest {
     public void getByIdCheck() {
         User checkUser = user;
         userController.createUser(user);
-        assertEquals(checkUser, userController.getById(1));
+        assertEquals(checkUser, userController.getById(user.getId()));
     }
 
     @Test
