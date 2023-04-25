@@ -106,7 +106,7 @@ public class FilmControllerTest {
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertEquals(1, violations.size());
         ConstraintViolation<Film> violation = violations.iterator().next();
-        assertEquals("Неправильная продолжительность фильма", violation.getMessage());
+        assertEquals("Продолжительность фильма не может быть отрицательной", violation.getMessage());
     }
 
     @Test

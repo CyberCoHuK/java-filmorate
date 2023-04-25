@@ -40,14 +40,13 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        if (users.containsValue(user)) {
-            throw new ObjectAlreadyExistException("Такой пользователь уже существует");
-        } else if (users.containsKey(user.getId())) {
-            log.info("Обновлен пользователь:{}", user);
-            users.replace(user.getId(), user);
-        } else {
-            createUser(user);
+        isExist(user.getId());
+        if (users.get(user.getId()).equals(user)) {
+            throw new ObjectAlreadyExistException(String
+                    .format("Такой пользователь уже существует c ID = %s", user.getId()));
         }
+        log.info("Обновлен пользователь:{}", user);
+        users.replace(user.getId(), user);
         return user;
     }
 
@@ -60,7 +59,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User addFriend(int userId, int friendId) {
-
         isExist(userId);
         isExist(friendId);
         if (users.get(userId).getFriendsList().contains(friendId)) {

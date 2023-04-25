@@ -37,17 +37,16 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
+        isExist(film.getId());
         validate(film);
-        if (films.containsValue(film)) {
-            log.info("Фильм {} уже добавлен", film.getName());
-            throw new ObjectAlreadyExistException("Такой фильм добавлен существует");
-        } else if (films.containsKey(film.getId())) {
-            log.info("Информация о фильме {} обновлена", film.getName());
-            films.replace(film.getId(), film);
-            return film;
-        } else {
-            return createFilm(film);
+        if (films.get(film.getId()).equals(film)) {
+            log.info("Фильм {} уже добавлен c ID = {}", film.getName(), film.getId());
+            throw new ObjectAlreadyExistException(String
+                    .format("Такой фильм уже добавлен с ID = %s", film.getId()));
         }
+        log.info("Информация о фильме {} c ID = {} обновлена", film.getName(), film.getId());
+        films.replace(film.getId(), film);
+        return film;
     }
 
     @Override
