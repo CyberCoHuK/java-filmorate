@@ -1,24 +1,31 @@
 package ru.yandex.practicum.filmorate.model;
 
-import javax.validation.constraints.*;
-
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@Builder
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @PositiveOrZero(message = "ID не может быть меньше ноля")
     @EqualsAndHashCode.Exclude
-    private int id;
+    int id;
     @NotBlank(message = "Почта не должна быть пустой")
     @Email(message = "Некорректная почта")
-    private String email;
+    String email;
     @NotBlank(message = "Логин не должен быть пустой")
-    private String login;
-    private String name;
+    String login;
+    String name;
     @NotNull
     @PastOrPresent(message = "Некоректная дата рождения")
-    private LocalDate birthday;
+    LocalDate birthday;
+    Set<Integer> friendsList = new HashSet<>();
+
 }

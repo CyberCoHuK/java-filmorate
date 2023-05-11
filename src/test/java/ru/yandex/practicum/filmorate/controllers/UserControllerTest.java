@@ -3,7 +3,14 @@ package ru.yandex.practicum.filmorate.controllers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -12,21 +19,32 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class UserControllerTest {
     private UserController userController;
     private User user;
+    private User user2;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @BeforeEach
     void beforeEach() {
-        userController = new UserController();
+        UserStorage userStorage = new InMemoryUserStorage();
+        FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
+        UserService userService = new UserService(userStorage);
+        FilmService filmService = new FilmService(filmStorage);
+        userController = new UserController(userService);
         user = User.builder()
-                .id(1)
                 .name("nametest")
                 .email("test@mail.ru")
                 .login("logintest")
+                .birthday(LocalDate.of(1956, 12, 1))
+                .build();
+        user2 = User.builder()
+                .name("nametest2")
+                .email("asdf@mail.ru")
+                .login("logintest2")
                 .birthday(LocalDate.of(1956, 12, 1))
                 .build();
     }
@@ -71,5 +89,65 @@ public class UserControllerTest {
         assertEquals(1, violations.size());
         ConstraintViolation<User> violation = violations.iterator().next();
         assertEquals("Некоректная дата рождения", violation.getMessage());
+    }
+
+    @Test
+    public void addFriendCheck() {
+        userController.createUser(user);
+        userController.createUser(user2);
+        assertEquals(0, user.getFriendsList().size());
+        assertEquals(0, user2.getFriendsList().size());
+        userController.addFriend(user.getId(), user2.getId());
+        assertEquals(1, user.getFriendsList().size());
+        assertEquals(1, user2.getFriendsList().size());
+    }
+
+    @Test
+    public void deleteFriendCheck() {
+        userController.createUser(user);
+        userController.createUser(user2);
+        userController.addFriend(user.getId(), user2.getId());
+        assertEquals(1, user.getFriendsList().size());
+        assertEquals(1, user2.getFriendsList().size());
+        userController.deleteFriend(user.getId(), user2.getId());
+        assertEquals(0, user.getFriendsList().size());
+        assertEquals(0, user2.getFriendsList().size());
+    }
+
+    @Test
+    public void findAllUserCheck() {
+        userController.createUser(user);
+        userController.createUser(user2);
+        assertEquals(2, userController.findAllUsers().size());
+    }
+
+    @Test
+    public void getByIdCheck() {
+        User checkUser = user;
+        userController.createUser(user);
+        assertEquals(checkUser, userController.getById(user.getId()));
+    }
+
+    @Test
+    public void getFriendCheck() {
+        User user3 = User.builder()
+                .name("nametest3")
+                .email("zxcv@mail.ru")
+                .login("logintest3")
+                .birthday(LocalDate.of(1956, 12, 1))
+                .build();
+        userController.createUser(user);
+        userController.createUser(user2);
+        userController.createUser(user3);
+        userController.addFriend(user.getId(), user2.getId());
+        userController.addFriend(user.getId(), user3.getId());
+        assertEquals(1, userController.getMutualFriends(user2.getId(), user3.getId()).size());
+        assertEquals(2, userController.getFriends(user.getId()).size());
+    }
+
+    @Test
+    public void isExistCheck() {
+        ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> userController.getById(888));
+        assertEquals("Пользователя с таким 888 не существует", ex.getMessage());
     }
 }
