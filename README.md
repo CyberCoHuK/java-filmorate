@@ -39,9 +39,9 @@ Template repository for Filmorate project.
 - Получение списка фильмов с жанром {genre}
 
 ```roomsql
-SELECT f.title
-FROM genre AS g
-INNER JOIN film_genre AS fg ON (g.genre_id = fg.genre_id)
-INNER JOIN film AS f ON (fg.film_id = f.film_id)
-WHERE name = '{genre}'
+    SELECT f.title
+    FROM genre AS g
+    INNER JOIN film_genre AS fg ON (g.genre_id = fg.genre_id)
+    INNER JOIN film AS f ON (fg.film_id = f.film_id)
+    WHERE name = '{genre}'
 ```
