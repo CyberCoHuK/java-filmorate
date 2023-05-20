@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,25 +22,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class MpaDbStorageTest {
 
-    private final MpaDbStorage mpaDbStorage;
+    final MpaDbStorage mpaDbStorage;
 
-    private final FilmDbStorage filmDbStorage;
+    final FilmDbStorage filmDbStorage;
     Film film;
 
 
     @BeforeEach
     void setUp() {
-        film = Film.builder()
-                .name("name")
-                .description("desc")
-                .releaseDate(LocalDate.of(1999, 8, 17))
-                .duration(136)
-                .build();
-        film.setGenres(new ArrayList<>());
-        film.setLikesList(new HashSet<>());
+        film = FilmDbStorageTest.createFilm();
     }
 
     @Test
@@ -58,6 +50,7 @@ public class MpaDbStorageTest {
 
     @Test
     void addMpaInFilmTest() {
+        film.setMpa(null);
         assertNull(film.getMpa());
         film.setMpa(Mpa.builder()
                 .id(5)

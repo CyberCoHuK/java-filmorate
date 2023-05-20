@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,13 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,28 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class GenreDbStorageTest {
 
-    private final FilmDbStorage filmDbStorage;
+    final FilmDbStorage filmDbStorage;
 
-    private final GenreDbStorage genreDbStorage;
+    final GenreDbStorage genreDbStorage;
     Film film;
 
 
     @BeforeEach
     void setUp() {
-        film = Film.builder()
-                .name("name")
-                .description("desc")
-                .releaseDate(LocalDate.of(1999, 8, 17))
-                .duration(136)
-                .build();
-        film.setGenres(new ArrayList<>());
-        film.setLikesList(new HashSet<>());
-        film.setMpa(Mpa.builder()
-                .id(1)
-                .name("G")
-                .build());
+        film = FilmDbStorageTest.createFilm();
     }
 
     @Test

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 class UserDbStorageTest {
-    private final UserDbStorage userDbStorage;
-    private final JdbcTemplate jdbcTemplate;
+    final UserDbStorage userDbStorage;
+    final JdbcTemplate jdbcTemplate;
     User user;
     User friend;
     User mutualFriend;
@@ -32,29 +35,9 @@ class UserDbStorageTest {
     public void setUp() {
         jdbcTemplate.update("DELETE FROM users");
         jdbcTemplate.update("DELETE FROM friends");
-        user = User.builder()
-                .email("mail@mail.mail")
-                .login("login")
-                .name("login")
-                .birthday(LocalDate.of(1999, 8, 17))
-                .build();
-        user.setFriendsList(new HashSet<>());
-
-        friend = User.builder()
-                .email("gmail@gmail.gmail")
-                .login("nelogin")
-                .name("nelogin")
-                .birthday(LocalDate.of(2001, 6, 19))
-                .build();
-        friend.setFriendsList(new HashSet<>());
-
-        mutualFriend = User.builder()
-                .email("mutual@mutual.mutual")
-                .login("mutual")
-                .name("mutual")
-                .birthday(LocalDate.of(2001, 1, 11))
-                .build();
-        mutualFriend.setFriendsList(new HashSet<>());
+        user = createUser(1);
+        friend = createUser(2);
+        mutualFriend = createUser(0);
     }
 
 
@@ -97,4 +80,31 @@ class UserDbStorageTest {
         assertEquals(List.of(mutualFriend), userDbStorage.getMutualFriends(user.getId(), friend.getId()));
     }
 
+    protected static User createUser(int num) {
+        if (num == 1) {
+            return User.builder()
+                    .email("mail@mail.mail")
+                    .login("login")
+                    .name("login")
+                    .birthday(LocalDate.of(1999, 8, 17))
+                    .friendsList(new HashSet<>())
+                    .build();
+        } else if (num == 2) {
+            return User.builder()
+                    .email("nemail@mail.mail")
+                    .login("nelogin")
+                    .name("nelogin")
+                    .birthday(LocalDate.of(1999, 8, 17))
+                    .friendsList(new HashSet<>())
+                    .build();
+        } else {
+            return User.builder()
+                    .email("mutual@mail.mail")
+                    .login("mutual")
+                    .name("mutual")
+                    .birthday(LocalDate.of(1999, 8, 17))
+                    .friendsList(new HashSet<>())
+                    .build();
+        }
+    }
 }

@@ -10,13 +10,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
 
 @Slf4j
 @Component
@@ -24,16 +22,18 @@ import java.util.HashSet;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final UserMapper userMapper;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.userMapper = new UserMapper(this.jdbcTemplate);
     }
 
     @Override
     public Collection<User> findAllUsers() {
         final String sql = "SELECT * FROM users";
         log.info("Отправлены все пользователи");
-        return jdbcTemplate.query(sql, this::makeUser);
+        return jdbcTemplate.query(sql, userMapper);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class UserDbStorage implements UserStorage {
         isExist(userId);
         final String sql = "SELECT * FROM users WHERE user_id = ?";
         log.info("Отправлен пользователь с индентификатором {} ", userId);
-        return jdbcTemplate.queryForObject(sql, this::makeUser, userId);
+        return jdbcTemplate.queryForObject(sql, userMapper, userId);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class UserDbStorage implements UserStorage {
                 "LEFT JOIN friends AS f ON u.user_id = f.friend_id " +
                 "WHERE f.user_id = ?";
         log.info("Запрос получения списка друзей пользователя {} выполнен", userId);
-        return jdbcTemplate.query(sqlQuery, this::makeUser, userId);
+        return jdbcTemplate.query(sqlQuery, userMapper, userId);
     }
 
     @Override
@@ -135,18 +135,7 @@ public class UserDbStorage implements UserStorage {
                 "WHERE f.user_id = ?" +
                 ")";
         log.info("Отправлен одинаковые друзья пользователей {} и {} ", userId, secondUserId);
-        return jdbcTemplate.query(sqlQuery, this::makeUser, userId, secondUserId);
-    }
-
-    private User makeUser(ResultSet rs, int rowNum) throws SQLException {
-        return User.builder()
-                .id(rs.getInt("user_id"))
-                .name(rs.getString("name"))
-                .email(rs.getString("email"))
-                .login(rs.getString("login"))
-                .birthday(rs.getDate("birthday").toLocalDate())
-                .friendsList(new HashSet<>())
-                .build();
+        return jdbcTemplate.query(sqlQuery, userMapper, userId, secondUserId);
     }
 
     public void isExist(int userId) {

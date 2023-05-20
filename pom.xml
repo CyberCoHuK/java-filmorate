@@ -17,6 +17,7 @@
         <java.version>11</java.version>
         <apache.commons.version>3.12.0</apache.commons.version>
         <springframework.restdocs.version>3.0.0</springframework.restdocs.version>
+        <org.hibernate.version>5.2.5.Final</org.hibernate.version>
     </properties>
 
     <dependencies>
@@ -68,7 +69,7 @@
 
         <dependency>
             <groupId>org.hibernate</groupId>
-            <version>5.2.5.Final</version>
+            <version>${org.hibernate.version}</version>
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 

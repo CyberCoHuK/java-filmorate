@@ -1,12 +1,13 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-import ru.yandex.practicum.filmorate.service.MpaService;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import lombok.RequiredArgsConstructor;
+import ru.yandex.practicum.filmorate.service.MpaService;
+
 import java.util.Collection;
 
 @RestController

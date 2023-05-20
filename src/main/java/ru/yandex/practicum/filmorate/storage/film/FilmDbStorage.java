@@ -9,10 +9,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @Slf4j
@@ -20,16 +18,18 @@ import java.util.*;
 @Primary
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
+    private final FilmMapper filmMapper;
 
     public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.filmMapper = new FilmMapper(this.jdbcTemplate);
     }
 
     @Override
     public Collection<Film> getAllFilms() {
         final String sql = "SELECT * FROM film";
         log.info("Отправлены все фильмы");
-        return jdbcTemplate.query(sql, this::makeFilm);
+        return jdbcTemplate.query(sql, filmMapper);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class FilmDbStorage implements FilmStorage {
             throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
         } else {
             log.info("Отправлен фильм с индентификатором {} ", filmId);
-            return jdbcTemplate.queryForObject(sql, this::makeFilm, filmId);
+            return jdbcTemplate.queryForObject(sql, filmMapper, filmId);
         }
     }
 
@@ -140,7 +140,7 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY count DESC " +
                 "LIMIT ?";
         log.info("Отправлен топ {} фильмов", count);
-        return jdbcTemplate.query(sqlQuery, this::makeFilm, count);
+        return jdbcTemplate.query(sqlQuery, filmMapper, count);
 
     }
 
@@ -155,49 +155,6 @@ public class FilmDbStorage implements FilmStorage {
         return likes;
     }
 
-    private Film makeFilm(ResultSet rs, int rowNum) throws SQLException {
-        return Film.builder()
-                .id(rs.getInt("film_id"))
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .releaseDate(rs.getDate("release_date").toLocalDate())
-                .duration(rs.getLong("duration"))
-                .mpa(findMpa(rs.getInt("rating_id")))
-                .genres(findGenres(rs.getInt("film_id")))
-                .likesList(new HashSet<>())
-                .build();
-    }
-
-    private List<Genre> findGenres(int filmId) {
-        final String genreSql = "SELECT genre.genre_id, genre.name " +
-                "FROM genre " +
-                "LEFT JOIN film_genre AS fg ON genre.genre_id = fg.genre_id " +
-                "WHERE film_id = ?";
-
-        return jdbcTemplate.query(genreSql, this::makeGenre, filmId);
-    }
-
-    private Mpa findMpa(int rating_id) {
-        final String mpaSql = "SELECT id, name " +
-                "FROM rating_mpa " +
-                "WHERE id = ?";
-
-        return jdbcTemplate.queryForObject(mpaSql, this::makeMpa, rating_id);
-    }
-
-    private Mpa makeMpa(ResultSet rs, int rowNum) throws SQLException {
-        return Mpa.builder()
-                .id(rs.getInt("id"))
-                .name(rs.getString("name"))
-                .build();
-    }
-
-    private Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
-        return Genre.builder()
-                .id(rs.getInt("genre_id"))
-                .name(rs.getString("name"))
-                .build();
-    }
 
     private void validate(int filmId, int userId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
