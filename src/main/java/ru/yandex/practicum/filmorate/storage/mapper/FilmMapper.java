@@ -34,12 +34,12 @@ public class FilmMapper implements RowMapper<Film> {
                 .build();
     }
 
-    public Mpa findMpa(int rating_id) {
+    public Mpa findMpa(int ratingId) {
         final String mpaSql = "SELECT id, name " +
                 "FROM rating_mpa " +
                 "WHERE id = ?";
 
-        return jdbcTemplate.queryForObject(mpaSql, mpaMapper, rating_id);
+        return jdbcTemplate.queryForObject(mpaSql, mpaMapper, ratingId);
     }
 
     protected List<Genre> findGenres(int filmId) {
