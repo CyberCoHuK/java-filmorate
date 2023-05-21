@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 
-@Component("userMapper")
+@Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserMapper implements RowMapper<User> {
 

@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Component("mpaMapper")
+@Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class MpaMapper implements RowMapper<Mpa> {

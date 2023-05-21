@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Component("genreMapper")
+@Component
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GenreMapper implements RowMapper<Genre> {
 

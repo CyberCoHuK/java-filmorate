@@ -2,16 +2,15 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
 
 import java.util.*;
 
@@ -20,19 +19,19 @@ import java.util.*;
 @Primary
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Film> mapper;
+    private final FilmMapper filmMapper;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, @Qualifier("filmMapper") RowMapper mapper) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmMapper filmMapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.mapper = mapper;
+        this.filmMapper = filmMapper;
     }
 
     @Override
     public Collection<Film> getAllFilms() {
         final String sql = "SELECT * FROM film";
         log.info("Отправлены все фильмы");
-        return jdbcTemplate.query(sql, mapper);
+        return jdbcTemplate.query(sql, filmMapper);
     }
 
     @Override
@@ -107,7 +106,7 @@ public class FilmDbStorage implements FilmStorage {
             throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
         } else {
             log.info("Отправлен фильм с индентификатором {} ", filmId);
-            return jdbcTemplate.queryForObject(sql, mapper, filmId);
+            return jdbcTemplate.queryForObject(sql, filmMapper, filmId);
         }
     }
 
@@ -143,7 +142,7 @@ public class FilmDbStorage implements FilmStorage {
                 "ORDER BY count DESC " +
                 "LIMIT ?";
         log.info("Отправлен топ {} фильмов", count);
-        return jdbcTemplate.query(sqlQuery, mapper, count);
+        return jdbcTemplate.query(sqlQuery, filmMapper, count);
 
     }
 
