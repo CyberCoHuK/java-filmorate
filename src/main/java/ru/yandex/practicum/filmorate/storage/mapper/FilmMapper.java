@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.storage.mapper;
 
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -11,10 +14,12 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 
+@Component("filmMapper")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class FilmMapper implements RowMapper<Film> {
-    JdbcTemplate jdbcTemplate;
-    MpaMapper mpaMapper = new MpaMapper();
-    GenreMapper genreMapper = new GenreMapper();
+    final JdbcTemplate jdbcTemplate;
+    final MpaMapper mpaMapper = new MpaMapper();
+    final GenreMapper genreMapper = new GenreMapper();
 
     public FilmMapper(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

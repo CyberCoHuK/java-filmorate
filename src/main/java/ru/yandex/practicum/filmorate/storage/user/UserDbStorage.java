@@ -1,8 +1,11 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -10,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -22,18 +24,19 @@ import java.util.Collection;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserMapper userMapper;
+    private final RowMapper<User> mapper;
 
-    public UserDbStorage(JdbcTemplate jdbcTemplate) {
+    @Autowired
+    public UserDbStorage(JdbcTemplate jdbcTemplate, @Qualifier("userMapper") RowMapper mapper) {
         this.jdbcTemplate = jdbcTemplate;
-        this.userMapper = new UserMapper(this.jdbcTemplate);
+        this.mapper = mapper;
     }
 
     @Override
     public Collection<User> findAllUsers() {
         final String sql = "SELECT * FROM users";
         log.info("Отправлены все пользователи");
-        return jdbcTemplate.query(sql, userMapper);
+        return jdbcTemplate.query(sql, mapper);
     }
 
     @Override
@@ -77,7 +80,7 @@ public class UserDbStorage implements UserStorage {
         isExist(userId);
         final String sql = "SELECT * FROM users WHERE user_id = ?";
         log.info("Отправлен пользователь с индентификатором {} ", userId);
-        return jdbcTemplate.queryForObject(sql, userMapper, userId);
+        return jdbcTemplate.queryForObject(sql, mapper, userId);
     }
 
     @Override
@@ -117,7 +120,7 @@ public class UserDbStorage implements UserStorage {
                 "LEFT JOIN friends AS f ON u.user_id = f.friend_id " +
                 "WHERE f.user_id = ?";
         log.info("Запрос получения списка друзей пользователя {} выполнен", userId);
-        return jdbcTemplate.query(sqlQuery, userMapper, userId);
+        return jdbcTemplate.query(sqlQuery, mapper, userId);
     }
 
     @Override
@@ -135,7 +138,7 @@ public class UserDbStorage implements UserStorage {
                 "WHERE f.user_id = ?" +
                 ")";
         log.info("Отправлен одинаковые друзья пользователей {} и {} ", userId, secondUserId);
-        return jdbcTemplate.query(sqlQuery, userMapper, userId, secondUserId);
+        return jdbcTemplate.query(sqlQuery, mapper, userId, secondUserId);
     }
 
     public void isExist(int userId) {
