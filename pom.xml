@@ -17,6 +17,7 @@
         <java.version>11</java.version>
         <apache.commons.version>3.12.0</apache.commons.version>
         <springframework.restdocs.version>3.0.0</springframework.restdocs.version>
+        <org.hibernate.version>5.2.5.Final</org.hibernate.version>
     </properties>
 
     <dependencies>
@@ -53,6 +54,23 @@
             <artifactId>spring-restdocs-mockmvc</artifactId>
             <version>${springframework.restdocs.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <version>${org.hibernate.version}</version>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
 
     </dependencies>

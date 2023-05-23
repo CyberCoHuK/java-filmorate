@@ -10,6 +10,7 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserStorage userStorage;
 
     public Collection<User> findAllUsers() {
@@ -43,9 +44,4 @@ public class UserService {
     public Collection<User> getMutualFriends(int userId, int secondUserId) {
         return userStorage.getMutualFriends(userId, secondUserId);
     }
-
-    public void isExist(int userId) {
-        userStorage.isExist(userId);
-    }
-
 }
