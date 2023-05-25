@@ -89,18 +89,17 @@ public class UserDbStorage implements UserStorage {
         final String sqlQuery = "INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)";
         final String checkQuery = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ?";
 
-        SqlRowSet friendRows = jdbcTemplate.queryForRowSet(checkQuery, userId, friendId);
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkQuery, friendId, userId);
-        if (!friendRows.next()) {
-            if (!userRows.next()) {
-                jdbcTemplate.update(sqlQuery, userId, friendId, false);
-                log.info("Пользователь {} отправил запрос на добавления в друзья {}", userId, friendId);
-            } else {
-                jdbcTemplate.update(sqlQuery, userId, friendId, true);
-                jdbcTemplate.update(sqlQuery, friendId, userId, true);
-                log.info("Пользователь {} добавил в друзья {}", userId, friendId);
-            }
+
+        if (!userRows.next()) {
+            jdbcTemplate.update(sqlQuery, userId, friendId, false);
+            log.info("Пользователь {} отправил запрос на добавления в друзья {}", userId, friendId);
+        } else {
+            jdbcTemplate.update(sqlQuery, userId, friendId, true);
+            jdbcTemplate.update(sqlQuery, friendId, userId, true);
+            log.info("Пользователь {} добавил в друзья {}", userId, friendId);
         }
+
         return getById(userId);
     }
 
