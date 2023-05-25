@@ -69,4 +69,7 @@ REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 ALTER TABLE film ADD FOREIGN KEY (rating_id) REFERENCES rating_mpa (id);
+ALTER TABLE film_genre ADD CONSTRAINT key_film_genre PRIMARY KEY (genre_id, film_id);
+ALTER TABLE friends ADD CONSTRAINT key_friends PRIMARY KEY (user_id, friend_id);
+ALTER TABLE likes ADD CONSTRAINT key_likes PRIMARY KEY (user_id, film_id);
 
