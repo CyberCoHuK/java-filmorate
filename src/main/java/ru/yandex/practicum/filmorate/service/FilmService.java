@@ -40,7 +40,7 @@ public class FilmService {
         return filmStorage.getListOfTopFilms(count);
     }
 
-    public String deleteFilmById (int filmId){
+    public String deleteFilmById (int filmId) {
         return filmStorage.deleteFilmById(filmId);
     }
 }

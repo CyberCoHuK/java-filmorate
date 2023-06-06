@@ -45,7 +45,7 @@ public class UserService {
         return userStorage.getMutualFriends(userId, secondUserId);
     }
 
-    public String deleteUserById (int userId){
+    public String deleteUserById (int userId) {
         return userStorage.deleteUserById(userId);
     }
 }
