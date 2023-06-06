@@ -139,7 +139,7 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "SELECT film.*, COUNT(l.film_id) as count FROM film " +
                 "LEFT JOIN likes AS l ON film.film_id=l.film_id " +
                 "GROUP BY film.film_id " +
-                "ORDER BY count DESC " +
+                "ORDER BY count ASC " +
                 "LIMIT ?";
         log.info("Отправлен топ {} фильмов", count);
         return jdbcTemplate.query(sqlQuery, filmMapper, count);
