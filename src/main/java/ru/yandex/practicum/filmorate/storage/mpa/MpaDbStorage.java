@@ -7,9 +7,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.mapper.MpaMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 
 @Slf4j
@@ -18,12 +17,13 @@ import java.util.Collection;
 public class MpaDbStorage implements MpaStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final MpaMapper mpaMapper;
 
     @Override
     public Collection<Mpa> findAll() {
         String sqlQuery = "SELECT * FROM rating_mpa";
         log.info("Отправлены все рейтинги");
-        return jdbcTemplate.query(sqlQuery, this::makeMpa);
+        return jdbcTemplate.query(sqlQuery, mpaMapper);
     }
 
     @Override
@@ -36,13 +36,6 @@ public class MpaDbStorage implements MpaStorage {
             throw new ObjectNotFoundException("Рейтинг не найден");
         }
 
-        return jdbcTemplate.queryForObject(sqlQuery, this::makeMpa, id);
-    }
-
-    private Mpa makeMpa(ResultSet rs, int rowNum) throws SQLException {
-        return Mpa.builder()
-                .id(rs.getInt("id"))
-                .name(rs.getString("name"))
-                .build();
+        return jdbcTemplate.queryForObject(sqlQuery, mpaMapper, id);
     }
 }
