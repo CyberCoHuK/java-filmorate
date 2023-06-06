@@ -93,6 +93,11 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
+    @Override
+    public Collection<Film> getUserRecommendations(int userId) {
+        return null;
+    }
+
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_DATE)) {
             throw new ValidationException("Фильм не может выйти раньше первого фильма в истории");

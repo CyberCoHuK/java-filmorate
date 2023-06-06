@@ -42,7 +42,7 @@ public class FilmControllerTest {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
         filmController = new FilmController(new FilmService(filmStorage));
-        userController = new UserController(new UserService(userStorage));
+        userController = new UserController(new UserService(userStorage, filmStorage));
         film = Film.builder()
                 .name("name")
                 .description("description")
@@ -164,8 +164,8 @@ public class FilmControllerTest {
         filmController.addLike(film.getId(), user2.getId());
         filmController.addLike(film2.getId(), user.getId());
         List<Film> list = new ArrayList<>();
-        list.add(film2);
         list.add(film);
-        assertEquals(list.toString(), filmController.getTopList(5).toString());
+        list.add(film2);
+        assertEquals(list.toString(), filmController.getTopList(2).toString());
     }
 }

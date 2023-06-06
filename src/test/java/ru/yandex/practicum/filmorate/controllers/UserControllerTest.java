@@ -32,7 +32,7 @@ public class UserControllerTest {
     void beforeEach() {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        UserService userService = new UserService(userStorage);
+        UserService userService = new UserService(userStorage, filmStorage);
         FilmService filmService = new FilmService(filmStorage);
         userController = new UserController(userService);
         user = User.builder()
