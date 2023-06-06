@@ -182,4 +182,30 @@ public class FilmDbStorage implements FilmStorage {
         }
         return fields;
     }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByYears(long directorId) {
+        String sqlQuery =
+                "SELECT f.*, m.id " +
+                        "FROM film AS f " +
+                        "JOIN rating_mpa AS m ON m.id = f.rating_id " +
+                        "JOIN films_directors AS d ON d.film_id = f.film_id " +
+                        "WHERE d.director_id = ? " +
+                        "ORDER BY f.release_date ASC;";
+        return jdbcTemplate.query(sqlQuery, filmMapper, directorId);
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByRating(long directorId) {
+        String sqlQuery =
+                "SELECT f.*, m.id, count(l.user_id) AS top " +
+                        "FROM film AS f " +
+                        "JOIN rating_mpa AS m ON m.id = f.rating_id " +
+                        "JOIN films_directors AS d ON d.film_id = f.film_id " +
+                        "JOIN likes AS l ON l.film_id = f.film_id " +
+                        "WHERE d.director_id = ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY top ASC;";
+        return jdbcTemplate.query(sqlQuery, filmMapper, directorId);
+    }
 }

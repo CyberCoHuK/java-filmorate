@@ -6,11 +6,13 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final DirectorService directorService;
 
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
@@ -38,5 +40,19 @@ public class FilmService {
 
     public Collection<Film> getListOfTopFilms(int count) {
         return filmStorage.getListOfTopFilms(count);
+    }
+
+    public List<Film> getSortedFilmsByDirectorId(long directorId, String sortBy) {
+        directorService.getDirectorOrNotFoundException(directorId);
+        switch (sortBy) {
+            case "year":
+                List<Film> films = filmStorage.loadFilmsOfDirectorSortedByYears(directorId);
+                return films;
+            case "likes":
+                films = filmStorage.loadFilmsOfDirectorSortedByRating(directorId);
+                return films;
+            default:
+                throw new NullPointerException("Not found sorting property");
+        }
     }
 }

@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.service.DirectorService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,12 +23,15 @@ public class FilmMapper implements RowMapper<Film> {
     final JdbcTemplate jdbcTemplate;
     final MpaMapper mpaMapper;
     final GenreMapper genreMapper;
+    final DirectorService directorService;
 
     @Autowired
-    public FilmMapper(JdbcTemplate jdbcTemplate, MpaMapper mpaMapper, GenreMapper genreMapper) {
+    public FilmMapper(JdbcTemplate jdbcTemplate, MpaMapper mpaMapper, GenreMapper genreMapper,
+                      DirectorService directorService) {
         this.jdbcTemplate = jdbcTemplate;
         this.mpaMapper = mpaMapper;
         this.genreMapper = genreMapper;
+        this.directorService = directorService;
     }
 
 
@@ -41,6 +46,7 @@ public class FilmMapper implements RowMapper<Film> {
                 .mpa(findMpa(rs.getInt("rating_id")))
                 .genres(findGenres(rs.getInt("film_id")))
                 .likesList(new HashSet<>())
+                .directors(new ArrayList<>())
                 .build();
     }
 
