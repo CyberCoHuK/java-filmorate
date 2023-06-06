@@ -164,8 +164,8 @@ public class FilmControllerTest {
         filmController.addLike(film.getId(), user2.getId());
         filmController.addLike(film2.getId(), user.getId());
         List<Film> list = new ArrayList<>();
-        list.add(film2);
         list.add(film);
+        list.add(film2);
         assertEquals(list.toString(), filmController.getTopList(2).toString());
     }
 }
