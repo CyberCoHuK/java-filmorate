@@ -6,7 +6,9 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 
 import java.sql.PreparedStatement;
@@ -25,7 +27,7 @@ public class DirectorDBStorage implements DirectorStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public DirectorDBStorage(JdbcTemplate jdbcTemplate){
+    public DirectorDBStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -38,6 +40,7 @@ public class DirectorDBStorage implements DirectorStorage {
 
     @Override
     public Optional<Director> getDirectorById(long id) {
+        isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, this::makeDirector, id));
     }
@@ -56,18 +59,22 @@ public class DirectorDBStorage implements DirectorStorage {
 
     @Override
     public void updateDirector(Director director) {
+        long id = director.getId();
+        isExist(id);
         String sqlQuery = "UPDATE directors SET name = ? WHERE id = ?;";
         jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
     }
 
     @Override
     public void deleteDirector(long id) {
+        isExist(id);
         String sqlQuery = "DELETE FROM directors WHERE id = ?;";
         jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
     public List<Director> loadDirectorsByFilmId(long id) {
+        isExist(id);
         String sqlQuery =
                 "SELECT * FROM directors d " +
                         "JOIN films_directors f ON f.director_id = d.id " +
@@ -85,6 +92,7 @@ public class DirectorDBStorage implements DirectorStorage {
                         statement.setLong(1, filmId);
                         statement.setLong(2, directorsDistinct.get(i).getId());
                     }
+
                     public int getBatchSize() {
                         return directorsDistinct.size();
                     }
@@ -93,6 +101,7 @@ public class DirectorDBStorage implements DirectorStorage {
 
     @Override
     public void deleteFilmDirector(long id) {
+        isExist(id);
         String sqlQuery = "DELETE FROM films_directors WHERE film_id = ?;";
         jdbcTemplate.update(sqlQuery, id);
     }
@@ -101,5 +110,15 @@ public class DirectorDBStorage implements DirectorStorage {
         log.info("Директор создан");
         return new Director(rs.getInt("id"),
                 rs.getString("name"));
+    }
+
+    public void isExist(long directorId) {
+        final String checkUserQuery = "SELECT * FROM directors WHERE id = ?";
+        SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, directorId);
+
+        if (!userRows.next()) {
+            log.warn("Директор с идентификатором {} не найден.", directorId);
+            throw new ObjectNotFoundException("Директор с идентификатором " + directorId + " не найден.");
+        }
     }
 }

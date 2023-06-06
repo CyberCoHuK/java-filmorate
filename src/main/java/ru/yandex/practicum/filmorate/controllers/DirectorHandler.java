@@ -21,7 +21,6 @@ public class DirectorHandler {
     }
 
     @GetMapping("/{id}")
-
     public Director get(@PathVariable long id) {
         return directorService.getDirectorOrNotFoundException(id);
     }
@@ -32,7 +31,6 @@ public class DirectorHandler {
     }
 
     @PutMapping
-
     public Director update(@Valid @RequestBody Director director) {
         return directorService.updateDirector(director);
     }

@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Director {
+    @PositiveOrZero
     int id;
     @NotBlank(message = "Отсутствует имя директора")
     private String name;
