@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -55,5 +56,9 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.deleteFriend(id, friendId);
+    }
+    @GetMapping("/{id}/recommendations")
+    public Collection<Film> getUserRecommendations (@PathVariable int id){
+        return userService.getUserRecommendations(id);
     }
 }

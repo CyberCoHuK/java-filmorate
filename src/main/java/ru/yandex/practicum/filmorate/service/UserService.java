@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -12,6 +14,7 @@ import java.util.Collection;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FilmStorage filmStorage;
 
     public Collection<User> findAllUsers() {
         return userStorage.findAllUsers();
@@ -43,5 +46,10 @@ public class UserService {
 
     public Collection<User> getMutualFriends(int userId, int secondUserId) {
         return userStorage.getMutualFriends(userId, secondUserId);
+    }
+
+    public Collection<Film> getUserRecommendations(int userId) {
+        userStorage.isExist(userId);
+        return filmStorage.getUserRecommendations(userId);
     }
 }
