@@ -104,4 +104,8 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
     }
+
+    public String deleteFilmById(int filmId) {
+        return "Фильм film_id=" + filmId + " успешно удален.";
+    }
 }

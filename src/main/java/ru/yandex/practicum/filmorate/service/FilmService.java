@@ -39,4 +39,8 @@ public class FilmService {
     public Collection<Film> getListOfTopFilms(int count) {
         return filmStorage.getListOfTopFilms(count);
     }
+
+    public String deleteFilmById (int filmId){
+        return filmStorage.deleteFilmById(filmId);
+    }
 }

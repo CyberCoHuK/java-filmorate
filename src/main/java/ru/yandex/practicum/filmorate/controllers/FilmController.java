@@ -48,4 +48,9 @@ public class FilmController {
     public Film createFilm(@Valid @RequestBody Film film) {
         return filmService.createFilm(film);
     }
+
+    @DeleteMapping("/{filmId}")
+    public String deleteFilmById(@PathVariable("filmId") int filmId){
+        return filmService.deleteFilmById(filmId);
+    }
 }

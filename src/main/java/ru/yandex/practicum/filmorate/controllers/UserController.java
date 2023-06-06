@@ -56,4 +56,9 @@ public class UserController {
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.deleteFriend(id, friendId);
     }
+
+    @DeleteMapping("/{userId}")
+    public String deleteUserById(@PathVariable("userId") int userId){
+        return userService.deleteUserById(userId);
+    }
 }
