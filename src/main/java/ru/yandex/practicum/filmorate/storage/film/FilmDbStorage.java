@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.mapper.FilmMapper;
@@ -67,6 +68,21 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
+        if (film.getDirectors() != null) {
+            final String deleteDirectorQuery = "DELETE FROM films_directors WHERE film_id = ?";
+            final String updateDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
+            final String sqlCheck = "SELECT * FROM films_directors WHERE film_id = ? AND director_id = ?";
+
+            jdbcTemplate.update(deleteDirectorQuery, film.getId());
+            for (Director d : film.getDirectors()) {
+                SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), d.getId());
+                if (!genreRows.next()) {
+                    jdbcTemplate.update(updateDirectorQuery, film.getId(), d.getId());
+                }
+            }
+        }
+
+
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getId());
         log.info("Обновлен фильм с индентификатором {} ", film.getId());
@@ -83,7 +99,7 @@ public class FilmDbStorage implements FilmStorage {
 
         if (film.getGenres() != null) {
             final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
+            final String sqlCheck = "SELECT * FROM film_genre  WHERE film_id = ? AND genre_id = ?";
             for (Genre g : film.getGenres()) {
                 SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), g.getId());
                 if (!genreRows.next()) {
@@ -91,6 +107,18 @@ public class FilmDbStorage implements FilmStorage {
                 }
             }
         }
+
+        if (film.getDirectors() != null) {
+            final String updateFilmDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
+            final String sqlCheck = "SELECT * FROM films_directors  WHERE film_id = ? AND director_id = ?";
+            for (Director d: film.getDirectors()) {
+                SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), d.getId());
+                if (!directorRows.next()) {
+                    jdbcTemplate.update(updateFilmDirectorQuery, film.getId(), d.getId());
+                }
+            }
+        }
+
         log.info("Создан фильм с индентификатором {} ", film.getId());
         return getById(film.getId());
     }
