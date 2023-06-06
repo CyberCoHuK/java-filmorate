@@ -137,7 +137,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> getListOfTopFilms(int count) {
         String sqlQuery = "SELECT film.*, COUNT(l.film_id) as count FROM film " +
-                "LEFT JOIN likes l ON film.film_id=l.film_id " +
+                "LEFT JOIN likes AS l ON film.film_id=l.film_id " +
                 "GROUP BY film.film_id " +
                 "ORDER BY count DESC " +
                 "LIMIT ?";
