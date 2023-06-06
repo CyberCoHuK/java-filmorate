@@ -57,8 +57,9 @@ public class UserController {
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
         userService.deleteFriend(id, friendId);
     }
+
     @GetMapping("/{id}/recommendations")
-    public Collection<Film> getUserRecommendations (@PathVariable int id){
+    public Collection<Film> getUserRecommendations(@PathVariable int id) {
         return userService.getUserRecommendations(id);
     }
 }
