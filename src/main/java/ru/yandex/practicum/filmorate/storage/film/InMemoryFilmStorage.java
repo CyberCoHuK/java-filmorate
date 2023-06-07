@@ -104,12 +104,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByYears(long directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
         return null;
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByRating(long directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
         return null;
     }
 

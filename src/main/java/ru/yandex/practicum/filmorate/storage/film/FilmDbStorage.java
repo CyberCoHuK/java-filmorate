@@ -119,6 +119,17 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
+        if (film.getLikesList() != null) {
+            final String updateLikesDirectorQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
+            final String sqlCheck = "SELECT * FROM likes  WHERE film_id = ? AND user_id = ?";
+            for (int like: film.getLikesList()) {
+                SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), like);
+                if (!directorRows.next()) {
+                    jdbcTemplate.update(updateLikesDirectorQuery , film.getId(), like);
+                }
+            }
+        }
+
         log.info("Создан фильм с индентификатором {} ", film.getId());
         return getById(film.getId());
     }
@@ -212,7 +223,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByYears(long directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
         String sqlQuery =
                 "SELECT f.*, m.id " +
                         "FROM film AS f " +
@@ -224,7 +235,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByRating(long directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
         String sqlQuery =
                 "SELECT f.*, m.id, count(l.user_id) AS top " +
                         "FROM film AS f " +

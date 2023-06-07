@@ -20,7 +20,7 @@ public interface FilmStorage {
 
     Collection<Film> getListOfTopFilms(int count);
 
-    List<Film> loadFilmsOfDirectorSortedByYears(long directorId);
+    List<Film> loadFilmsOfDirectorSortedByYears(int directorId);
 
-    List<Film> loadFilmsOfDirectorSortedByRating(long directorId);
+    List<Film> loadFilmsOfDirectorSortedByLikes(int directorId);
 }

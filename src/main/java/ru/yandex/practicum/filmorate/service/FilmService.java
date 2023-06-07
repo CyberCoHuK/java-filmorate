@@ -49,7 +49,7 @@ public class FilmService {
                 List<Film> films = filmStorage.loadFilmsOfDirectorSortedByYears(directorId);
                 return films;
             case "likes":
-                films = filmStorage.loadFilmsOfDirectorSortedByRating(directorId);
+                films = filmStorage.loadFilmsOfDirectorSortedByLikes(directorId);
                 return films;
             default:
                 throw new NullPointerException("Задан не корректный параметр сортировки");
