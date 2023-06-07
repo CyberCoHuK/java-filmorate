@@ -41,7 +41,7 @@ public class FilmControllerTest {
     void beforeEach() {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        filmController = new FilmController(new FilmService(filmStorage));
+        filmController = new FilmController(new FilmService(filmStorage, userStorage));
         userController = new UserController(new UserService(userStorage));
         film = Film.builder()
                 .name("name")
