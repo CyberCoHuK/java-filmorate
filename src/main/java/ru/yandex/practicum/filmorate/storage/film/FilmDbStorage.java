@@ -111,7 +111,7 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getDirectors() != null) {
             final String updateFilmDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
             final String sqlCheck = "SELECT * FROM films_directors  WHERE film_id = ? AND director_id = ?";
-            for (Director d: film.getDirectors()) {
+            for (Director d : film.getDirectors()) {
                 SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), d.getId());
                 if (!directorRows.next()) {
                     jdbcTemplate.update(updateFilmDirectorQuery, film.getId(), d.getId());
@@ -122,10 +122,10 @@ public class FilmDbStorage implements FilmStorage {
         if (film.getLikesList() != null) {
             final String updateLikesDirectorQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
             final String sqlCheck = "SELECT * FROM likes  WHERE film_id = ? AND user_id = ?";
-            for (int like: film.getLikesList()) {
+            for (int like : film.getLikesList()) {
                 SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), like);
                 if (!directorRows.next()) {
-                    jdbcTemplate.update(updateLikesDirectorQuery , film.getId(), like);
+                    jdbcTemplate.update(updateLikesDirectorQuery, film.getId(), like);
                 }
             }
         }
@@ -144,7 +144,7 @@ public class FilmDbStorage implements FilmStorage {
             log.warn("Фильм с идентификатором {} не найден.", filmId);
             throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
         } else {
-            log.info("Отправлен фильм с индентификатором {} ", filmId);
+            log.info("Отправлен фильм с идентификатором {} ", filmId);
             return jdbcTemplate.queryForObject(sql, filmMapper, filmId);
         }
     }
@@ -239,9 +239,9 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery =
                 "SELECT f.*, m.id, count(l.user_id) AS top " +
                         "FROM film AS f " +
-                        "JOIN rating_mpa AS m ON m.id = f.rating_id " +
-                        "JOIN films_directors AS d ON d.film_id = f.film_id " +
-                        "JOIN likes AS l ON l.film_id = f.film_id " +
+                        "LEFT JOIN rating_mpa AS m ON m.id = f.rating_id " +
+                        "LEFT JOIN films_directors AS d ON d.film_id = f.film_id " +
+                        "LEFT JOIN likes AS l ON l.film_id = f.film_id " +
                         "WHERE d.director_id = ? " +
                         "GROUP BY f.film_id " +
                         "ORDER BY top ASC;";
