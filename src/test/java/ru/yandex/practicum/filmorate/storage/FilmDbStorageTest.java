@@ -33,13 +33,17 @@ class FilmDbStorageTest {
     final UserDbStorage userDbStorage;
 
     Film film;
+    Film secondFilm;
+    Film thirdFilm;
     User user;
     User secondUser;
 
 
     @BeforeEach
     void setUp() {
-        film = createFilm();
+        film = createFilm(0);
+        secondFilm = createFilm(1);
+        thirdFilm = createFilm(2);
         user = UserDbStorageTest.createUser(1);
         secondUser = UserDbStorageTest.createUser(2);
     }
@@ -83,21 +87,67 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(1, 1);
         filmDbStorage.addLike(1, 2);
         filmService.getListOfTopFilms(1);
+        assertEquals(1, filmService.getListOfTopFilms(1).size());
+
     }
 
-    protected static Film createFilm() {
-        return Film.builder()
-                .name("name")
-                .description("desc")
-                .releaseDate(LocalDate.of(1999, 8, 17))
-                .duration(136)
-                .genres(new ArrayList<>())
-                .likesList(new HashSet<>())
-                .mpa(Mpa.builder()
-                        .id(1)
-                        .name("G")
-                        .build())
-                .build();
+    @Test
+    void getUserRecommendations() {
+        filmDbStorage.createFilm(film);
+        filmDbStorage.createFilm(secondFilm);
+        filmDbStorage.createFilm(thirdFilm);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(secondUser);
+        filmDbStorage.addLike(1, 1);
+        filmDbStorage.addLike(1, 2);
+        filmDbStorage.addLike(2, 1);
+        filmDbStorage.addLike(3, 2);
+        ArrayList<Film> Check = new ArrayList<>();
+        Check.add(thirdFilm);
+        assertEquals(Check, filmDbStorage.getUserRecommendations(1));
+    }
+
+    protected static Film createFilm(int num) {
+        if (num == 1) {
+            return Film.builder()
+                    .name("SecondName")
+                    .description("SecondDesc")
+                    .releaseDate(LocalDate.of(1997, 3, 13))
+                    .duration(46)
+                    .genres(new ArrayList<>())
+                    .likesList(new HashSet<>())
+                    .mpa(Mpa.builder()
+                            .id(1)
+                            .name("G")
+                            .build())
+                    .build();
+        } else if (num == 2) {
+            return Film.builder()
+                    .name("ThirdName")
+                    .description("ThirdDesc")
+                    .releaseDate(LocalDate.of(1977, 2, 23))
+                    .duration(13)
+                    .genres(new ArrayList<>())
+                    .likesList(new HashSet<>())
+                    .mpa(Mpa.builder()
+                            .id(1)
+                            .name("G")
+                            .build())
+                    .build();
+        } else {
+            return Film.builder()
+                    .name("name")
+                    .description("desc")
+                    .releaseDate(LocalDate.of(1999, 8, 17))
+                    .duration(136)
+                    .genres(new ArrayList<>())
+                    .likesList(new HashSet<>())
+                    .mpa(Mpa.builder()
+                            .id(1)
+                            .name("G")
+                            .build())
+                    .build();
+        }
     }
 }
 
