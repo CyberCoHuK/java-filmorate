@@ -33,7 +33,7 @@ public class UserControllerTest {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
         UserService userService = new UserService(userStorage);
-        FilmService filmService = new FilmService(filmStorage);
+        FilmService filmService = new FilmService(filmStorage, userStorage);
         userController = new UserController(userService);
         user = User.builder()
                 .name("nametest")
