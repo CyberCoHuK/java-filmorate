@@ -42,7 +42,7 @@ public class FilmService {
         return filmStorage.getListOfTopFilms(count);
     }
 
-    public List<Film> getSortedFilmsByDirectorId(long directorId, String sortBy) {
+    public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorService.getDirectorOrNotFoundException(directorId);
         switch (sortBy) {
             case "year":
@@ -52,7 +52,7 @@ public class FilmService {
                 films = filmStorage.loadFilmsOfDirectorSortedByRating(directorId);
                 return films;
             default:
-                throw new NullPointerException("Not found sorting property");
+                throw new NullPointerException("Задан не корректный параметр сортировки");
         }
     }
 }

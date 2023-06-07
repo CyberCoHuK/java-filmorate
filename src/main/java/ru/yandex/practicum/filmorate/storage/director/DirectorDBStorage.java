@@ -14,7 +14,6 @@ import ru.yandex.practicum.filmorate.model.Director;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,14 +38,14 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public Optional<Director> getDirectorById(long id) {
+    public Optional<Director> getDirectorById(int id) {
         isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, this::makeDirector, id));
     }
 
     @Override
-    public long createDirector(Director director) {
+    public int createDirector(Director director) {
         String sqlQuery = "INSERT INTO directors (name) VALUES (?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -54,36 +53,35 @@ public class DirectorDBStorage implements DirectorStorage {
             statement.setString(1, director.getName());
             return statement;
         }, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+        return Objects.requireNonNull(keyHolder.getKey()).intValue();
     }
 
     @Override
     public void updateDirector(Director director) {
-        long id = director.getId();
+        int id = director.getId();
         isExist(id);
         String sqlQuery = "UPDATE directors SET name = ? WHERE id = ?;";
         jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
     }
 
     @Override
-    public void deleteDirector(long id) {
+    public void deleteDirector(int id) {
         isExist(id);
         String sqlQuery = "DELETE FROM directors WHERE id = ?;";
         jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
-    public List<Director> loadDirectorsByFilmId(long id) {
-        isExist(id);
+    public List<Director> loadDirectorsByFilmId(int id) {
         String sqlQuery =
                 "SELECT * FROM directors d " +
                         "JOIN films_directors f ON f.director_id = d.id " +
                         "WHERE f.film_id = ?;";
-        return Collections.singletonList(jdbcTemplate.queryForObject(sqlQuery, this::makeDirector, id));
+        return jdbcTemplate.query(sqlQuery, this::makeDirector, id);
     }
 
     @Override
-    public void saveFilmDirector(long filmId, List<Director> directors) {
+    public void saveFilmDirector(int filmId, List<Director> directors) {
         List<Director> directorsDistinct = directors.stream().distinct().collect(Collectors.toList());
         jdbcTemplate.batchUpdate(
                 "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?);",
@@ -100,7 +98,7 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public void deleteFilmDirector(long id) {
+    public void deleteFilmDirector(int id) {
         isExist(id);
         String sqlQuery = "DELETE FROM films_directors WHERE film_id = ?;";
         jdbcTemplate.update(sqlQuery, id);
@@ -112,7 +110,7 @@ public class DirectorDBStorage implements DirectorStorage {
                 rs.getString("name"));
     }
 
-    public void isExist(long directorId) {
+    public void isExist(int directorId) {
         final String checkUserQuery = "SELECT * FROM directors WHERE id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, directorId);
 

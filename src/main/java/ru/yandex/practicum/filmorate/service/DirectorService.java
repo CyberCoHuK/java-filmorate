@@ -15,7 +15,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DirectorService {
     private final DirectorStorage directorStorage;
-    public Director getDirectorOrNotFoundException(long id) {
+
+    public Director getDirectorOrNotFoundException(int id) {
         Optional<Director> director = directorStorage.getDirectorById(id);
         if (director.isPresent()) {
             log.debug("Load {}", director.get());
@@ -25,12 +26,12 @@ public class DirectorService {
         }
     }
 
-    public List<Director> getFilmDirectorsById(long id) {
+    public List<Director> getFilmDirectorsById(int id) {
         return directorStorage.loadDirectorsByFilmId(id);
     }
 
     public Director createDirector(Director director) {
-        long id = directorStorage.createDirector(director);
+        int id = directorStorage.createDirector(director);
         return getDirectorOrNotFoundException(id);
     }
 
@@ -41,20 +42,20 @@ public class DirectorService {
         return getDirectorOrNotFoundException(director.getId());
     }
 
-    public void deleteDirector(long id) {
+    public void deleteDirector(int id) {
         directorStorage.deleteDirector(id);
     }
 
-    public void addFilmDirectors(long id, List<Director> directors) {
+    public void addFilmDirectors(int id, List<Director> directors) {
         directorStorage.saveFilmDirector(id, directors);
     }
 
-    public void updateFilmDirectors(long id, List<Director> directors) {
+    public void updateFilmDirectors(int id, List<Director> directors) {
         directorStorage.deleteFilmDirector(id);
         directorStorage.saveFilmDirector(id, directors);
     }
 
-    public void deleteFilmDirectors(long id) {
+    public void deleteFilmDirectors(int id) {
         directorStorage.deleteFilmDirector(id);
     }
 

@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.service.DirectorService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class FilmMapper implements RowMapper<Film> {
                 .mpa(findMpa(rs.getInt("rating_id")))
                 .genres(findGenres(rs.getInt("film_id")))
                 .likesList(new HashSet<>())
-                .directors(new ArrayList<>())
+                .directors(directorService.getFilmDirectorsById(rs.getInt("film_id")))
                 .build();
     }
 

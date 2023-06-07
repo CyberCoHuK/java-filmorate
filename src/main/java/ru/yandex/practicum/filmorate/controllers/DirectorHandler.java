@@ -21,7 +21,7 @@ public class DirectorHandler {
     }
 
     @GetMapping("/{id}")
-    public Director get(@PathVariable long id) {
+    public Director get(@PathVariable int id) {
         return directorService.getDirectorOrNotFoundException(id);
     }
 
@@ -36,7 +36,7 @@ public class DirectorHandler {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable long id) {
+    public void delete(@PathVariable int id) {
         directorService.deleteDirector(id);
     }
 }

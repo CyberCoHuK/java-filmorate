@@ -6,21 +6,21 @@ import java.util.List;
 import java.util.Optional;
 
 public interface DirectorStorage {
-    long createDirector(Director director);
+    int createDirector(Director director);
 
-    Optional<Director> getDirectorById(long id);
+    Optional<Director> getDirectorById(int id);
 
     List<Director> getAllDirectors();
 
     void updateDirector(Director director);
 
-    void deleteDirector(long id);
+    void deleteDirector(int id);
 
-    List<Director> loadDirectorsByFilmId(long id);
+    List<Director> loadDirectorsByFilmId(int id);
 
-    void saveFilmDirector(long id, List<Director> directors);
+    void saveFilmDirector(int id, List<Director> directors);
 
-    void deleteFilmDirector(long id);
+    void deleteFilmDirector(int id);
 
-    void isExist(long directorId);
+    void isExist(int directorId);
 }
