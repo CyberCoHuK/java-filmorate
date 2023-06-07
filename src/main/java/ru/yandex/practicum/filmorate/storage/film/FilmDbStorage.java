@@ -182,8 +182,7 @@ public class FilmDbStorage implements FilmStorage {
         return likes;
     }
 
-
-    private void isExist(int filmId) {
+    public void isExist(int filmId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
 
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
