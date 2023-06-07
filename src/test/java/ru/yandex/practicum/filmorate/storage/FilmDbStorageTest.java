@@ -102,9 +102,9 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(1, 2);
         filmDbStorage.addLike(2, 1);
         filmDbStorage.addLike(3, 2);
-        ArrayList<Film> Check = new ArrayList<>();
-        Check.add(thirdFilm);
-        assertEquals(Check, filmDbStorage.getUserRecommendations(1));
+        ArrayList<Film> check = new ArrayList<>();
+        check.add(thirdFilm);
+        assertEquals(check, filmDbStorage.getUserRecommendations(1));
     }
 
     protected static Film createFilm(int num) {
