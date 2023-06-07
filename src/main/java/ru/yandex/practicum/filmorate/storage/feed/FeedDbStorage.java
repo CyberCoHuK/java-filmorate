@@ -43,7 +43,7 @@ public class FeedDbStorage implements FeedStorage {
                 .eventType(eventType)
                 .operation(operation)
                 .entityId(entityId)
-                .id(0)
+                .eventId(0)
                 .build();
         final String sql = "INSERT INTO feed (timestamps, user_id, event_type, operation, entity_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -60,9 +60,9 @@ public class FeedDbStorage implements FeedStorage {
         }, keyHolder);
 
         if (keyHolder.getKey() != null) {
-            event.setId((Integer) keyHolder.getKey());
+            event.setEventId((Integer) keyHolder.getKey());
         }
-        log.info("Создано событие с индентификатором {} ", event.getId());
+        log.info("Создано событие с индентификатором {} ", event.getEventId());
         return event;
     }
 }

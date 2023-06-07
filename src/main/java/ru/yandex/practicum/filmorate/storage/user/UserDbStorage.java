@@ -99,7 +99,6 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.update(sqlQuery, friendId, userId, true);
             log.info("Пользователь {} добавил в друзья {}", userId, friendId);
         }
-
         return getById(userId);
     }
 
