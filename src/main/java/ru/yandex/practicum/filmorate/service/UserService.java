@@ -49,7 +49,6 @@ public class UserService {
     }
 
     public Collection<Film> getUserRecommendations(int userId) {
-        userStorage.isExist(userId);
         return filmStorage.getUserRecommendations(userId);
     }
 }
