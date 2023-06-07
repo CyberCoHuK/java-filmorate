@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users, film, rating_mpa, genre, film_genre, likes, friends CASCADE;
+DROP TABLE IF EXISTS users, film, rating_mpa, genre, film_genre, likes, friends, reviews, reviews_likes CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -66,6 +66,29 @@ REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
 CONSTRAINT fk_user_friend
 FOREIGN KEY(friend_id)
 REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS reviews
+(
+    review_id   int8       NOT NULL GENERATED ALWAYS AS IDENTITY,
+    content     varchar    NOT NULL,
+    is_positive boolean    NOT NULL,
+    user_id     integer    NOT NULL,
+    film_id     integer    NOT NULL,
+    useful      integer    DEFAULT 0,
+    CONSTRAINT reviews_pk PRIMARY KEY (review_id),
+    CONSTRAINT reviews_film_fk FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT reviews_user_fk FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
+
+CREATE TABLE IF NOT EXISTS reviews_likes
+(
+    review_id   int8       NOT NULL,
+    user_id     integer    NOT NULL,
+    is_like     boolean    NOT NULL,
+    CONSTRAINT reviews_likes_pk PRIMARY KEY (review_id, user_id),
+    CONSTRAINT reviews_likes_reviews_fk FOREIGN KEY (review_id) REFERENCES reviews (review_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT reviews_likes_users_fk FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 ALTER TABLE film ADD FOREIGN KEY (rating_id) REFERENCES rating_mpa (id);

@@ -18,4 +18,6 @@ public interface FilmStorage {
     Film deleteLike(int filmId, int userId);
 
     Collection<Film> getListOfTopFilms(int count);
+
+    void isExist(int filmId);
 }
