@@ -7,8 +7,7 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -17,13 +16,7 @@ public class DirectorService {
     private final DirectorStorage directorStorage;
 
     public Director getDirectorOrNotFoundException(int id) {
-        Optional<Director> director = directorStorage.getDirectorById(id);
-        if (director.isPresent()) {
-            log.debug("Load {}", director.get());
-            return director.get();
-        } else {
-            throw new NoSuchElementException("Director #" + id + " not found");
-        }
+        return directorStorage.getDirectorById(id);
     }
 
     public List<Director> getFilmDirectorsById(int id) {
@@ -36,10 +29,8 @@ public class DirectorService {
     }
 
     public Director updateDirector(Director director) {
-        Director loadedDirector = getDirectorOrNotFoundException(director.getId());
-        loadedDirector.setName(director.getName());
-        directorStorage.updateDirector(loadedDirector);
-        return getDirectorOrNotFoundException(director.getId());
+        directorStorage.updateDirector(director);
+        return directorStorage.getDirectorById(director.getId());
     }
 
     public void deleteDirector(int id) {

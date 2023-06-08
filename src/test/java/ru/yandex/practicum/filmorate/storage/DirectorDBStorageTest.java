@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.storage.director.DirectorDBStorage;
 
 import java.util.List;
 
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,8 +45,8 @@ class DirectorDBStorageTest {
     @Test
     void getDirectorByIdTest() {
         directorDBStorage.createDirector(director);
-        Optional<Director> directorTest = directorDBStorage.getDirectorById(1);
-        assertEquals("First Director", directorTest.get().getName());
+        Director directorTest = directorDBStorage.getDirectorById(1);
+        assertEquals("First Director", directorTest.getName());
     }
 
     @Test
@@ -55,8 +54,8 @@ class DirectorDBStorageTest {
         directorDBStorage.createDirector(director);
         director.setName("Updated Director");
         directorDBStorage.updateDirector(director);
-        Optional<Director> directorTest = directorDBStorage.getDirectorById(1);
-        assertEquals("Updated Director", directorTest.get().getName());
+        Director directorTest = directorDBStorage.getDirectorById(1);
+        assertEquals("Updated Director", directorTest.getName());
     }
 
     @Test

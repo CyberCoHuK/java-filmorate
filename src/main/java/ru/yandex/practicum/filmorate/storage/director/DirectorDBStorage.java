@@ -16,7 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,10 +34,10 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public Optional<Director> getDirectorById(int id) {
+    public Director getDirectorById(int id) {
         isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, directorMapper, id));
+        return jdbcTemplate.queryForObject(sqlQuery, directorMapper, id);
     }
 
     @Override

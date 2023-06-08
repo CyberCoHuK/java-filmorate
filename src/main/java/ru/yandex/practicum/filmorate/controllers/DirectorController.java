@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/directors")
-public class DirectorHandler {
+public class DirectorController {
 
     private final DirectorService directorService;
 
