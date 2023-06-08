@@ -22,6 +22,9 @@ public class ReviewService {
     private final FilmStorage filmStorage;
     private final ReviewLikeStorage reviewLikeStorage;
 
+    private static final int INCREMENT = 1;
+    private static final int DECREMENT = -1;
+
     public Review getReviewById(long reviewId) {
         return reviewStorage.findById(reviewId)
                 .orElseThrow(() -> new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден."));
@@ -41,7 +44,7 @@ public class ReviewService {
         userStorage.isExist(review.getUserId());
         filmStorage.isExist(review.getFilmId());
 
-        return reviewStorage.createReview(review);
+        return reviewStorage.saveReview(review);
     }
 
     public Review updateReview(Review review) {
@@ -72,7 +75,7 @@ public class ReviewService {
 
         reviewLikeStorage.addLike(reviewId, userId);
 
-        reviewStorage.changeUseful(reviewId, 1);
+        reviewStorage.changeUseful(reviewId, INCREMENT);
     }
 
     public void addDislike(int reviewId, int userId) {
@@ -84,7 +87,7 @@ public class ReviewService {
 
         reviewLikeStorage.addDislike(reviewId, userId);
 
-        reviewStorage.changeUseful(reviewId, -1);
+        reviewStorage.changeUseful(reviewId, DECREMENT);
     }
 
     public void deleteLike(int reviewId, int userId) {
@@ -99,7 +102,7 @@ public class ReviewService {
                     " не ставил лайк отзыву с id = " + reviewId + ".");
         }
 
-        reviewStorage.changeUseful(reviewId, -1);
+        reviewStorage.changeUseful(reviewId, DECREMENT);
     }
 
     public void deleteDislike(int reviewId, int userId) {
@@ -114,6 +117,6 @@ public class ReviewService {
                     " не ставил дизлайк отзыву с id = " + reviewId + ".");
         }
 
-        reviewStorage.changeUseful(reviewId, 1);
+        reviewStorage.changeUseful(reviewId, INCREMENT);
     }
 }

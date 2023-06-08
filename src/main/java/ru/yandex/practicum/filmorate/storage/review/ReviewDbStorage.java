@@ -60,7 +60,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Review createReview(Review review) {
+    public Review saveReview(Review review) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
