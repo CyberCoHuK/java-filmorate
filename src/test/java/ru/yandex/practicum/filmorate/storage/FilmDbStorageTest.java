@@ -120,6 +120,7 @@ class FilmDbStorageTest {
                             .id(1)
                             .name("G")
                             .build())
+                    .directors(new ArrayList<>())
                     .build();
         } else if (num == 2) {
             return Film.builder()
@@ -133,6 +134,7 @@ class FilmDbStorageTest {
                             .id(1)
                             .name("G")
                             .build())
+                    .directors(new ArrayList<>())
                     .build();
         } else {
             return Film.builder()
@@ -146,6 +148,7 @@ class FilmDbStorageTest {
                             .id(1)
                             .name("G")
                             .build())
+                    .directors(new ArrayList<>())
                     .build();
         }
     }
