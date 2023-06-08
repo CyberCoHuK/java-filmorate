@@ -3,16 +3,20 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final DirectorStorage directorStorage;
     private final UserStorage userStorage;
+
 
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
@@ -42,5 +46,19 @@ public class FilmService {
 
     public Collection<Film> getListOfTopFilms(int count) {
         return filmStorage.getListOfTopFilms(count);
+    }
+
+    public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
+        directorStorage.isExist(directorId);
+        switch (sortBy) {
+            case "year":
+                List<Film> films = filmStorage.loadFilmsOfDirectorSortedByYears(directorId);
+                return films;
+            case "likes":
+                films = filmStorage.loadFilmsOfDirectorSortedByLikes(directorId);
+                return films;
+            default:
+                throw new NullPointerException("Задан не корректный параметр сортировки");
+        }
     }
 }

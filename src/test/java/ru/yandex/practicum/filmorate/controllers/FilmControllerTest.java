@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FilmControllerTest {
     private FilmController filmController;
     private UserController userController;
+    private DirectorStorage directorStorage;
 
     private Film film;
     private Film film2;
@@ -40,7 +42,8 @@ public class FilmControllerTest {
     void beforeEach() {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        filmController = new FilmController(new FilmService(filmStorage, userStorage));
+        filmController = new FilmController(new FilmService(filmStorage, directorStorage, userStorage));
+
         userController = new UserController(new UserService(userStorage));
         film = Film.builder()
                 .name("name")
@@ -83,6 +86,7 @@ public class FilmControllerTest {
         assertEquals("Отсутствует название фильма", violation.getMessage());
     }
 
+
     @Test
     public void maxLengthOfFilmDescription() {
         String newString = "a".repeat(250);
@@ -121,6 +125,7 @@ public class FilmControllerTest {
         assertEquals(film, filmController.getFilmById(film.getId()));
     }
 
+
     @Test
     public void getByIdCheck() {
         ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> filmController.getFilmById(888));
@@ -152,6 +157,7 @@ public class FilmControllerTest {
         filmController.deleteLike(film.getId(), user.getId());
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
     }
+
 
     @Test
     public void getTopListCheck() {
