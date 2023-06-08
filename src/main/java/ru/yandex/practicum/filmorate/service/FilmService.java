@@ -50,6 +50,7 @@ public class FilmService {
     public String deleteFilmById(int filmId) {
         return filmStorage.deleteFilmById(filmId);
     }
+
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
         switch (sortBy) {
