@@ -68,15 +68,6 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public List<Director> loadDirectorsByFilmId(int id) {
-        String sqlQuery =
-                "SELECT * FROM directors d " +
-                        "JOIN films_directors f ON f.director_id = d.id " +
-                        "WHERE f.film_id = ?;";
-        return jdbcTemplate.query(sqlQuery, directorMapper, id);
-    }
-
-    @Override
     public void saveFilmDirector(int filmId, List<Director> directors) {
         List<Director> directorsDistinct = directors.stream().distinct().collect(Collectors.toList());
         jdbcTemplate.batchUpdate(

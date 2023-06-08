@@ -19,10 +19,6 @@ public class DirectorService {
         return directorStorage.getDirectorById(id);
     }
 
-    public List<Director> getFilmDirectorsById(int id) {
-        return directorStorage.loadDirectorsByFilmId(id);
-    }
-
     public Director createDirector(Director director) {
         int id = directorStorage.createDirector(director);
         return getDirectorOrNotFoundException(id);
