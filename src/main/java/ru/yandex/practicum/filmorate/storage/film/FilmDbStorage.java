@@ -167,4 +167,15 @@ public class FilmDbStorage implements FilmStorage {
         }
         return fields;
     }
+
+    @Override
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        String sqlQuery = "SELECT f.*, count(l.user_id) AS top FROM film AS f " +
+                "JOIN likes AS l ON f.film_id=l.film_id " +
+                "WHERE user_id = ? AND user_id = ?" +
+                "GROUP BY f.film_id " +
+                "ORDER BY top ASC;";
+        return jdbcTemplate.query(sqlQuery, filmMapper, userId, friendId);
+    }
+
 }

@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +43,10 @@ public class FilmService {
 
     public Collection<Film> getListOfTopFilms(int count) {
         return filmStorage.getListOfTopFilms(count);
+    }
+
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        List<Film> usersCommonFilms = filmStorage.getFriendsCommonFilms(userId, friendId);
+        return usersCommonFilms;
     }
 }
