@@ -5,11 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -33,9 +29,7 @@ public class UserControllerTest {
     @BeforeEach
     void beforeEach() {
         UserStorage userStorage = new InMemoryUserStorage();
-        FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
         UserService userService = new UserService(userStorage);
-        FilmService filmService = new FilmService(filmStorage, directorStorage, userStorage);
         userController = new UserController(userService);
         user = User.builder()
                 .name("nametest")

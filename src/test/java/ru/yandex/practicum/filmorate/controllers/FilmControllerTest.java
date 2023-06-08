@@ -43,6 +43,7 @@ public class FilmControllerTest {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
         filmController = new FilmController(new FilmService(filmStorage, directorStorage, userStorage));
+
         userController = new UserController(new UserService(userStorage));
         film = Film.builder()
                 .name("name")
