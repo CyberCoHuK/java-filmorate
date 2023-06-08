@@ -10,9 +10,9 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.storage.mapper.DirectorMapper;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
@@ -25,19 +25,20 @@ import java.util.stream.Collectors;
 public class DirectorDBStorage implements DirectorStorage {
 
     private final JdbcTemplate jdbcTemplate;
+    private final DirectorMapper directorMapper;
 
     @Override
     public List<Director> getAllDirectors() {
         String sqlQuery = "SELECT * FROM directors;";
         log.info("Получить список директоров");
-        return jdbcTemplate.query(sqlQuery, this::makeDirector);
+        return jdbcTemplate.query(sqlQuery, directorMapper);
     }
 
     @Override
     public Optional<Director> getDirectorById(int id) {
         isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, this::makeDirector, id));
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sqlQuery, directorMapper, id));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class DirectorDBStorage implements DirectorStorage {
                 "SELECT * FROM directors d " +
                         "JOIN films_directors f ON f.director_id = d.id " +
                         "WHERE f.film_id = ?;";
-        return jdbcTemplate.query(sqlQuery, this::makeDirector, id);
+        return jdbcTemplate.query(sqlQuery, directorMapper, id);
     }
 
     @Override
@@ -98,12 +99,6 @@ public class DirectorDBStorage implements DirectorStorage {
         isExist(id);
         String sqlQuery = "DELETE FROM films_directors WHERE film_id = ?;";
         jdbcTemplate.update(sqlQuery, id);
-    }
-
-    private Director makeDirector(ResultSet rs, int rowNum) throws SQLException {
-        log.info("Директор создан");
-        return new Director(rs.getInt("id"),
-                rs.getString("name"));
     }
 
     public void isExist(int directorId) {
