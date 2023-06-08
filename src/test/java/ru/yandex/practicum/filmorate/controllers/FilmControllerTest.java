@@ -170,7 +170,7 @@ public class FilmControllerTest {
     }
 
     @Test
-    public void deleteFilmById() {
+    public void deleteFilmByIdCheck() {
         filmController.createFilm(film);
         filmController.deleteFilmById(film.getId());
         assertThat(filmController.getAllFilms().isEmpty());

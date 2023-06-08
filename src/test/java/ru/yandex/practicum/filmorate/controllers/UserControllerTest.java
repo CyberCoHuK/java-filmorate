@@ -153,7 +153,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void deleteUserById() {
+    public void deleteUserByIdCheck() {
         userController.createUser(user);
         userController.deleteUserById(user.getId());
         assertThat(userController.findAllUsers().isEmpty());

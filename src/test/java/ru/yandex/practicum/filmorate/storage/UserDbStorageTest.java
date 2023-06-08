@@ -82,7 +82,7 @@ class UserDbStorageTest {
     }
 
     @Test
-    void deleteUserByIdInStorage() {
+    void deleteUserByIdInStorageCheck() {
         userDbStorage.createUser(user);
         userDbStorage.deleteUserById(user.getId());
         assertThat(userDbStorage.findAllUsers().isEmpty());

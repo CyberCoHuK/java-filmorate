@@ -87,7 +87,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void deleteFilmByIdInStorage() {
+    void deleteFilmByIdInStorageCheck() {
         filmDbStorage.createFilm(film);
         filmDbStorage.deleteFilmById(film.getId());
         assertThat(filmDbStorage.getAllFilms().isEmpty());
