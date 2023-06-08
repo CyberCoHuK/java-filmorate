@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -83,6 +84,13 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(1, 1);
         filmDbStorage.addLike(1, 2);
         filmService.getListOfTopFilms(1);
+    }
+
+    @Test
+    void deleteFilmByIdInStorage() {
+        filmDbStorage.createFilm(film);
+        filmDbStorage.deleteFilmById(film.getId());
+        assertThat(filmDbStorage.getAllFilms().isEmpty());
     }
 
     protected static Film createFilm() {
