@@ -37,14 +37,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        final String sql = "SELECT * FROM film WHERE film_id = ?";
-
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, film.getId());
-
-        if (!filmRows.next()) {
-            log.warn("Фильм с идентификатором {} не найден.", film.getId());
-            throw new ObjectNotFoundException("Фильм с идентификатором " + film.getId() + " не найден.");
-        }
+        isExist(film.getId());
 
         final String sqlQuery = "UPDATE film SET name = ?, description = ?, release_date = ?, duration = ? " +
                 "WHERE film_id = ?";
@@ -136,22 +129,15 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film getById(int filmId) {
+        isExist(filmId);
         final String sql = "SELECT * FROM film WHERE film_id = ?";
-
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(sql, filmId);
-
-        if (!filmRows.next()) {
-            log.warn("Фильм с идентификатором {} не найден.", filmId);
-            throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
-        } else {
-            log.info("Отправлен фильм с идентификатором {} ", filmId);
-            return jdbcTemplate.queryForObject(sql, filmMapper, filmId);
-        }
+        log.info("Отправлен фильм с индентификатором {} ", filmId);
+        return jdbcTemplate.queryForObject(sql, filmMapper, filmId);
     }
 
     @Override
     public Film addLike(int filmId, int userId) {
-        validate(filmId, userId);
+        isExist(filmId);
         final String sqlQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
@@ -163,7 +149,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film deleteLike(int filmId, int userId) {
-        validate(filmId, userId);
+        isExist(filmId);
         final String sqlQuery = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
@@ -197,16 +183,14 @@ public class FilmDbStorage implements FilmStorage {
     }
 
 
-    private void validate(int filmId, int userId) {
+    private void isExist(int filmId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
-        final String checkUserQuery = "SELECT * FROM users WHERE user_id = ?";
 
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, userId);
 
-        if (!filmRows.next() || !userRows.next()) {
-            log.warn("Фильм {} и(или) пользователь {} не найден.", filmId, userId);
-            throw new ObjectNotFoundException("Фильм или пользователь не найдены");
+        if (!filmRows.next()) {
+            log.warn("Фильм с идентификатором {} не найден.", filmId);
+            throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
         }
     }
 
