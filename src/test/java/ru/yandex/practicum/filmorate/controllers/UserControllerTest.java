@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class UserControllerTest {
     private UserController userController;
-    private DirectorStorage directorStorage;
     private User user;
     private User user2;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
