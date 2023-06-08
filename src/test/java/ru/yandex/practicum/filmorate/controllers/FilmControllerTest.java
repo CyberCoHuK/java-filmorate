@@ -19,8 +19,7 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,7 +40,7 @@ public class FilmControllerTest {
     void beforeEach() {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        filmController = new FilmController(new FilmService(filmStorage));
+        filmController = new FilmController(new FilmService(filmStorage, userStorage));
         userController = new UserController(new UserService(userStorage));
         film = Film.builder()
                 .name("name")
@@ -163,7 +162,7 @@ public class FilmControllerTest {
         filmController.addLike(film.getId(), user.getId());
         filmController.addLike(film.getId(), user2.getId());
         filmController.addLike(film2.getId(), user.getId());
-        List<Film> list = new ArrayList<>();
+        Set<Film> list = new HashSet<>();
         list.add(film);
         list.add(film2);
         assertEquals(list.toString(), filmController.getTopList(2).toString());
