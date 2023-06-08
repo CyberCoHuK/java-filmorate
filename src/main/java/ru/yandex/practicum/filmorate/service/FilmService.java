@@ -17,7 +17,6 @@ public class FilmService {
     private final DirectorStorage directorStorage;
     private final UserStorage userStorage;
 
-
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }
@@ -48,11 +47,10 @@ public class FilmService {
         return filmStorage.getListOfTopFilms(count);
     }
 
-
     public String deleteFilmById(int filmId) {
         return filmStorage.deleteFilmById(filmId);
     }
-  
+    
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
         switch (sortBy) {
