@@ -105,6 +105,7 @@ class FilmDbStorageTest {
                         .id(1)
                         .name("G")
                         .build())
+                .directors(new ArrayList<>())
                 .build();
     }
 }
