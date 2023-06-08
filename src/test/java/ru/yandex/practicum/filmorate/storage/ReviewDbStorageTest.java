@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.mapper.ReviewMapper;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
@@ -22,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@SqlGroup({
+        @Sql(value = "/test/review-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(value = "/test/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+})
 public class ReviewDbStorageTest {
     @Autowired
     private ReviewStorage reviewStorage;
@@ -31,7 +36,6 @@ public class ReviewDbStorageTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldSaveReviewInDataBase() {
         Review review = Review.builder()
                 .content("The best film")
@@ -63,7 +67,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldThrowExceptionWhenSaveReviewWithUnknownUserId() {
         int incorrectUserId = 30;
         Review review = Review.builder()
@@ -77,7 +80,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldThrowExceptionWhenSaveReviewWithUnknownFilmId() {
         int incorrectFilmId = 30;
         Review review = Review.builder()
@@ -91,7 +93,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldReturnSavedReviewWithId() {
         Review review = Review.builder()
                 .content("The best film")
@@ -106,7 +107,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldUpdateReviewInDataBase() {
         long reviewId = 1L;
 
@@ -137,7 +137,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldReturnReviewById() {
         Review expectedReview = new Review(
                 2L,
@@ -164,7 +163,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldDeleteReviewById() {
         String sql = "SELECT * FROM reviews WHERE review_id = ?";
         List<Review> foundReviews = jdbcTemplate.query(sql, reviewMapper, 1L);
@@ -179,7 +177,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldIncreaseUsefulByOne() {
         long reviewId = 1L;
         String sql = "SELECT useful FROM reviews WHERE review_id = ?";
@@ -198,7 +195,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldDecreaseUsefulByOne() {
         long reviewId = 1L;
         String sql = "SELECT useful FROM reviews WHERE review_id = ?";
@@ -217,7 +213,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldReturnTrueWhenReviewExist() {
         long reviewId = 1L;
 
@@ -225,7 +220,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldReturnFalseWhenReviewNotExist() {
         long reviewId = 10L;
 
@@ -233,7 +227,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldReturnOnlyOneMostUsefulReview() {
         String sql = "INSERT INTO reviews (content, is_positive, user_id, film_id, useful) " +
                 "VALUES ('Bad film', false, 2, 2, 5)";
@@ -250,7 +243,6 @@ public class ReviewDbStorageTest {
     }
 
     @Test
-    @Sql("/review-test.sql")
     public void shouldReturnOnlyOneMostUsefulReviewByFilmId() {
         String sql = "INSERT INTO reviews (content, is_positive, user_id, film_id, useful) " +
                 "VALUES ('Bad film', false, 2, 3, 5)";
