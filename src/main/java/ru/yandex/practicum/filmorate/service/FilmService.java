@@ -55,7 +55,6 @@ public class FilmService {
         List<Film> usersCommonFilms = filmStorage.getFriendsCommonFilms(userId, friendId);
         return usersCommonFilms;
     }
-}
 
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
