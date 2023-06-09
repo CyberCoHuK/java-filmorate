@@ -127,6 +127,7 @@ class FilmDbStorageTest {
                         .build())
                 .directors(new ArrayList<>())
                 .build();
+    }
       
     protected static Film createFilm(int num) {
         if (num == 1) {
