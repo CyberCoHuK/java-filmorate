@@ -50,6 +50,7 @@ public class UserService {
 
     public String deleteUserById(int userId) {
         return userStorage.deleteUserById(userId);
+    }
 
     public Collection<Film> getUserRecommendations(int userId) {
         userStorage.isExist(userId);
