@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
@@ -24,13 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class FilmDbStorageTest {
-    final FilmDbStorage filmDbStorage;
-    final FilmService filmService;
-    final UserDbStorage userDbStorage;
+    @Autowired
+    FilmDbStorage filmDbStorage;
+    @Autowired
+    FilmService filmService;
+    @Autowired
+    UserDbStorage userDbStorage;
 
     Film film;
     Film secondFilm;
@@ -92,16 +95,11 @@ class FilmDbStorageTest {
     }
 
     @Test
+    @SqlGroup({
+            @Sql(value = "/test/recommendation-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "/test/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
     void getUserRecommendations() {
-        filmDbStorage.createFilm(film);
-        filmDbStorage.createFilm(secondFilm);
-        filmDbStorage.createFilm(thirdFilm);
-        userDbStorage.createUser(user);
-        userDbStorage.createUser(secondUser);
-        filmDbStorage.addLike(1, 1);
-        filmDbStorage.addLike(1, 2);
-        filmDbStorage.addLike(2, 1);
-        filmDbStorage.addLike(3, 2);
         ArrayList<Film> check = new ArrayList<>();
         check.add(thirdFilm);
         assertEquals(check, filmDbStorage.getUserRecommendations(1));
