@@ -182,6 +182,16 @@ public class FilmDbStorage implements FilmStorage {
         return likes;
     }
 
+    @Override
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        String sqlQuery = "SELECT f.*, count(l.user_id) AS top FROM likes AS l " +
+                "JOIN film AS f ON f.film_id=l.film_id " +
+                "WHERE l.user_id  in (?, ?) " +
+                "GROUP BY l.film_id " +
+                "HAVING COUNT(l.user_id) > 1;";
+        return jdbcTemplate.query(sqlQuery, filmMapper, userId, friendId);
+    }
+
     public Collection<Film> getUserRecommendations(int userId) {
         final String sql = "SELECT f.* " +
                 "FROM likes AS l1 " +
@@ -197,7 +207,6 @@ public class FilmDbStorage implements FilmStorage {
         log.info("Отправлены рекомендованные фильмы для пользователя с индентификатором {}", userId);
         return jdbcTemplate.query(sql, filmMapper, userId, userId, userId);
     }
-
 
     public void isExist(int filmId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
