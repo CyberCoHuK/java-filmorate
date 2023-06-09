@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.validate.BeginOfCinemaEra;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,4 +33,5 @@ public class Film {
     Mpa mpa;
     List<Genre> genres;
     Set<Integer> likesList = new HashSet<>();
+    List<Director> directors = new ArrayList<>();
 }

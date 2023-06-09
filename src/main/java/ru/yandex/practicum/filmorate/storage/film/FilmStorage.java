@@ -22,3 +22,14 @@ public interface FilmStorage {
 
     List<Film> getFriendsCommonFilms(int userId, int friendId);
 }
+
+    String deleteFilmById(int filmId);
+
+    List<Film> loadFilmsOfDirectorSortedByYears(int directorId);
+
+    List<Film> loadFilmsOfDirectorSortedByLikes(int directorId);
+
+    void isExist(int filmId);
+
+    Collection<Film> getUserRecommendations(int userId);
+}

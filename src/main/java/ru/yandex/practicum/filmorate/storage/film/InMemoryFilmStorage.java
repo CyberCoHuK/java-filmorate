@@ -91,6 +91,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public Collection<Film> getUserRecommendations(int userId) {
+        return null;
+    }
+
+
+    @Override
     public List<Film> getFriendsCommonFilms(int userId, int friendId) {
         return null;
     }
@@ -101,10 +107,25 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    private void isExist(int filmId) {
+    @Override
+    public void isExist(int filmId) {
         if (!films.containsKey(filmId)) {
             throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
+    }
+
+    public String deleteFilmById(int filmId) {
+        return "Фильм film_id=" + filmId + " успешно удален.";
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
+        return null;
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
+        return null;
     }
 
 

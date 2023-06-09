@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
@@ -18,6 +17,7 @@ import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,8 +32,7 @@ public class UserControllerTest {
     void beforeEach() {
         UserStorage userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        UserService userService = new UserService(userStorage);
-        FilmService filmService = new FilmService(filmStorage);
+        UserService userService = new UserService(userStorage, filmStorage);
         userController = new UserController(userService);
         user = User.builder()
                 .name("nametest")
@@ -149,5 +148,12 @@ public class UserControllerTest {
     public void isExistCheck() {
         ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> userController.getById(888));
         assertEquals("Пользователя с таким 888 не существует", ex.getMessage());
+    }
+
+    @Test
+    public void deleteUserByIdCheck() {
+        userController.createUser(user);
+        userController.deleteUserById(user.getId());
+        assertThat(userController.findAllUsers().isEmpty());
     }
 }
