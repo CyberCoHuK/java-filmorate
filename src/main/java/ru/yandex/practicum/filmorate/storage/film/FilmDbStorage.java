@@ -198,7 +198,6 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, filmMapper, userId, userId, userId);
     }
 
-
     public void isExist(int filmId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
 
@@ -256,5 +255,24 @@ public class FilmDbStorage implements FilmStorage {
                         "GROUP BY f.film_id " +
                         "ORDER BY top ASC;";
         return jdbcTemplate.query(sqlQuery, filmMapper, directorId);
+    }
+
+    @Override
+    public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
+        List<Film> result = new ArrayList<>();
+        String sqlQuery;
+        switch (filmSearchParameter) {
+            case "director":
+                sqlQuery = "";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, query);
+            case "title":
+                sqlQuery = "";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, query);
+            case "director,title":
+                sqlQuery = "";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, query);
+            default:
+                throw new NullPointerException("Задан не корректный параметр сортировки");
+        }
     }
 }

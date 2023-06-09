@@ -59,4 +59,10 @@ public class FilmController {
     public List<Film> getByDirectorId(@PathVariable int directorId, @RequestParam String sortBy) {
         return filmService.getSortedFilmsByDirectorId(directorId, sortBy.toLowerCase());
     }
+
+    @GetMapping("/search")
+    public List<Film> searchFilmByParameter(@RequestParam(name = "query") String query,
+                                            @RequestParam(name = "by", required = false) String filmSearchParameter) {
+        return filmService.searchFilmByParameter(query, filmSearchParameter);
+    }
 }
