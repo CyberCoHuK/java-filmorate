@@ -182,16 +182,6 @@ public class FilmDbStorage implements FilmStorage {
         return likes;
     }
 
-    @Override
-    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
-        String sqlQuery = "SELECT f.*, count(l.user_id) AS top FROM likes AS l " +
-                "JOIN film AS f ON f.film_id=l.film_id " +
-                "WHERE l.user_id  in (?, ?) " +
-                "GROUP BY l.film_id " +
-                "HAVING COUNT(l.user_id) > 1;";
-        return jdbcTemplate.query(sqlQuery, filmMapper, userId, friendId);
-    }
-
     public Collection<Film> getUserRecommendations(int userId) {
         final String sql = "SELECT f.* " +
                 "FROM likes AS l1 " +
