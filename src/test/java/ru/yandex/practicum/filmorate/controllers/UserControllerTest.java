@@ -17,6 +17,7 @@ import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -147,5 +148,12 @@ public class UserControllerTest {
     public void isExistCheck() {
         ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> userController.getById(888));
         assertEquals("Пользователя с таким 888 не существует", ex.getMessage());
+    }
+
+    @Test
+    public void deleteUserByIdCheck() {
+        userController.createUser(user);
+        userController.deleteUserById(user.getId());
+        assertThat(userController.findAllUsers().isEmpty());
     }
 }

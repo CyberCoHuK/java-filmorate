@@ -20,6 +20,8 @@ public interface FilmStorage {
 
     Collection<Film> getListOfTopFilms(int count);
 
+    String deleteFilmById(int filmId);
+
     List<Film> loadFilmsOfDirectorSortedByYears(int directorId);
 
     List<Film> loadFilmsOfDirectorSortedByLikes(int directorId);

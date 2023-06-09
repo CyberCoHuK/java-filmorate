@@ -109,6 +109,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
+    public String deleteFilmById(int filmId) {
+        return "Фильм film_id=" + filmId + " успешно удален.";
+    }
+
     @Override
     public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
         return null;
@@ -118,5 +122,4 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
         return null;
     }
-
 }

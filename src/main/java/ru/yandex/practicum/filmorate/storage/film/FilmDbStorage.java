@@ -222,6 +222,16 @@ public class FilmDbStorage implements FilmStorage {
         return fields;
     }
 
+    public String deleteFilmById(int filmId) {
+        String sqlQuery = "DELETE FROM film WHERE film_id = ? ";
+        int filmRows = jdbcTemplate.update(sqlQuery, filmId);
+        if (filmRows == 0) {
+            log.warn("Фильм {} не найден.", filmId);
+            throw new ObjectNotFoundException("Фильм не найден. Удаление не может быть осуществлено");
+        }
+        return "Фильм film_id=" + filmId + " успешно удален.";
+    }
+
     @Override
     public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
         String sqlQuery =

@@ -23,8 +23,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class FilmControllerTest {
@@ -171,5 +171,12 @@ public class FilmControllerTest {
         list.add(film);
         list.add(film2);
         assertEquals(list.toString(), filmController.getTopList(2).toString());
+    }
+
+    @Test
+    public void deleteFilmByIdCheck() {
+        filmController.createFilm(film);
+        filmController.deleteFilmById(film.getId());
+        assertThat(filmController.getAllFilms().isEmpty());
     }
 }

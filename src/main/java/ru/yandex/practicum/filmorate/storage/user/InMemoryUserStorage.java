@@ -119,4 +119,8 @@ public class InMemoryUserStorage implements UserStorage {
             throw new ObjectNotFoundException("Пользователя с таким " + userId + " не существует");
         }
     }
+
+    public String deleteUserById(int userId) {
+        return "Пользователь user_id=" + userId + " успешно удален.";
+    }
 }

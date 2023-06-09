@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -105,6 +106,29 @@ class FilmDbStorageTest {
         assertEquals(check, filmDbStorage.getUserRecommendations(1));
     }
 
+    @Test
+    void deleteFilmByIdInStorageCheck() {
+        filmDbStorage.createFilm(film);
+        filmDbStorage.deleteFilmById(film.getId());
+        assertThat(filmDbStorage.getAllFilms().isEmpty());
+    }
+
+    protected static Film createFilm() {
+        return Film.builder()
+                .name("name")
+                .description("desc")
+                .releaseDate(LocalDate.of(1999, 8, 17))
+                .duration(136)
+                .genres(new ArrayList<>())
+                .likesList(new HashSet<>())
+                .mpa(Mpa.builder()
+                        .id(1)
+                        .name("G")
+                        .build())
+                .directors(new ArrayList<>())
+                .build();
+    }
+
     protected static Film createFilm(int num) {
         if (num == 1) {
             return Film.builder()
@@ -151,5 +175,3 @@ class FilmDbStorageTest {
         }
     }
 }
-
-

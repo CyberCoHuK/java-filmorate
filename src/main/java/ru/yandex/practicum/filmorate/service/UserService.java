@@ -48,6 +48,10 @@ public class UserService {
         return userStorage.getMutualFriends(userId, secondUserId);
     }
 
+    public String deleteUserById(int userId) {
+        return userStorage.deleteUserById(userId);
+    }
+
     public Collection<Film> getUserRecommendations(int userId) {
         userStorage.isExist(userId);
         return filmStorage.getUserRecommendations(userId);
