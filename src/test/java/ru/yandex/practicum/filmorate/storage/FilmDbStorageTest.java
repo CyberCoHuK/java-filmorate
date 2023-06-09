@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
@@ -24,22 +25,28 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class FilmDbStorageTest {
-    final FilmDbStorage filmDbStorage;
-    final FilmService filmService;
-    final UserDbStorage userDbStorage;
+    @Autowired
+    FilmDbStorage filmDbStorage;
+    @Autowired
+    FilmService filmService;
+    @Autowired
+    UserDbStorage userDbStorage;
 
     Film film;
+    Film secondFilm;
+    Film thirdFilm;
     User user;
     User secondUser;
 
 
     @BeforeEach
     void setUp() {
-        film = createFilm();
+        film = createFilm(0);
+        secondFilm = createFilm(1);
+        thirdFilm = createFilm(2);
         user = UserDbStorageTest.createUser(1);
         secondUser = UserDbStorageTest.createUser(2);
     }
@@ -83,22 +90,65 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(1, 1);
         filmDbStorage.addLike(1, 2);
         filmService.getListOfTopFilms(1);
+        assertEquals(1, filmService.getListOfTopFilms(1).size());
+
     }
 
-    protected static Film createFilm() {
-        return Film.builder()
-                .name("name")
-                .description("desc")
-                .releaseDate(LocalDate.of(1999, 8, 17))
-                .duration(136)
-                .genres(new ArrayList<>())
-                .likesList(new HashSet<>())
-                .mpa(Mpa.builder()
-                        .id(1)
-                        .name("G")
-                        .build())
-                .directors(new ArrayList<>())
-                .build();
+    @Test
+    @SqlGroup({
+            @Sql(value = "/test/recommendation-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+            @Sql(value = "/test/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
+    })
+    void getUserRecommendations() {
+        ArrayList<Film> check = new ArrayList<>();
+        check.add(thirdFilm);
+        assertEquals(check, filmDbStorage.getUserRecommendations(1));
+    }
+
+    protected static Film createFilm(int num) {
+        if (num == 1) {
+            return Film.builder()
+                    .name("SecondName")
+                    .description("SecondDesc")
+                    .releaseDate(LocalDate.of(1997, 3, 13))
+                    .duration(46)
+                    .genres(new ArrayList<>())
+                    .likesList(new HashSet<>())
+                    .mpa(Mpa.builder()
+                            .id(1)
+                            .name("G")
+                            .build())
+                    .directors(new ArrayList<>())
+                    .build();
+        } else if (num == 2) {
+            return Film.builder()
+                    .name("ThirdName")
+                    .description("ThirdDesc")
+                    .releaseDate(LocalDate.of(1977, 2, 23))
+                    .duration(13)
+                    .genres(new ArrayList<>())
+                    .likesList(new HashSet<>())
+                    .mpa(Mpa.builder()
+                            .id(1)
+                            .name("G")
+                            .build())
+                    .directors(new ArrayList<>())
+                    .build();
+        } else {
+            return Film.builder()
+                    .name("name")
+                    .description("desc")
+                    .releaseDate(LocalDate.of(1999, 8, 17))
+                    .duration(136)
+                    .genres(new ArrayList<>())
+                    .likesList(new HashSet<>())
+                    .mpa(Mpa.builder()
+                            .id(1)
+                            .name("G")
+                            .build())
+                    .directors(new ArrayList<>())
+                    .build();
+        }
     }
 }
 
