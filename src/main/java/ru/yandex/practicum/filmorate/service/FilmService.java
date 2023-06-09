@@ -17,7 +17,6 @@ public class FilmService {
     private final DirectorStorage directorStorage;
     private final UserStorage userStorage;
 
-
     public Collection<Film> getAllFilms() {
         return filmStorage.getAllFilms();
     }

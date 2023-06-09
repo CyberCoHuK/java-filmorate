@@ -102,7 +102,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    private void isExist(int filmId) {
+    @Override
+    public void isExist(int filmId) {
         if (!films.containsKey(filmId)) {
             throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
