@@ -23,4 +23,6 @@ public interface FilmStorage {
     List<Film> loadFilmsOfDirectorSortedByYears(int directorId);
 
     List<Film> loadFilmsOfDirectorSortedByLikes(int directorId);
+
+    Collection<Film> getUserRecommendations(int userId);
 }
