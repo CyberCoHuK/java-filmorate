@@ -263,16 +263,50 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery;
         switch (filmSearchParameter) {
             case "director":
-                sqlQuery = "";
-                result = jdbcTemplate.query(sqlQuery, filmMapper, query);
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                        "WHERE LOWER(d.NAME) LIKE LOWER(?) " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id);";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+                break;
             case "title":
-                sqlQuery = "";
-                result = jdbcTemplate.query(sqlQuery, filmMapper, query);
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "WHERE LOWER(f.NAME) LIKE LOWER(?) " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id);";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+                break;
             case "director,title":
-                sqlQuery = "";
-                result = jdbcTemplate.query(sqlQuery, filmMapper, query);
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                        "WHERE LOWER(d.NAME) LIKE LOWER(?) " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id);";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+                break;
+            case "title,director":
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                        "WHERE LOWER(d.NAME) LIKE LOWER(?) " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id);";
+                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+                break;
             default:
                 throw new NullPointerException("Задан не корректный параметр сортировки");
         }
+        return result;
     }
 }
