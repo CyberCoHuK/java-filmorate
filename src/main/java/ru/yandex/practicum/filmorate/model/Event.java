@@ -11,10 +11,10 @@ import ru.yandex.practicum.filmorate.enums.Operations;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Event {
-    long timestamp;
-    int userId;
+    Long timestamp;
+    Long userId;
     EventTypes eventType;
     Operations operation;
-    int eventId;
-    int entityId;
+    Long eventId;
+    Long entityId;
 }

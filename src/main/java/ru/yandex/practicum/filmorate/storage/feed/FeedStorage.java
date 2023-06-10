@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface FeedStorage {
 
-    Collection<Event> getFeedById(int userId);
+    Collection<Event> getFeedById(long userId);
 
-    Event addEvent(int userId, EventTypes eventType, Operations operation, int entityId);
+    Event addEvent(long userId, EventTypes eventType, Operations operation, long entityId);
 }

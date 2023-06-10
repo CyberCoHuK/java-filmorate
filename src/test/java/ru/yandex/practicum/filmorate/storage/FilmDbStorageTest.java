@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
@@ -35,6 +36,8 @@ class FilmDbStorageTest {
     FilmService filmService;
     @Autowired
     UserDbStorage userDbStorage;
+    @Autowired
+    FeedStorage feedStorage;
 
     Film film;
     Film secondFilm;

@@ -29,22 +29,23 @@ public class FeedDbStorage implements FeedStorage {
     }
 
     @Override
-    public Collection<Event> getFeedById(int userId) {
+    public Collection<Event> getFeedById(long userId) {
         final String sql = "SELECT * FROM feed WHERE user_id = ?";
         log.info("Лента событий пользователя с индентификатором {} отправлена", userId);
         return jdbcTemplate.query(sql, eventMapper, userId);
     }
 
     @Override
-    public Event addEvent(int userId, EventTypes eventType, Operations operation, int entityId) {
+    public Event addEvent(long userId, EventTypes eventType, Operations operation, long entityId) {
         Event event = Event.builder()
                 .timestamp(System.currentTimeMillis())
                 .userId(userId)
                 .eventType(eventType)
                 .operation(operation)
                 .entityId(entityId)
-                .eventId(0)
+                .eventId(0L)
                 .build();
+
         final String sql = "INSERT INTO feed (timestamps, user_id, event_type, operation, entity_id) " +
                 "VALUES (?, ?, ?, ?, ?)";
 
@@ -52,15 +53,15 @@ public class FeedDbStorage implements FeedStorage {
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"event_id"});
             stmt.setLong(1, event.getTimestamp());
-            stmt.setInt(2, event.getUserId());
+            stmt.setLong(2, event.getUserId());
             stmt.setString(3, event.getEventType().toString());
             stmt.setString(4, event.getOperation().toString());
-            stmt.setInt(5, event.getEntityId());
+            stmt.setLong(5, event.getEntityId());
             return stmt;
         }, keyHolder);
 
         if (keyHolder.getKey() != null) {
-            event.setEventId((Integer) keyHolder.getKey());
+            event.setEventId((Long) keyHolder.getKey());
         }
         log.info("Создано событие с индентификатором {} ", event.getEventId());
         return event;

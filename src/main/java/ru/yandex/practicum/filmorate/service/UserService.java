@@ -38,11 +38,15 @@ public class UserService {
     }
 
     public User addFriend(int userId, int friendId) {
+        userStorage.isExist(userId);
+        userStorage.isExist(friendId);
         feedStorage.addEvent(userId, EventTypes.FRIEND, Operations.ADD, friendId);
         return userStorage.addFriend(userId, friendId);
     }
 
     public void deleteFriend(int userId, int friendId) {
+        userStorage.isExist(userId);
+        userStorage.isExist(friendId);
         feedStorage.addEvent(userId, EventTypes.FRIEND, Operations.REMOVE, friendId);
         userStorage.deleteFriend(userId, friendId);
     }

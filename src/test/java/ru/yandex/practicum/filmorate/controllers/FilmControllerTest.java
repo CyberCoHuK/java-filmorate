@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -24,13 +26,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class FilmControllerTest {
     private FilmController filmController;
     private UserController userController;
+    @Autowired
     private DirectorStorage directorStorage;
+    @Autowired
+    private FeedStorage feedStorage;
+    private UserStorage userStorage;
+    private FilmStorage filmStorage;
 
     private Film film;
     private Film film2;
@@ -40,10 +48,10 @@ public class FilmControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        UserStorage userStorage = new InMemoryUserStorage();
-        FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        filmController = new FilmController(new FilmService(filmStorage, directorStorage, userStorage));
-        userController = new UserController(new UserService(userStorage, filmStorage));
+        userStorage = new InMemoryUserStorage();
+        filmStorage = new InMemoryFilmStorage(userStorage);
+        filmController = new FilmController(new FilmService(filmStorage, directorStorage, userStorage, feedStorage));
+        userController = new UserController(new UserService(userStorage, filmStorage, feedStorage));
         film = Film.builder()
                 .name("name")
                 .description("description")
@@ -136,9 +144,9 @@ public class FilmControllerTest {
         userController.createUser(user);
         userController.createUser(user2);
         filmController.createFilm(film);
-        filmController.addLike(film.getId(), user.getId());
+        filmStorage.addLike(film.getId(), user.getId());
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
-        filmController.addLike(film.getId(), user2.getId());
+        filmStorage.addLike(film.getId(), user2.getId());
         assertEquals(2, filmController.getFilmById(film.getId()).getLikesList().size());
         ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class,
                 () -> filmController.addLike(film.getId(), 888));
@@ -150,23 +158,24 @@ public class FilmControllerTest {
         userController.createUser(user);
         userController.createUser(user2);
         filmController.createFilm(film);
-        filmController.addLike(film.getId(), user.getId());
-        filmController.addLike(film.getId(), user2.getId());
+        filmStorage.addLike(film.getId(), user.getId());
+        filmStorage.addLike(film.getId(), user2.getId());
         assertEquals(2, filmController.getFilmById(film.getId()).getLikesList().size());
-        filmController.deleteLike(film.getId(), user.getId());
+        filmStorage.deleteLike(film.getId(), user.getId());
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
     }
 
 
     @Test
+    @Deprecated
     public void getTopListCheck() {
         userController.createUser(user);
         userController.createUser(user2);
         filmController.createFilm(film);
         filmController.createFilm(film2);
-        filmController.addLike(film.getId(), user.getId());
-        filmController.addLike(film.getId(), user2.getId());
-        filmController.addLike(film2.getId(), user.getId());
+        filmStorage.addLike(film.getId(), user.getId());
+        filmStorage.addLike(film.getId(), user2.getId());
+        filmStorage.addLike(film2.getId(), user.getId());
         Set<Film> list = new HashSet<>();
         list.add(film);
         list.add(film2);
