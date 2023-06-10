@@ -198,7 +198,6 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, filmMapper, userId, userId, userId);
     }
 
-
     public void isExist(int filmId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
 
@@ -256,5 +255,15 @@ public class FilmDbStorage implements FilmStorage {
                         "GROUP BY f.film_id " +
                         "ORDER BY top ASC;";
         return jdbcTemplate.query(sqlQuery, filmMapper, directorId);
+    }
+
+    @Override
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        String sqlQuery = "SELECT f.*, count(l.user_id) AS top FROM likes AS l " +
+                "JOIN film AS f ON f.film_id=l.film_id " +
+                "WHERE l.user_id  in (?, ?) " +
+                "GROUP BY l.film_id " +
+                "HAVING COUNT(l.user_id) > 1;";
+        return jdbcTemplate.query(sqlQuery, filmMapper, userId, friendId);
     }
 }

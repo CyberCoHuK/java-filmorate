@@ -51,6 +51,10 @@ public class FilmService {
         return filmStorage.deleteFilmById(filmId);
     }
 
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        return filmStorage.getFriendsCommonFilms(userId, friendId);
+    }
+
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
         switch (sortBy) {
