@@ -34,7 +34,7 @@ class GenreDbStorageTest {
 
     @BeforeEach
     void setUp() {
-        film = FilmDbStorageTest.createFilm();
+        film = FilmDbStorageTest.createFilm(0);
     }
 
     @Test

@@ -147,4 +147,11 @@ public class UserDbStorage implements UserStorage {
             throw new ObjectNotFoundException("Пользователь с идентификатором " + userId + " не найден.");
         }
     }
+
+    public String deleteUserById(int userId) {
+        String sqlQuery = "DELETE FROM users WHERE user_id = ? ";
+        isExist(userId);
+        jdbcTemplate.update(sqlQuery, userId);
+        return "Пользователь user_id=" + userId + " успешно удален.";
+    }
 }

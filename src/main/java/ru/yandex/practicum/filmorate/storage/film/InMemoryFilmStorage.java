@@ -9,10 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.ValidationException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.Constants.FIRST_FILM_DATE;
@@ -93,15 +90,36 @@ public class InMemoryFilmStorage implements FilmStorage {
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
+    @Override
+    public Collection<Film> getUserRecommendations(int userId) {
+        return null;
+    }
+
+
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_DATE)) {
             throw new ValidationException("Фильм не может выйти раньше первого фильма в истории");
         }
     }
 
-    private void isExist(int filmId) {
+    @Override
+    public void isExist(int filmId) {
         if (!films.containsKey(filmId)) {
             throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
+    }
+
+    public String deleteFilmById(int filmId) {
+        return "Фильм film_id=" + filmId + " успешно удален.";
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
+        return null;
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
+        return null;
     }
 }
