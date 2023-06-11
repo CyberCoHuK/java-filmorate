@@ -186,4 +186,17 @@ class FilmDbStorageTest {
         }
     }
 
+    @Test
+    void getFriendsCommonFilmsTest() {
+        filmDbStorage.createFilm(film);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(secondUser);
+        int userId = user.getId();
+        int secondUserId = secondUser.getId();
+        filmDbStorage.addLike(1, userId);
+        filmDbStorage.addLike(1, secondUserId);
+        film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
+        assertEquals(1, filmDbStorage.getFriendsCommonFilms(userId, secondUserId).size());
+    }
+
 }

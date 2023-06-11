@@ -96,6 +96,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
 
+    @Override
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        return null;
+    }
+
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_DATE)) {
             throw new ValidationException("Фильм не может выйти раньше первого фильма в истории");
@@ -127,4 +132,6 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
         return null;
     }
+
+
 }
