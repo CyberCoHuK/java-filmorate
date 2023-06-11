@@ -87,7 +87,7 @@ public class UserControllerTest {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertEquals(1, violations.size());
         ConstraintViolation<User> violation = violations.iterator().next();
-        assertEquals("Некоректная дата рождения", violation.getMessage());
+        assertEquals("Некорректная дата рождения", violation.getMessage());
     }
 
     @Test
