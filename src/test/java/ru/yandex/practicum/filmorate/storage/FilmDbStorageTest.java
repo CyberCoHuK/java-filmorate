@@ -129,6 +129,17 @@ class FilmDbStorageTest {
                 .build();
     }
 
+    @Test
+    void searchFilmByParameter() {
+        filmDbStorage.createFilm(film);
+        filmDbStorage.createFilm(secondFilm);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(secondUser);
+        filmDbStorage.addLike(1, 1);
+        filmDbStorage.addLike(1, 2);
+        assertEquals(2, filmService.searchFilmByParameter("ame", "title").size());
+    }
+
     protected static Film createFilm(int num) {
         if (num == 1) {
             return Film.builder()
@@ -174,4 +185,5 @@ class FilmDbStorageTest {
                     .build();
         }
     }
+
 }

@@ -287,12 +287,12 @@ public class FilmDbStorage implements FilmStorage {
                     "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
                     "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
                     "WHERE LOWER(d.NAME) LIKE LOWER(?) " +
-                  //  "OR LOWER(f.NAME) LIKE LOWER(?) " +
+                    "OR LOWER(f.NAME) LIKE LOWER(?) " +
                     "GROUP BY f.film_id " +
-                    "ORDER BY count(l.user_id);";
-            result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+                    "ORDER BY count(l.user_id) DESC;";
+            result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
         } else {
-                throw new NullPointerException("Задан не корректный параметр сортировки");
+            throw new NullPointerException("Задан не корректный параметр сортировки");
         }
         return result;
     }
