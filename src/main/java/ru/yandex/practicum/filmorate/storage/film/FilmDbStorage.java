@@ -198,29 +198,6 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, filmMapper, userId, userId, userId);
     }
 
-    public void isExist(int filmId) {
-        final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
-
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
-
-        if (!filmRows.next()) {
-            log.warn("Фильм с идентификатором {} не найден.", filmId);
-            throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
-        }
-    }
-
-    private Map<String, Object> getFilmFields(Film film) {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("NAME", film.getName());
-        fields.put("DESCRIPTION", film.getDescription());
-        fields.put("DURATION", film.getDuration());
-        fields.put("RELEASE_DATE", film.getReleaseDate());
-        if (film.getMpa() != null) {
-            fields.put("RATING_ID", film.getMpa().getId());
-        }
-        return fields;
-    }
-
     public String deleteFilmById(int filmId) {
         String sqlQuery = "DELETE FROM film WHERE film_id = ? ";
         int filmRows = jdbcTemplate.update(sqlQuery, filmId);
@@ -305,5 +282,28 @@ public class FilmDbStorage implements FilmStorage {
             throw new NullPointerException("Задан не корректный параметр сортировки");
         }
         return result;
+    }
+
+    public void isExist(int filmId) {
+        final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
+
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
+
+        if (!filmRows.next()) {
+            log.warn("Фильм с идентификатором {} не найден.", filmId);
+            throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
+        }
+    }
+
+    private Map<String, Object> getFilmFields(Film film) {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("NAME", film.getName());
+        fields.put("DESCRIPTION", film.getDescription());
+        fields.put("DURATION", film.getDuration());
+        fields.put("RELEASE_DATE", film.getReleaseDate());
+        if (film.getMpa() != null) {
+            fields.put("RATING_ID", film.getMpa().getId());
+        }
+        return fields;
     }
 }

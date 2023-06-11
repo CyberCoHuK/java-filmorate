@@ -139,6 +139,13 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.query(sqlQuery, userMapper, userId, secondUserId);
     }
 
+    public String deleteUserById(int userId) {
+        String sqlQuery = "DELETE FROM users WHERE user_id = ? ";
+        isExist(userId);
+        jdbcTemplate.update(sqlQuery, userId);
+        return "Пользователь user_id=" + userId + " успешно удален.";
+    }
+
     public void isExist(int userId) {
         final String checkUserQuery = "SELECT * FROM users WHERE user_id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, userId);
@@ -147,12 +154,5 @@ public class UserDbStorage implements UserStorage {
             log.warn("Пользователь с идентификатором {} не найден.", userId);
             throw new ObjectNotFoundException("Пользователь с идентификатором " + userId + " не найден.");
         }
-    }
-
-    public String deleteUserById(int userId) {
-        String sqlQuery = "DELETE FROM users WHERE user_id = ? ";
-        isExist(userId);
-        jdbcTemplate.update(sqlQuery, userId);
-        return "Пользователь user_id=" + userId + " успешно удален.";
     }
 }

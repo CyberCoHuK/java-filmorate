@@ -108,10 +108,8 @@ public class InMemoryUserStorage implements UserStorage {
         return friendsList;
     }
 
-    private void validate(User user) {
-        if (StringUtils.isEmpty(user.getName())) {
-            user.setName(user.getLogin());
-        }
+    public String deleteUserById(int userId) {
+        return "Пользователь user_id=" + userId + " успешно удален.";
     }
 
     public void isExist(int userId) {
@@ -120,7 +118,9 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public String deleteUserById(int userId) {
-        return "Пользователь user_id=" + userId + " успешно удален.";
+    private void validate(User user) {
+        if (StringUtils.isEmpty(user.getName())) {
+            user.setName(user.getLogin());
+        }
     }
 }
