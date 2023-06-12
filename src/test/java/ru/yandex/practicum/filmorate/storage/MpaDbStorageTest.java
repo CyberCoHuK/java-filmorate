@@ -33,7 +33,7 @@ public class MpaDbStorageTest {
 
     @BeforeEach
     void setUp() {
-        film = FilmDbStorageTest.createFilm();
+        film = FilmDbStorageTest.createFilm(0);
     }
 
     @Test

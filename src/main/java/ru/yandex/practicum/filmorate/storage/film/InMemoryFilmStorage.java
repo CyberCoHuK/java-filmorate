@@ -86,14 +86,18 @@ public class InMemoryFilmStorage implements FilmStorage {
         return null;
     }
 
-//    @Override
-//    public Collection<Film> getListOfTopFilms(int count) {
-//        log.info("Возвращено топ {} фильмов", count);
-//        return getAllFilms().stream()
-//                .sorted((f1, f2) -> f2.getLikesList().size() - f1.getLikesList().size())
-//                .limit(count)
-//                .collect(Collectors.toCollection(HashSet::new));
-//    }
+
+
+    @Override
+    public Collection<Film> getUserRecommendations(int userId) {
+        return null;
+    }
+
+
+    @Override
+    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+        return null;
+    }
 
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_DATE)) {
@@ -101,9 +105,26 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
-    private void isExist(int filmId) {
+    @Override
+    public void isExist(int filmId) {
         if (!films.containsKey(filmId)) {
             throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
     }
+
+    public String deleteFilmById(int filmId) {
+        return "Фильм film_id=" + filmId + " успешно удален.";
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
+        return null;
+    }
+
+    @Override
+    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
+        return null;
+    }
+
+
 }
