@@ -3,8 +3,11 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.enums.EventTypes;
+import ru.yandex.practicum.filmorate.enums.Operations;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.review.ReviewStorage;
 import ru.yandex.practicum.filmorate.storage.reviewsLikes.ReviewLikeStorage;
@@ -21,6 +24,8 @@ public class ReviewService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final ReviewLikeStorage reviewLikeStorage;
+
+    private final FeedStorage feedStorage;
 
     private static final int INCREMENT = 1;
     private static final int DECREMENT = -1;
@@ -43,8 +48,10 @@ public class ReviewService {
 
         userStorage.isExist(review.getUserId());
         filmStorage.isExist(review.getFilmId());
+        Review saveReview = reviewStorage.saveReview(review);
+        feedStorage.addEvent(saveReview.getUserId(), EventTypes.REVIEW, Operations.ADD, saveReview.getReviewId());
 
-        return reviewStorage.saveReview(review);
+        return saveReview;
     }
 
     public Review updateReview(Review review) {
@@ -54,14 +61,16 @@ public class ReviewService {
 
         userStorage.isExist(review.getUserId());
         filmStorage.isExist(review.getFilmId());
-
-        return reviewStorage.updateReview(review);
+        Review updateReview = reviewStorage.updateReview(review);
+        feedStorage.addEvent(updateReview.getUserId(), EventTypes.REVIEW, Operations.UPDATE, updateReview.getReviewId());
+        return updateReview;
     }
 
     public void deleteReviewById(long reviewId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }
+        feedStorage.addEvent(getReviewById(reviewId).getUserId(), EventTypes.REVIEW, Operations.REMOVE, reviewId);
 
         reviewStorage.deleteById(reviewId);
     }

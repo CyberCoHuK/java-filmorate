@@ -84,8 +84,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addFriend(int userId, int friendId) {
-        isExist(userId);
-        isExist(friendId);
         final String sqlQuery = "INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)";
         final String checkQuery = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ?";
 
@@ -99,7 +97,6 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.update(sqlQuery, friendId, userId, true);
             log.info("Пользователь {} добавил в друзья {}", userId, friendId);
         }
-
         return getById(userId);
     }
 

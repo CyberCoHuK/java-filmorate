@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
@@ -24,15 +25,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 public class UserControllerTest {
     private UserController userController;
+    private FeedStorage feedStorage;
+    private UserStorage userStorage;
     private User user;
     private User user2;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @BeforeEach
+    @Deprecated
     void beforeEach() {
-        UserStorage userStorage = new InMemoryUserStorage();
+        userStorage = new InMemoryUserStorage();
         FilmStorage filmStorage = new InMemoryFilmStorage(userStorage);
-        UserService userService = new UserService(userStorage, filmStorage);
+        UserService userService = new UserService(userStorage, filmStorage, feedStorage);
         userController = new UserController(userService);
         user = User.builder()
                 .name("nametest")
@@ -96,7 +100,7 @@ public class UserControllerTest {
         userController.createUser(user2);
         assertEquals(0, user.getFriendsList().size());
         assertEquals(0, user2.getFriendsList().size());
-        userController.addFriend(user.getId(), user2.getId());
+        userStorage.addFriend(user.getId(), user2.getId());
         assertEquals(1, user.getFriendsList().size());
         assertEquals(1, user2.getFriendsList().size());
     }
@@ -105,10 +109,10 @@ public class UserControllerTest {
     public void deleteFriendCheck() {
         userController.createUser(user);
         userController.createUser(user2);
-        userController.addFriend(user.getId(), user2.getId());
+        userStorage.addFriend(user.getId(), user2.getId());
         assertEquals(1, user.getFriendsList().size());
         assertEquals(1, user2.getFriendsList().size());
-        userController.deleteFriend(user.getId(), user2.getId());
+        userStorage.deleteFriend(user.getId(), user2.getId());
         assertEquals(0, user.getFriendsList().size());
         assertEquals(0, user2.getFriendsList().size());
     }
@@ -138,8 +142,8 @@ public class UserControllerTest {
         userController.createUser(user);
         userController.createUser(user2);
         userController.createUser(user3);
-        userController.addFriend(user.getId(), user2.getId());
-        userController.addFriend(user.getId(), user3.getId());
+        userStorage.addFriend(user.getId(), user2.getId());
+        userStorage.addFriend(user.getId(), user3.getId());
         assertEquals(1, userController.getMutualFriends(user2.getId(), user3.getId()).size());
         assertEquals(2, userController.getFriends(user.getId()).size());
     }
