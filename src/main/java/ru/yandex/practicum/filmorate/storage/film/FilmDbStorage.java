@@ -149,8 +149,7 @@ public class FilmDbStorage implements FilmStorage {
 public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
 
     if (genreId == 9999 && year == 9999) {
-        String sq = "SELECT film.*, f.name, f.description, f.release_date, f.duration, f.rate,age_id, " +
-            "COUNT(l.user_id) AS COUNT " +
+        String sq = "SELECT film.*, COUNT(l.film_id) as count " +
             "FROM FILM f " +
             "LEFT JOIN FilmGenre fg on f.film_id = fg.film_id " +
             "LEFT JOIN Film_like l on f.film_id = l.film_id {} " +
@@ -160,7 +159,7 @@ public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
         return jdbcTemplate.query(sq, filmMapper,count);
 
     } else if (genreId == 9999) {
-       String  sq = " SELECT film.*, COUNT(l.film_id) as count \n" +
+        String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                 "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id\n" +
                 "WHERE EXTRACT(YEAR FROM release_date) = ?\n" +
                 "GROUP BY film.film_id \n" +
@@ -168,7 +167,7 @@ public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
                 "LIMIT ?";
         return jdbcTemplate.query(sq,filmMapper, year, count);
     } else if (year == 9999) {
-        String sq = " SELECT film.*, COUNT(l.film_id) as count \n" +
+        String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                 "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id\n" +
                  "WHERE genre_id = ? \n"+
                 "GROUP BY film.film_id \n"+
@@ -176,7 +175,7 @@ public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
                 "LIMIT ?";
         return jdbcTemplate.query(sq,filmMapper, genreId, count);
     } else {
-       String sq = " SELECT film.*, COUNT(l.film_id) as count \n" +
+        String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                 "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id\n" +
         "WHERE genre_id = ? AND EXTRACT(YEAR FROM release_date) = ?\n"+
         "GROUP BY film.film_id \n" +
