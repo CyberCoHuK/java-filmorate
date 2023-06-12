@@ -170,7 +170,7 @@ public class FilmControllerTest {
         Set<Film> list = new HashSet<>();
         list.add(film);
         list.add(film2);
-        assertEquals(list.toString(), filmController.getPopular(10,1,1956).toString());
+        assertEquals(list.toString(), filmController.getPopular(10,9999,1956).toString());
     }
 
     @Test

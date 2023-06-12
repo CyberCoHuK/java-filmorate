@@ -175,36 +175,40 @@ public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
 
     if (genreId == 9999 && year == 9999) {
         String sq = "SELECT film.*, COUNT(l.film_id) as count " +
-            "FROM FILM f " +
-            "LEFT JOIN FilmGenre fg on f.film_id = fg.film_id " +
-            "LEFT JOIN Film_like l on f.film_id = l.film_id {} " +
-                "GROUP BY f.film_id " +
+            "FROM FILM  " +
+            "LEFT JOIN Film_Genre fg on film.film_id = fg.film_id " +
+            "LEFT JOIN Likes as l on film.film_id = l.film_id  " +
+                "GROUP BY film.film_id " +
             "ORDER BY COUNT DESC " +
             "LIMIT ?";
         return jdbcTemplate.query(sq, filmMapper,count);
 
     } else if (genreId == 9999) {
         String sq = "SELECT film.*, COUNT(l.film_id) as count " +
-                "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id\n" +
-                "WHERE EXTRACT(YEAR FROM release_date) = ?\n" +
-                "GROUP BY film.film_id \n" +
-                "ORDER BY count DESC \n" +
+                "FROM film " +
+                "LEFT JOIN likes AS l ON film.film_id=l.film_id "  +
+                "WHERE EXTRACT(YEAR FROM release_date) = ? "  +
+                "GROUP BY film.film_id " +
+                "ORDER BY count DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sq,filmMapper, year, count);
     } else if (year == 9999) {
         String sq = "SELECT film.*, COUNT(l.film_id) as count " +
-                "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id\n" +
-                 "WHERE genre_id = ? \n"+
-                "GROUP BY film.film_id \n"+
-                "ORDER BY count DESC \n" +
+                "FROM film " +
+                "LEFT JOIN likes AS l ON film.film_id=l.film_id " +
+                "LEFT JOIN FILM_GENRE fg on film.film_id = fg.film_id " +
+                "WHERE genre_id = ? "+
+                "GROUP BY film.film_id "+
+                "ORDER BY count DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sq,filmMapper, genreId, count);
     } else {
         String sq = "SELECT film.*, COUNT(l.film_id) as count " +
-                "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id\n" +
-        "WHERE genre_id = ? AND EXTRACT(YEAR FROM release_date) = ?\n"+
-        "GROUP BY film.film_id \n" +
-                "ORDER BY count DESC \n" +
+                "FROM film LEFT JOIN likes AS l ON film.film_id=l.film_id " +
+                "LEFT JOIN FILM_GENRE fg on film.film_id = fg.film_id " +
+                "WHERE genre_id = ? AND EXTRACT(YEAR FROM release_date) = ? "+
+                "GROUP BY film.film_id " +
+                "ORDER BY count DESC " +
                 "LIMIT ?";
         return jdbcTemplate.query(sq,filmMapper, genreId, year, count);
     }
