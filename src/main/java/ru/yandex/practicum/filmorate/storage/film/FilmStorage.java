@@ -19,7 +19,7 @@ public interface FilmStorage {
     Film deleteLike(int filmId, int userId);
 
     List<Film> getPopular(Integer count, Integer genreId, Integer year);
-    Collection<Film> getListOfTopFilms(int count);
+
 
     List<Film> getFriendsCommonFilms(int userId, int friendId);
 
