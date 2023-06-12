@@ -9,10 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.ValidationException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.Constants.FIRST_FILM_DATE;
@@ -85,13 +82,18 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getListOfTopFilms(int count) {
-        log.info("Возвращено топ {} фильмов", count);
-        return getAllFilms().stream()
-                .sorted((f1, f2) -> f2.getLikesList().size() - f1.getLikesList().size())
-                .limit(count)
-                .collect(Collectors.toCollection(HashSet::new));
+    public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
+        return null;
     }
+
+//    @Override
+//    public Collection<Film> getListOfTopFilms(int count) {
+//        log.info("Возвращено топ {} фильмов", count);
+//        return getAllFilms().stream()
+//                .sorted((f1, f2) -> f2.getLikesList().size() - f1.getLikesList().size())
+//                .limit(count)
+//                .collect(Collectors.toCollection(HashSet::new));
+//    }
 
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_DATE)) {

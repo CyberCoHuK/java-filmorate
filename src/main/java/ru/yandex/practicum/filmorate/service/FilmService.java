@@ -36,7 +36,7 @@ public class FilmService {
         return filmStorage.deleteLike(filmId, userId);
     }
 
-    public Collection<Film> getListOfTopFilms(int count) {
-        return filmStorage.getListOfTopFilms(count);
+    public Collection<Film> getPopular(int count, Integer genreId, Integer year) {
+        return filmStorage.getPopular(count, genreId, year);
     }
 }

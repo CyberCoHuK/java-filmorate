@@ -166,6 +166,6 @@ public class FilmControllerTest {
         List<Film> list = new ArrayList<>();
         list.add(film);
         list.add(film2);
-        assertEquals(list.toString(), filmController.getTopList(2).toString());
+        assertEquals(list.toString(), filmController.getPopular(10,1,1956).toString());
     }
 }
