@@ -159,17 +159,6 @@ public class FilmDbStorage implements FilmStorage {
         return getById(filmId);
     }
 
-//    @Override
-//    public Collection<Film> getListOfTopFilms(int count) {
-//        String sqlQuery = "SELECT film.*, COUNT(l.film_id) as count FROM film " +
-//                "LEFT JOIN likes AS l ON film.film_id=l.film_id " +
-//                "GROUP BY film.film_id " +
-//                "ORDER BY count DESC " +
-//                "LIMIT ?";
-//        log.info("Отправлен топ {} фильмов", count);
-//        return jdbcTemplate.query(sqlQuery, filmMapper, count);
-//
-//    }
 @Override
 public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
 
