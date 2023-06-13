@@ -20,11 +20,12 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class FilmControllerTest {
@@ -167,10 +168,10 @@ public class FilmControllerTest {
         filmController.addLike(film.getId(), user.getId());
         filmController.addLike(film.getId(), user2.getId());
         filmController.addLike(film2.getId(), user.getId());
-        Set<Film> list = new HashSet<>();
+        ArrayList<Film> list = new ArrayList<>();
         list.add(film);
         list.add(film2);
-        assertEquals(list.toString(), filmController.getPopular(10,9999,1956).toString());
+        assertEquals(list.toString(), filmController.getPopular(10, 9999, 9999).toString());
     }
 
     @Test
