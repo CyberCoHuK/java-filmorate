@@ -165,7 +165,6 @@ public class FilmControllerTest {
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
     }
 
-
     @Test
     @Deprecated
     public void getTopListCheck() {
@@ -173,9 +172,9 @@ public class FilmControllerTest {
         userController.createUser(user2);
         filmController.createFilm(film);
         filmController.createFilm(film2);
-        filmController.addLike(film.getId(), user.getId());
-        filmController.addLike(film.getId(), user2.getId());
-        filmController.addLike(film2.getId(), user.getId());
+        filmStorage.addLike(film.getId(), user.getId());
+        filmStorage.addLike(film.getId(), user2.getId());
+        filmStorage.addLike(film2.getId(), user.getId());
         ArrayList<Film> list = new ArrayList<>();
         list.add(film);
         list.add(film2);
