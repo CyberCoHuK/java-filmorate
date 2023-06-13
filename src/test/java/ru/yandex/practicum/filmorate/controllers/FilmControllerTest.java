@@ -186,5 +186,6 @@ public class FilmControllerTest {
         filmController.createFilm(film);
         filmController.deleteFilmById(film.getId());
         assertThat(filmController.getAllFilms().isEmpty());
+        assertEquals(list.toString(), filmController.getTopList(2).toString());
     }
 }
