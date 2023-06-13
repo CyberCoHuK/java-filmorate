@@ -82,12 +82,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getListOfTopFilms(int count) {
+    public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
         log.info("Возвращено топ {} фильмов", count);
         return getAllFilms().stream()
                 .sorted((f1, f2) -> f2.getLikesList().size() - f1.getLikesList().size())
                 .limit(count)
-                .collect(Collectors.toCollection(HashSet::new));
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

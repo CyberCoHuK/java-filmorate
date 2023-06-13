@@ -93,8 +93,8 @@ class FilmDbStorageTest {
         userDbStorage.createUser(secondUser);
         filmDbStorage.addLike(1, 1);
         filmDbStorage.addLike(1, 2);
-        filmService.getListOfTopFilms(1);
-        assertEquals(1, filmService.getListOfTopFilms(1).size());
+        filmService.getPopular(1,9999,9999);
+        assertEquals(1, filmService.getPopular(10,9999,9999).size());
 
     }
 
@@ -114,6 +114,7 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(film);
         filmDbStorage.deleteFilmById(film.getId());
         assertThat(filmDbStorage.getAllFilms().isEmpty());
+        filmService.getPopular(10,0,0);
     }
 
     protected static Film createFilm() {

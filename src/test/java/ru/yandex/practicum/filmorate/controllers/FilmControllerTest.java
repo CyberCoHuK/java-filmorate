@@ -22,7 +22,7 @@ import javax.validation.Validation;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -165,7 +165,6 @@ public class FilmControllerTest {
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
     }
 
-
     @Test
     @Deprecated
     public void getTopListCheck() {
@@ -176,10 +175,10 @@ public class FilmControllerTest {
         filmStorage.addLike(film.getId(), user.getId());
         filmStorage.addLike(film.getId(), user2.getId());
         filmStorage.addLike(film2.getId(), user.getId());
-        Set<Film> list = new HashSet<>();
+        ArrayList<Film> list = new ArrayList<>();
         list.add(film);
         list.add(film2);
-        assertEquals(list.toString(), filmController.getTopList(2).toString());
+        assertEquals(list.toString(), filmController.getPopular(10, 9999, 9999).toString());
     }
 
     @Test
