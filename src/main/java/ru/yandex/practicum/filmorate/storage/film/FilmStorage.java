@@ -28,7 +28,10 @@ public interface FilmStorage {
 
     List<Film> loadFilmsOfDirectorSortedByLikes(int directorId);
 
+    Collection<Film> getUserRecommendations(int userId);
+
+    List<Film> searchFilmByParameter(String query, String filmSearchParameter);
+
     void isExist(int filmId);
 
-    Collection<Film> getUserRecommendations(int userId);
 }

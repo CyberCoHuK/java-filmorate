@@ -74,4 +74,9 @@ public class FilmService {
                 throw new NullPointerException("Задан не корректный параметр сортировки");
         }
     }
+
+    public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
+        return filmStorage.searchFilmByParameter(query, filmSearchParameter);
+    }
+
 }
