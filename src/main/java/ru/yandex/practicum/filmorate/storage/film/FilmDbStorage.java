@@ -137,7 +137,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film addLike(int filmId, int userId) {
-        isExist(filmId);
         final String sqlQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
@@ -149,7 +148,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film deleteLike(int filmId, int userId) {
-        isExist(filmId);
         final String sqlQuery = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
@@ -230,29 +228,6 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, filmMapper, userId, userId, userId);
     }
 
-    public void isExist(int filmId) {
-        final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
-
-        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
-
-        if (!filmRows.next()) {
-            log.warn("Фильм с идентификатором {} не найден.", filmId);
-            throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
-        }
-    }
-
-    private Map<String, Object> getFilmFields(Film film) {
-        Map<String, Object> fields = new HashMap<>();
-        fields.put("NAME", film.getName());
-        fields.put("DESCRIPTION", film.getDescription());
-        fields.put("DURATION", film.getDuration());
-        fields.put("RELEASE_DATE", film.getReleaseDate());
-        if (film.getMpa() != null) {
-            fields.put("RATING_ID", film.getMpa().getId());
-        }
-        return fields;
-    }
-
     public String deleteFilmById(int filmId) {
         String sqlQuery = "DELETE FROM film WHERE film_id = ? ";
         int filmRows = jdbcTemplate.update(sqlQuery, filmId);
@@ -297,5 +272,68 @@ public class FilmDbStorage implements FilmStorage {
                 "GROUP BY l.film_id " +
                 "HAVING COUNT(l.user_id) > 1;";
         return jdbcTemplate.query(sqlQuery, filmMapper, userId, friendId);
+    }
+
+    @Override
+    public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
+        String sqlQuery;
+        switch (filmSearchParameter) {
+            case "director":
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                        "WHERE d.NAME LIKE ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id);";
+                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+            case "title":
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "WHERE LOWER(f.NAME) LIKE ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id);";
+                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+            case "director,title":
+            case "title,director":
+                sqlQuery = "SELECT f.* " +
+                        "FROM film AS f " +
+                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                        "WHERE d.NAME LIKE ? " +
+                        "OR LOWER(f.NAME) LIKE ? " +
+                        "GROUP BY f.film_id " +
+                        "ORDER BY count(l.user_id) DESC;";
+                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
+            default:
+                throw new IllegalArgumentException("Задан не корректный параметр сортировки");
+        }
+
+    }
+
+    public void isExist(int filmId) {
+        final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
+
+        SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
+
+        if (!filmRows.next()) {
+            log.warn("Фильм с идентификатором {} не найден.", filmId);
+            throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
+        }
+    }
+
+    private Map<String, Object> getFilmFields(Film film) {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("NAME", film.getName());
+        fields.put("DESCRIPTION", film.getDescription());
+        fields.put("DURATION", film.getDuration());
+        fields.put("RELEASE_DATE", film.getReleaseDate());
+        if (film.getMpa() != null) {
+            fields.put("RATING_ID", film.getMpa().getId());
+        }
+        return fields;
     }
 }

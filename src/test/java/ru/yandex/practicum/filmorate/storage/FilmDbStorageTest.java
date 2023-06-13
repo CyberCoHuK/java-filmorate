@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
@@ -35,6 +36,8 @@ class FilmDbStorageTest {
     FilmService filmService;
     @Autowired
     UserDbStorage userDbStorage;
+    @Autowired
+    FeedStorage feedStorage;
 
     Film film;
     Film secondFilm;
@@ -130,6 +133,17 @@ class FilmDbStorageTest {
                 .build();
     }
 
+    @Test
+    void searchFilmByParameter() {
+        filmDbStorage.createFilm(film);
+        filmDbStorage.createFilm(secondFilm);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(secondUser);
+        filmDbStorage.addLike(1, 1);
+        filmDbStorage.addLike(1, 2);
+        assertEquals(2, filmService.searchFilmByParameter("ame", "title").size());
+    }
+
     protected static Film createFilm(int num) {
         if (num == 1) {
             return Film.builder()
@@ -188,4 +202,5 @@ class FilmDbStorageTest {
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(1, filmDbStorage.getFriendsCommonFilms(userId, secondUserId).size());
     }
+
 }
