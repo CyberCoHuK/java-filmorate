@@ -246,7 +246,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
-        List<Film> result;
         String sqlQuery;
         switch (filmSearchParameter) {
             case "director":
@@ -258,8 +257,7 @@ public class FilmDbStorage implements FilmStorage {
                         "WHERE d.NAME LIKE ? " +
                         "GROUP BY f.film_id " +
                         "ORDER BY count(l.user_id);";
-                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
-                break;
+                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
             case "title":
                 sqlQuery = "SELECT f.* " +
                         "FROM film AS f " +
@@ -267,8 +265,7 @@ public class FilmDbStorage implements FilmStorage {
                         "WHERE LOWER(f.NAME) LIKE ? " +
                         "GROUP BY f.film_id " +
                         "ORDER BY count(l.user_id);";
-                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
-                break;
+                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
             case "director,title":
             case "title,director":
                 sqlQuery = "SELECT f.* " +
@@ -280,12 +277,11 @@ public class FilmDbStorage implements FilmStorage {
                         "OR LOWER(f.NAME) LIKE ? " +
                         "GROUP BY f.film_id " +
                         "ORDER BY count(l.user_id) DESC;";
-                result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
-                break;
+                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
             default:
                 throw new IllegalArgumentException("Задан не корректный параметр сортировки");
         }
-        return result;
+
     }
 
     public void isExist(int filmId) {
