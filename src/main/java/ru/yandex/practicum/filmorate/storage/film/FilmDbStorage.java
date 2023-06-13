@@ -278,7 +278,7 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY count(l.user_id) DESC;";
             result = jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
         } else {
-            throw new IllegalArgumentException ("Задан не корректный параметр сортировки");
+            throw new IllegalArgumentException("Задан не корректный параметр сортировки");
         }
         return result;
     }
