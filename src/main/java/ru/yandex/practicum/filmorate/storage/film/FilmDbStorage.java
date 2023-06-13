@@ -75,7 +75,6 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
-
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getId());
         log.info("Обновлен фильм с индентификатором {} ", film.getId());
@@ -137,7 +136,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film addLike(int filmId, int userId) {
-        final String sqlQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
+        final String sqlQuery = "MERGE INTO likes (film_id, user_id) VALUES (?, ?)";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
 
