@@ -65,7 +65,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
 
-        Long reviewId = simpleJdbcInsert.executeAndReturnKey(review.toMap()).longValue();
+        Integer reviewId = simpleJdbcInsert.executeAndReturnKey(review.toMap()).intValue();
 
         review.setReviewId(reviewId);
 

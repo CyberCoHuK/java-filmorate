@@ -21,6 +21,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,12 +46,11 @@ class FilmDbStorageTest {
     User user;
     User secondUser;
 
-
     @BeforeEach
     void setUp() {
-        film = createFilm(0);
-        secondFilm = createFilm(1);
-        thirdFilm = createFilm(2);
+        film = createFilm();
+        secondFilm = createSecondFilm();
+        thirdFilm = createThirdFilm();
         user = UserDbStorageTest.createUser(1);
         secondUser = UserDbStorageTest.createUser(2);
     }
@@ -80,7 +80,6 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(1, 2);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(2, film.getLikesList().size());
-
         filmDbStorage.deleteLike(1, 1);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(1, film.getLikesList().size());
@@ -93,8 +92,8 @@ class FilmDbStorageTest {
         userDbStorage.createUser(secondUser);
         filmDbStorage.addLike(1, 1);
         filmDbStorage.addLike(1, 2);
-        filmService.getPopular(1,9999,9999);
-        assertEquals(1, filmService.getPopular(10,9999,9999).size());
+        filmService.getPopular(1, 9999, 9999);
+        assertEquals(1, filmService.getPopular(10, 9999, 9999).size());
 
     }
 
@@ -104,7 +103,7 @@ class FilmDbStorageTest {
             @Sql(value = "/test/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
     })
     void getUserRecommendations() {
-        ArrayList<Film> check = new ArrayList<>();
+        List<Film> check = new ArrayList<>();
         check.add(thirdFilm);
         assertEquals(check, filmDbStorage.getUserRecommendations(1));
     }
@@ -114,7 +113,31 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(film);
         filmDbStorage.deleteFilmById(film.getId());
         assertThat(filmDbStorage.getAllFilms().isEmpty());
-        filmService.getPopular(10,0,0);
+        filmService.getPopular(10, 0, 0);
+    }
+
+    @Test
+    void searchFilmByParameter() {
+        filmDbStorage.createFilm(film);
+        filmDbStorage.createFilm(secondFilm);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(secondUser);
+        filmDbStorage.addLike(1, 1);
+        filmDbStorage.addLike(1, 2);
+        assertEquals(2, filmService.searchFilmByParameter("ame", "title").size());
+    }
+
+    @Test
+    void getFriendsCommonFilmsTest() {
+        filmDbStorage.createFilm(film);
+        userDbStorage.createUser(user);
+        userDbStorage.createUser(secondUser);
+        int userId = user.getId();
+        int secondUserId = secondUser.getId();
+        filmDbStorage.addLike(1, userId);
+        filmDbStorage.addLike(1, secondUserId);
+        film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
+        assertEquals(1, filmDbStorage.getFriendsCommonFilms(userId, secondUserId).size());
     }
 
     protected static Film createFilm() {
@@ -133,74 +156,35 @@ class FilmDbStorageTest {
                 .build();
     }
 
-    @Test
-    void searchFilmByParameter() {
-        filmDbStorage.createFilm(film);
-        filmDbStorage.createFilm(secondFilm);
-        userDbStorage.createUser(user);
-        userDbStorage.createUser(secondUser);
-        filmDbStorage.addLike(1, 1);
-        filmDbStorage.addLike(1, 2);
-        assertEquals(2, filmService.searchFilmByParameter("ame", "title").size());
+    protected static Film createSecondFilm() {
+        return Film.builder()
+                .name("SecondName")
+                .description("SecondDesc")
+                .releaseDate(LocalDate.of(1997, 3, 13))
+                .duration(46)
+                .genres(new ArrayList<>())
+                .likesList(new HashSet<>())
+                .mpa(Mpa.builder()
+                        .id(1)
+                        .name("G")
+                        .build())
+                .directors(new ArrayList<>())
+                .build();
     }
 
-    protected static Film createFilm(int num) {
-        if (num == 1) {
-            return Film.builder()
-                    .name("SecondName")
-                    .description("SecondDesc")
-                    .releaseDate(LocalDate.of(1997, 3, 13))
-                    .duration(46)
-                    .genres(new ArrayList<>())
-                    .likesList(new HashSet<>())
-                    .mpa(Mpa.builder()
-                            .id(1)
-                            .name("G")
-                            .build())
-                    .directors(new ArrayList<>())
-                    .build();
-        } else if (num == 2) {
-            return Film.builder()
-                    .name("ThirdName")
-                    .description("ThirdDesc")
-                    .releaseDate(LocalDate.of(1977, 2, 23))
-                    .duration(13)
-                    .genres(new ArrayList<>())
-                    .likesList(new HashSet<>())
-                    .mpa(Mpa.builder()
-                            .id(1)
-                            .name("G")
-                            .build())
-                    .directors(new ArrayList<>())
-                    .build();
-        } else {
-            return Film.builder()
-                    .name("name")
-                    .description("desc")
-                    .releaseDate(LocalDate.of(1999, 8, 17))
-                    .duration(136)
-                    .genres(new ArrayList<>())
-                    .likesList(new HashSet<>())
-                    .mpa(Mpa.builder()
-                            .id(1)
-                            .name("G")
-                            .build())
-                    .directors(new ArrayList<>())
-                    .build();
-        }
+    protected static Film createThirdFilm() {
+        return Film.builder()
+                .name("ThirdName")
+                .description("ThirdDesc")
+                .releaseDate(LocalDate.of(1977, 2, 23))
+                .duration(13)
+                .genres(new ArrayList<>())
+                .likesList(new HashSet<>())
+                .mpa(Mpa.builder()
+                        .id(1)
+                        .name("G")
+                        .build())
+                .directors(new ArrayList<>())
+                .build();
     }
-
-    @Test
-    void getFriendsCommonFilmsTest() {
-        filmDbStorage.createFilm(film);
-        userDbStorage.createUser(user);
-        userDbStorage.createUser(secondUser);
-        int userId = user.getId();
-        int secondUserId = secondUser.getId();
-        filmDbStorage.addLike(1, userId);
-        filmDbStorage.addLike(1, secondUserId);
-        film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
-        assertEquals(1, filmDbStorage.getFriendsCommonFilms(userId, secondUserId).size());
-    }
-
 }

@@ -28,7 +28,7 @@ public class UserControllerTest {
     private FeedStorage feedStorage;
     private UserStorage userStorage;
     private User user;
-    private User user2;
+    private User secondUser;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @BeforeEach
@@ -44,7 +44,7 @@ public class UserControllerTest {
                 .login("logintest")
                 .birthday(LocalDate.of(1956, 12, 1))
                 .build();
-        user2 = User.builder()
+        secondUser = User.builder()
                 .name("nametest2")
                 .email("asdf@mail.ru")
                 .login("logintest2")
@@ -97,30 +97,30 @@ public class UserControllerTest {
     @Test
     public void addFriendCheck() {
         userController.createUser(user);
-        userController.createUser(user2);
+        userController.createUser(secondUser);
         assertEquals(0, user.getFriendsList().size());
-        assertEquals(0, user2.getFriendsList().size());
-        userStorage.addFriend(user.getId(), user2.getId());
+        assertEquals(0, secondUser.getFriendsList().size());
+        userStorage.addFriend(user.getId(), secondUser.getId());
         assertEquals(1, user.getFriendsList().size());
-        assertEquals(1, user2.getFriendsList().size());
+        assertEquals(1, secondUser.getFriendsList().size());
     }
 
     @Test
     public void deleteFriendCheck() {
         userController.createUser(user);
-        userController.createUser(user2);
-        userStorage.addFriend(user.getId(), user2.getId());
+        userController.createUser(secondUser);
+        userStorage.addFriend(user.getId(), secondUser.getId());
         assertEquals(1, user.getFriendsList().size());
-        assertEquals(1, user2.getFriendsList().size());
-        userStorage.deleteFriend(user.getId(), user2.getId());
+        assertEquals(1, secondUser.getFriendsList().size());
+        userStorage.deleteFriend(user.getId(), secondUser.getId());
         assertEquals(0, user.getFriendsList().size());
-        assertEquals(0, user2.getFriendsList().size());
+        assertEquals(0, secondUser.getFriendsList().size());
     }
 
     @Test
     public void findAllUserCheck() {
         userController.createUser(user);
-        userController.createUser(user2);
+        userController.createUser(secondUser);
         assertEquals(2, userController.findAllUsers().size());
     }
 
@@ -140,11 +140,11 @@ public class UserControllerTest {
                 .birthday(LocalDate.of(1956, 12, 1))
                 .build();
         userController.createUser(user);
-        userController.createUser(user2);
+        userController.createUser(secondUser);
         userController.createUser(user3);
-        userStorage.addFriend(user.getId(), user2.getId());
+        userStorage.addFriend(user.getId(), secondUser.getId());
         userStorage.addFriend(user.getId(), user3.getId());
-        assertEquals(1, userController.getMutualFriends(user2.getId(), user3.getId()).size());
+        assertEquals(1, userController.getMutualFriends(secondUser.getId(), user3.getId()).size());
         assertEquals(2, userController.getFriends(user.getId()).size());
     }
 

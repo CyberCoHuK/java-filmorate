@@ -91,7 +91,7 @@ public class FilmDbStorage implements FilmStorage {
 
         if (film.getGenres() != null) {
             final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM film_genre  WHERE film_id = ? AND genre_id = ?";
+            final String sqlCheck = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
             for (Genre g : film.getGenres()) {
                 SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), g.getId());
                 if (!genreRows.next()) {

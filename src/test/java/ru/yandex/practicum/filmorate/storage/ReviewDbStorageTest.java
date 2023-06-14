@@ -108,7 +108,7 @@ public class ReviewDbStorageTest {
 
     @Test
     public void shouldUpdateReviewInDataBase() {
-        long reviewId = 1L;
+        int reviewId = 1;
 
         Review review = Review.builder()
                 .reviewId(reviewId)
@@ -139,7 +139,7 @@ public class ReviewDbStorageTest {
     @Test
     public void shouldReturnReviewById() {
         Review expectedReview = new Review(
-                2L,
+                2,
                 "Bad film",
                 Boolean.FALSE,
                 2,

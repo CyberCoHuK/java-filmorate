@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -14,18 +15,19 @@ import java.util.Objects;
 @NoArgsConstructor
 @Setter
 @Getter
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
-    private Long reviewId;
+    Integer reviewId;
     @NotBlank(message = "Отзыв не может быть пустым и состоять только из пробелов.")
-    private String content;
+    String content;
     @JsonProperty(value = "isPositive")
     @NotNull(message = "Тип отзыва - обязательное поле.")
-    private Boolean isPositive;
+    Boolean isPositive;
     @NotNull(message = "Идентификатор пользователя - обязательное поле.")
-    private Integer userId;
+    Integer userId;
     @NotNull(message = "Идентификатор фильма - обязательное поле.")
-    private Integer filmId;
-    private Integer useful;
+    Integer filmId;
+    Integer useful;
 
     public Map<String, Object> toMap() {
         Map<String, Object> fields = new HashMap<>();
