@@ -159,7 +159,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
 
-        if (genreId == 9999 && year == 9999) {
+        if (genreId == null && year == null) {
             String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                     "FROM FILM  " +
                     "LEFT JOIN Film_Genre fg on film.film_id = fg.film_id " +
@@ -169,7 +169,7 @@ public class FilmDbStorage implements FilmStorage {
                     "LIMIT ?";
             return jdbcTemplate.query(sq, filmMapper, count);
 
-        } else if (genreId == 9999) {
+        } else if (genreId == null) {
             String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                     "FROM film " +
                     "LEFT JOIN likes AS l ON film.film_id=l.film_id " +
@@ -178,7 +178,7 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY count DESC " +
                     "LIMIT ?";
             return jdbcTemplate.query(sq, filmMapper, year, count);
-        } else if (year == 9999) {
+        } else if (year == null) {
             String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                     "FROM film " +
                     "LEFT JOIN likes AS l ON film.film_id=l.film_id " +
