@@ -66,14 +66,15 @@ public class FilmService {
 
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
-        SortTypesForDirectors sortTypes = SortTypesForDirectors.valueOf(sortBy);
+        SortTypesForDirectors sortTypes = SortTypesForDirectors.valueOfSortBy(sortBy);
+
         switch (sortTypes) {
-            case year:
+            case YEAR:
                 return filmStorage.loadFilmsOfDirectorSortedByYears(directorId);
-            case likes:
+            case LIKES:
                 return filmStorage.loadFilmsOfDirectorSortedByLikes(directorId);
             default:
-                throw new NullPointerException("Задан не корректный параметр сортировки");
+                throw new IllegalArgumentException("Задан не корректный параметр сортировки");
         }
     }
 
