@@ -76,6 +76,10 @@ public class FilmService {
     }
 
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
+        if (!(filmSearchParameter.equals("director,title")) ||
+                !(filmSearchParameter.equals("title,director"))) {
+            throw new IllegalArgumentException("Задан не корректный параметр сортировки");
+        }
         return filmStorage.searchFilmByParameter(query, filmSearchParameter);
     }
 
