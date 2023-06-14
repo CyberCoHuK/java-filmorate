@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.enums.EventTypes;
+import ru.yandex.practicum.filmorate.enums.FilmParameter;
 import ru.yandex.practicum.filmorate.enums.Operations;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
@@ -12,6 +13,8 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
+
+import static ru.yandex.practicum.filmorate.enums.FilmParameter.*;
 
 @Service
 @RequiredArgsConstructor
@@ -76,11 +79,6 @@ public class FilmService {
     }
 
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
-        if (!(filmSearchParameter.equals("director,title")) ||
-                !(filmSearchParameter.equals("title,director"))) {
-            throw new IllegalArgumentException("Задан не корректный параметр сортировки");
-        }
         return filmStorage.searchFilmByParameter(query, filmSearchParameter);
     }
-
 }

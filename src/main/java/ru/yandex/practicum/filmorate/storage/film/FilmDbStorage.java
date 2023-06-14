@@ -276,14 +276,17 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
-        FilmParameter sortTypes = FilmParameter.valueOf(filmSearchParameter);
+        FilmParameter sortTypes = FilmParameter.validateFilmParameter(filmSearchParameter);
         switch (sortTypes) {
-            case director:
+            case DIRECTOR:
                 return searchFilmByDirector(query);
-            case title:
+            case TITLE:
                 return searchFilmByTitle(query);
-            default:
+            case DIR_AND_TITLE:
+            case TITLE_AND_DIR:
                 return searchFilmByDirectorAndTitle(query);
+            default:
+                throw new IllegalArgumentException(FilmParameter.ERROR_MESSAGE + filmSearchParameter);
         }
     }
 
