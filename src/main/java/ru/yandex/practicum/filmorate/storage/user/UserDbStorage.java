@@ -34,8 +34,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> findAllUsers() {
         final String sql = "SELECT * FROM users";
-        log.info("Отправлены все пользователи");
-        return jdbcTemplate.query(sql, userMapper);
+        Collection<User> users = jdbcTemplate.query(sql, userMapper);
+        log.info("Отправлен список пользователей. Количество пользователей в списке = {}", users.size());
+        return users;
     }
 
     @Override

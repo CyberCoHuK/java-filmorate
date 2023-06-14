@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 
-import java.util.List;
+import java.util.Collection;
 
 
 @Slf4j
@@ -31,11 +31,11 @@ public class DirectorService {
         directorStorage.deleteDirector(id);
     }
 
-    public void addFilmDirectors(int id, List<Director> directors) {
+    public void addFilmDirectors(int id, Collection<Director> directors) {
         directorStorage.saveFilmDirector(id, directors);
     }
 
-    public void updateFilmDirectors(int id, List<Director> directors) {
+    public void updateFilmDirectors(int id, Collection<Director> directors) {
         directorStorage.deleteFilmDirector(id);
         directorStorage.saveFilmDirector(id, directors);
     }
@@ -44,9 +44,7 @@ public class DirectorService {
         directorStorage.deleteFilmDirector(id);
     }
 
-    public List<Director> getAllDirectors() {
-        List<Director> directors = directorStorage.getAllDirectors();
-        log.debug("Load {} directors", directors.size());
-        return directors;
+    public Collection<Director> getAllDirectors() {
+        return directorStorage.getAllDirectors();
     }
 }

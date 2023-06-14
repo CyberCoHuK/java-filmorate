@@ -31,8 +31,9 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Collection<Film> getAllFilms() {
         final String sql = "SELECT * FROM film";
-        log.info("Отправлены все фильмы");
-        return jdbcTemplate.query(sql, filmMapper);
+        Collection<Film> films = jdbcTemplate.query(sql, filmMapper);
+        log.info("Отправлен список фильмов. Количество фильмов в списке = {}", films.size());
+        return films;
     }
 
     @Override
@@ -42,36 +43,29 @@ public class FilmDbStorage implements FilmStorage {
         final String sqlQuery = "UPDATE film SET name = ?, description = ?, release_date = ?, duration = ? " +
                 "WHERE film_id = ?";
 
-        if (film.getMpa() != null) {
-            final String updateMpa = "UPDATE film SET rating_id = ? WHERE film_id = ?";
-            jdbcTemplate.update(updateMpa, film.getMpa().getId(), film.getId());
-        }
 
-        if (film.getGenres() != null) {
-            final String deleteGenresQuery = "DELETE FROM film_genre WHERE film_id = ?";
-            final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
+        final String updateMpa = "UPDATE film SET rating_id = ? WHERE film_id = ?";
+        jdbcTemplate.update(updateMpa, film.getMpa().getId(), film.getId());
+        final String deleteGenresQuery = "DELETE FROM film_genre WHERE film_id = ?";
+        final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
+        final String sqlCheckGenre = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
 
-            jdbcTemplate.update(deleteGenresQuery, film.getId());
-            for (Genre g : film.getGenres()) {
-                SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), g.getId());
-                if (!genreRows.next()) {
-                    jdbcTemplate.update(updateGenresQuery, film.getId(), g.getId());
-                }
+        jdbcTemplate.update(deleteGenresQuery, film.getId());
+        for (Genre g : film.getGenres()) {
+            SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheckGenre, film.getId(), g.getId());
+            if (!genreRows.next()) {
+                jdbcTemplate.update(updateGenresQuery, film.getId(), g.getId());
             }
         }
+        final String deleteDirectorQuery = "DELETE FROM films_directors WHERE film_id = ?";
+        final String updateDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
+        final String sqlCheckDirector = "SELECT * FROM films_directors WHERE film_id = ? AND director_id = ?";
 
-        if (film.getDirectors() != null) {
-            final String deleteDirectorQuery = "DELETE FROM films_directors WHERE film_id = ?";
-            final String updateDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM films_directors WHERE film_id = ? AND director_id = ?";
-
-            jdbcTemplate.update(deleteDirectorQuery, film.getId());
-            for (Director d : film.getDirectors()) {
-                SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), d.getId());
-                if (!genreRows.next()) {
-                    jdbcTemplate.update(updateDirectorQuery, film.getId(), d.getId());
-                }
+        jdbcTemplate.update(deleteDirectorQuery, film.getId());
+        for (Director d : film.getDirectors()) {
+            SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheckDirector, film.getId(), d.getId());
+            if (!genreRows.next()) {
+                jdbcTemplate.update(updateDirectorQuery, film.getId(), d.getId());
             }
         }
 
@@ -89,36 +83,31 @@ public class FilmDbStorage implements FilmStorage {
                 .executeAndReturnKey(getFilmFields(film));
         film.setId(key.intValue());
 
-        if (film.getGenres() != null) {
-            final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
-            for (Genre g : film.getGenres()) {
-                SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), g.getId());
-                if (!genreRows.next()) {
-                    jdbcTemplate.update(updateGenresQuery, film.getId(), g.getId());
-                }
+
+        final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
+        final String sqlCheckGenre = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
+        for (Genre g : film.getGenres()) {
+            SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheckGenre, film.getId(), g.getId());
+            if (!genreRows.next()) {
+                jdbcTemplate.update(updateGenresQuery, film.getId(), g.getId());
             }
         }
 
-        if (film.getDirectors() != null) {
-            final String updateFilmDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM films_directors  WHERE film_id = ? AND director_id = ?";
-            for (Director d : film.getDirectors()) {
-                SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), d.getId());
-                if (!directorRows.next()) {
-                    jdbcTemplate.update(updateFilmDirectorQuery, film.getId(), d.getId());
-                }
+        final String updateFilmDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
+        final String sqlCheckDirector = "SELECT * FROM films_directors  WHERE film_id = ? AND director_id = ?";
+        for (Director d : film.getDirectors()) {
+            SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheckDirector, film.getId(), d.getId());
+            if (!directorRows.next()) {
+                jdbcTemplate.update(updateFilmDirectorQuery, film.getId(), d.getId());
             }
         }
 
-        if (film.getLikesList() != null) {
-            final String updateLikesDirectorQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
-            final String sqlCheck = "SELECT * FROM likes  WHERE film_id = ? AND user_id = ?";
-            for (int like : film.getLikesList()) {
-                SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheck, film.getId(), like);
-                if (!directorRows.next()) {
-                    jdbcTemplate.update(updateLikesDirectorQuery, film.getId(), like);
-                }
+        final String updateLikesQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
+        final String sqlCheckLikes = "SELECT * FROM likes  WHERE film_id = ? AND user_id = ?";
+        for (int like : film.getLikesList()) {
+            SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheckLikes, film.getId(), like);
+            if (!directorRows.next()) {
+                jdbcTemplate.update(updateLikesQuery, film.getId(), like);
             }
         }
 

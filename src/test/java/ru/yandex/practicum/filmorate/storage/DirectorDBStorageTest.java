@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.director.DirectorDBStorage;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class DirectorDBStorageTest {
     @Test
     void findAllDirectorTest() {
         directorDBStorage.createDirector(director);
-        List<Director> directorsListTest = directorDBStorage.getAllDirectors();
+        Collection<Director> directorsListTest = directorDBStorage.getAllDirectors();
         assertEquals(1, directorsListTest.size());
     }
 
@@ -60,7 +60,7 @@ class DirectorDBStorageTest {
     void deleteDirectorByIdTest() {
         directorDBStorage.createDirector(director);
         directorDBStorage.deleteDirector(director.getId());
-        List<Director> directorsListTest = directorDBStorage.getAllDirectors();
+        Collection<Director> directorsListTest = directorDBStorage.getAllDirectors();
         assertEquals(0, directorsListTest.size());
     }
 

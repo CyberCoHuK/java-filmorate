@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class DirectorController {
     private final DirectorService directorService;
 
     @GetMapping
-    public List<Director> getAllDirectors() {
+    public Collection<Director> getAllDirectors() {
         return directorService.getAllDirectors();
     }
 
