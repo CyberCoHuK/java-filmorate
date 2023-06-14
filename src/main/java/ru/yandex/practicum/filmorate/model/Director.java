@@ -13,7 +13,7 @@ import javax.validation.constraints.PositiveOrZero;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
     @PositiveOrZero
-    int id;
+    private int id;
     @NotBlank(message = "Отсутствует имя директора")
     String name;
 }

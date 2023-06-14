@@ -15,18 +15,16 @@ import java.util.List;
 public class DirectorService {
     private final DirectorStorage directorStorage;
 
-    public Director getDirectorOrNotFoundException(int id) {
+    public Director getDirectorById(int id) {
         return directorStorage.getDirectorById(id);
     }
 
     public Director createDirector(Director director) {
-        int id = directorStorage.createDirector(director);
-        return getDirectorOrNotFoundException(id);
+        return directorStorage.createDirector(director);
     }
 
     public Director updateDirector(Director director) {
-        directorStorage.updateDirector(director);
-        return directorStorage.getDirectorById(director.getId());
+        return directorStorage.updateDirector(director);
     }
 
     public void deleteDirector(int id) {
