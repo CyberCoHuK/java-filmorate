@@ -5,13 +5,13 @@ import ru.yandex.practicum.filmorate.model.Director;
 import java.util.List;
 
 public interface DirectorStorage {
-    int createDirector(Director director);
+    Director createDirector(Director director);
 
     Director getDirectorById(int id);
 
     List<Director> getAllDirectors();
 
-    void updateDirector(Director director);
+    Director updateDirector(Director director);
 
     void deleteDirector(int id);
 

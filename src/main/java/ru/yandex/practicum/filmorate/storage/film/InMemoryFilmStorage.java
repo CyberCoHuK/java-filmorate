@@ -92,13 +92,14 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Collection<Film> getUserRecommendations(int userId) {
-        return null;
+        throw new UnsupportedOperationException("Реализация inMemory метода getUserRecommendations " +
+                "не поддерживается");
     }
-
 
     @Override
     public List<Film> getFriendsCommonFilms(int userId, int friendId) {
-        return null;
+        throw new UnsupportedOperationException("Реализация inMemory метода getFriendsCommonFilms " +
+                "не поддерживается");
     }
 
     @Override
@@ -114,17 +115,20 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
-        return null;
+        throw new UnsupportedOperationException("Реализация inMemory метода loadFilmsOfDirectorSortedByYears " +
+                "не поддерживается");
     }
 
     @Override
     public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
-        return null;
+        throw new UnsupportedOperationException("Реализация inMemory метода loadFilmsOfDirectorSortedByLikes " +
+                "не поддерживается");
     }
 
     @Override
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
-        return null;
+        throw new UnsupportedOperationException("Реализация inMemory метода searchFilmByParameter " +
+                "не поддерживается");
     }
 
     private void validate(Film film) {
@@ -132,5 +136,4 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ValidationException("Фильм не может выйти раньше первого фильма в истории");
         }
     }
-
 }

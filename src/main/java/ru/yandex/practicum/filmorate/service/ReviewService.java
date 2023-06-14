@@ -24,13 +24,11 @@ public class ReviewService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final ReviewLikeStorage reviewLikeStorage;
-
     private final FeedStorage feedStorage;
-
     private static final int INCREMENT = 1;
     private static final int DECREMENT = -1;
 
-    public Review getReviewById(long reviewId) {
+    public Review getReviewById(int reviewId) {
         return reviewStorage.findById(reviewId)
                 .orElseThrow(() -> new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден."));
     }
@@ -66,7 +64,7 @@ public class ReviewService {
         return updateReview;
     }
 
-    public void deleteReviewById(long reviewId) {
+    public void deleteReviewById(int reviewId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }

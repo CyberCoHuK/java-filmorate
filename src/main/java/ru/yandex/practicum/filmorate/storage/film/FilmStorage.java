@@ -20,7 +20,6 @@ public interface FilmStorage {
 
     List<Film> getPopular(Integer count, Integer genreId, Integer year);
 
-
     List<Film> getFriendsCommonFilms(int userId, int friendId);
 
     String deleteFilmById(int filmId);

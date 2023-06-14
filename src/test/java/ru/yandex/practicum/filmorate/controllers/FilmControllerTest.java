@@ -23,6 +23,7 @@ import javax.validation.ValidationException;
 import javax.validation.Validator;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -41,9 +42,9 @@ public class FilmControllerTest {
     private FilmStorage filmStorage;
 
     private Film film;
-    private Film film2;
+    private Film secondFilm;
     private User user;
-    private User user2;
+    private User secondUser;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @BeforeEach
@@ -58,7 +59,7 @@ public class FilmControllerTest {
                 .releaseDate(LocalDate.of(1956, 12, 1))
                 .duration(255)
                 .build();
-        film2 = Film.builder()
+        secondFilm = Film.builder()
                 .name("name2")
                 .description("description2")
                 .releaseDate(LocalDate.of(1967, 12, 1))
@@ -70,7 +71,7 @@ public class FilmControllerTest {
                 .login("logintest")
                 .birthday(LocalDate.of(1956, 12, 1))
                 .build();
-        user2 = User.builder()
+        secondUser = User.builder()
                 .name("nametest2")
                 .email("asdf@mail.ru")
                 .login("logintest2")
@@ -122,7 +123,7 @@ public class FilmControllerTest {
     @Test
     public void getAllFilmsCheck() {
         filmController.createFilm(film);
-        filmController.createFilm(film2);
+        filmController.createFilm(secondFilm);
         assertEquals(2, filmController.getAllFilms().size());
     }
 
@@ -142,11 +143,11 @@ public class FilmControllerTest {
     @Test
     public void addLikeCheck() {
         userController.createUser(user);
-        userController.createUser(user2);
+        userController.createUser(secondUser);
         filmController.createFilm(film);
         filmStorage.addLike(film.getId(), user.getId());
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
-        filmStorage.addLike(film.getId(), user2.getId());
+        filmStorage.addLike(film.getId(), secondUser.getId());
         assertEquals(2, filmController.getFilmById(film.getId()).getLikesList().size());
         ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class,
                 () -> filmController.addLike(film.getId(), 888));
@@ -156,10 +157,10 @@ public class FilmControllerTest {
     @Test
     public void deleteLikeCheck() {
         userController.createUser(user);
-        userController.createUser(user2);
+        userController.createUser(secondUser);
         filmController.createFilm(film);
         filmStorage.addLike(film.getId(), user.getId());
-        filmStorage.addLike(film.getId(), user2.getId());
+        filmStorage.addLike(film.getId(), secondUser.getId());
         assertEquals(2, filmController.getFilmById(film.getId()).getLikesList().size());
         filmStorage.deleteLike(film.getId(), user.getId());
         assertEquals(1, filmController.getFilmById(film.getId()).getLikesList().size());
@@ -169,15 +170,15 @@ public class FilmControllerTest {
     @Deprecated
     public void getTopListCheck() {
         userController.createUser(user);
-        userController.createUser(user2);
+        userController.createUser(secondUser);
         filmController.createFilm(film);
-        filmController.createFilm(film2);
+        filmController.createFilm(secondFilm);
         filmStorage.addLike(film.getId(), user.getId());
-        filmStorage.addLike(film.getId(), user2.getId());
-        filmStorage.addLike(film2.getId(), user.getId());
-        ArrayList<Film> list = new ArrayList<>();
+        filmStorage.addLike(film.getId(), secondUser.getId());
+        filmStorage.addLike(secondFilm.getId(), user.getId());
+        List<Film> list = new ArrayList<>();
         list.add(film);
-        list.add(film2);
+        list.add(secondFilm);
         assertEquals(list.toString(), filmController.getPopular(10, 9999, 9999).toString());
     }
 

@@ -32,7 +32,7 @@ public class FeedDbStorageTest {
 
     @Test
     public void addEvent() {
-        feedStorage.addEvent(2L, EventTypes.FRIEND, Operations.ADD, 1L);
+        feedStorage.addEvent(2, EventTypes.FRIEND, Operations.ADD, 1);
         feedStorage.getFeedById(2);
         assertEquals(2, feedStorage.getFeedById(2).size());
     }

@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
@@ -12,9 +10,10 @@ import javax.validation.constraints.PositiveOrZero;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
     @PositiveOrZero
-    int id;
+    private int id;
     @NotBlank(message = "Отсутствует имя директора")
-    private String name;
+    String name;
 }
