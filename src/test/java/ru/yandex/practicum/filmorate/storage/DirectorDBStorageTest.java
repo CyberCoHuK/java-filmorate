@@ -43,7 +43,7 @@ class DirectorDBStorageTest {
     @Test
     void getDirectorByIdTest() {
         directorDBStorage.createDirector(director);
-        Director directorTest = directorDBStorage.directorExistById(1);
+        Director directorTest = directorDBStorage.getDirectorById(1);
         assertEquals("First Director", directorTest.getName());
     }
 
@@ -52,7 +52,7 @@ class DirectorDBStorageTest {
         directorDBStorage.createDirector(director);
         director.setName("Updated Director");
         directorDBStorage.updateDirector(director);
-        Director directorTest = directorDBStorage.directorExistById(1);
+        Director directorTest = directorDBStorage.getDirectorById(1);
         assertEquals("Updated Director", directorTest.getName());
     }
 

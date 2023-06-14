@@ -34,7 +34,7 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public Director directorExistById(int id) {
+    public Director getDirectorById(int id) {
         isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
         return jdbcTemplate.queryForObject(sqlQuery, directorMapper, id);
