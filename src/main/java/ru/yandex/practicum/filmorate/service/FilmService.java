@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.enums.EventTypes;
 import ru.yandex.practicum.filmorate.enums.Operations;
+import ru.yandex.practicum.filmorate.enums.SortTypesByDirectorId;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
@@ -65,10 +66,11 @@ public class FilmService {
 
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
-        switch (sortBy) {
-            case "year":
+        SortTypesByDirectorId sortTypes = SortTypesByDirectorId.valueOf(sortBy);
+        switch (sortTypes) {
+            case year:
                 return filmStorage.loadFilmsOfDirectorSortedByYears(directorId);
-            case "likes":
+            case likes:
                 return filmStorage.loadFilmsOfDirectorSortedByLikes(directorId);
             default:
                 throw new NullPointerException("Задан не корректный параметр сортировки");

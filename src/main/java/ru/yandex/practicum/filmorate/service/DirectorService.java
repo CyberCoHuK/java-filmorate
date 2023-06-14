@@ -16,7 +16,7 @@ public class DirectorService {
     private final DirectorStorage directorStorage;
 
     public Director getDirectorOrNotFoundException(int id) {
-        return directorStorage.getDirectorById(id);
+        return directorStorage.directorExistById(id);
     }
 
     public Director createDirector(Director director) {
@@ -26,7 +26,7 @@ public class DirectorService {
 
     public Director updateDirector(Director director) {
         directorStorage.updateDirector(director);
-        return directorStorage.getDirectorById(director.getId());
+        return directorStorage.directorExistById(director.getId());
     }
 
     public void deleteDirector(int id) {

@@ -14,7 +14,7 @@ import javax.validation.constraints.PositiveOrZero;
 @NoArgsConstructor
 public class Director {
     @PositiveOrZero
-    int id;
+    private int id;
     @NotBlank(message = "Отсутствует имя директора")
     private String name;
 }
