@@ -31,7 +31,7 @@ public class Film {
     @Positive(message = "Продолжительность фильма не может быть отрицательной")
     long duration;
     Mpa mpa;
-    List<Genre> genres;
+    List<Genre> genres = new ArrayList<>();
     Set<Integer> likesList = new HashSet<>();
     List<Director> directors = new ArrayList<>();
 }

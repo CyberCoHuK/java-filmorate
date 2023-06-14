@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.mapper.DirectorMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -27,16 +28,18 @@ public class DirectorDBStorage implements DirectorStorage {
     private final DirectorMapper directorMapper;
 
     @Override
-    public List<Director> getAllDirectors() {
+    public Collection<Director> getAllDirectors() {
         String sqlQuery = "SELECT * FROM directors;";
-        log.info("Получить список директоров");
-        return jdbcTemplate.query(sqlQuery, directorMapper);
+        Collection<Director> directors = jdbcTemplate.query(sqlQuery, directorMapper);
+        log.info("Отправлен список режиссеров. Количество режиссеров в списке = {}", directors.size());
+        return directors;
     }
 
     @Override
     public Director getDirectorById(int id) {
         isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
+        log.warn("Директор с идентификатором {} отправлен.", id);
         return jdbcTemplate.queryForObject(sqlQuery, directorMapper, id);
     }
 
@@ -57,6 +60,7 @@ public class DirectorDBStorage implements DirectorStorage {
         isExist(director.getId());
         String sqlQuery = "UPDATE directors SET name = ? WHERE id = ?;";
         jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
+        log.warn("Директор с идентификатором {} обновлен.", director.getId());
         return getDirectorById(director.getId());
     }
 
@@ -64,11 +68,12 @@ public class DirectorDBStorage implements DirectorStorage {
     public void deleteDirector(int id) {
         isExist(id);
         String sqlQuery = "DELETE FROM directors WHERE id = ?;";
+        log.warn("Директор с идентификатором {} удален.", id);
         jdbcTemplate.update(sqlQuery, id);
     }
 
     @Override
-    public void saveFilmDirector(int filmId, List<Director> directors) {
+    public void saveFilmDirector(int filmId, Collection<Director> directors) {
         List<Director> directorsDistinct = directors.stream().distinct().collect(Collectors.toList());
         jdbcTemplate.batchUpdate(
                 "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?);",
