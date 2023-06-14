@@ -34,14 +34,14 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public Director directorExistById(int id) {
+    public Director getDirectorById(int id) {
         isExist(id);
         String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
         return jdbcTemplate.queryForObject(sqlQuery, directorMapper, id);
     }
 
     @Override
-    public int createDirector(Director director) {
+    public Director createDirector(Director director) {
         String sqlQuery = "INSERT INTO directors (name) VALUES (?);";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -49,15 +49,15 @@ public class DirectorDBStorage implements DirectorStorage {
             statement.setString(1, director.getName());
             return statement;
         }, keyHolder);
-        return Objects.requireNonNull(keyHolder.getKey()).intValue();
+        return getDirectorById(Objects.requireNonNull(keyHolder.getKey()).intValue());
     }
 
     @Override
-    public void updateDirector(Director director) {
-        int id = director.getId();
-        isExist(id);
+    public Director updateDirector(Director director) {
+        isExist(director.getId());
         String sqlQuery = "UPDATE directors SET name = ? WHERE id = ?;";
         jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
+        return getDirectorById(director.getId());
     }
 
     @Override

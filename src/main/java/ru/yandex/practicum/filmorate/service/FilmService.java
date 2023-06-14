@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.enums.EventTypes;
 import ru.yandex.practicum.filmorate.enums.Operations;
-import ru.yandex.practicum.filmorate.enums.SortTypesByDirectorId;
+import ru.yandex.practicum.filmorate.enums.SortTypesForDirectors;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.director.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
@@ -66,7 +66,7 @@ public class FilmService {
 
     public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
         directorStorage.isExist(directorId);
-        SortTypesByDirectorId sortTypes = SortTypesByDirectorId.valueOf(sortBy);
+        SortTypesForDirectors sortTypes = SortTypesForDirectors.valueOf(sortBy);
         switch (sortTypes) {
             case year:
                 return filmStorage.loadFilmsOfDirectorSortedByYears(directorId);
