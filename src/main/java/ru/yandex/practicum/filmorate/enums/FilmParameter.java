@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.enums;
 
-
+// попытка запустить авто-проверки
 
 public enum FilmParameter {
     DIRECTOR("director"),
