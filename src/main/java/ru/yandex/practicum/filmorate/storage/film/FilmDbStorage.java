@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.enums.FilmParameter;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -264,42 +265,56 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
-        String sqlQuery;
-        switch (filmSearchParameter) {
-            case "director":
-                sqlQuery = "SELECT f.* " +
-                        "FROM film AS f " +
-                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
-                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
-                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
-                        "WHERE d.NAME LIKE ? " +
-                        "GROUP BY f.film_id " +
-                        "ORDER BY count(l.user_id);";
-                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
-            case "title":
-                sqlQuery = "SELECT f.* " +
-                        "FROM film AS f " +
-                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
-                        "WHERE LOWER(f.NAME) LIKE ? " +
-                        "GROUP BY f.film_id " +
-                        "ORDER BY count(l.user_id);";
-                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
-            case "director,title":
-            case "title,director":
-                sqlQuery = "SELECT f.* " +
-                        "FROM film AS f " +
-                        "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
-                        "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
-                        "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
-                        "WHERE d.NAME LIKE ? " +
-                        "OR LOWER(f.NAME) LIKE ? " +
-                        "GROUP BY f.film_id " +
-                        "ORDER BY count(l.user_id) DESC;";
-                return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
+        FilmParameter sortTypes = FilmParameter.validateFilmParameter(filmSearchParameter);
+        switch (sortTypes) {
+            case DIRECTOR:
+                return searchFilmByDirector(query);
+            case TITLE:
+                return searchFilmByTitle(query);
+            case DIR_AND_TITLE:
+            case TITLE_AND_DIR:
+                return searchFilmByDirectorAndTitle(query);
             default:
-                throw new IllegalArgumentException("Задан не корректный параметр сортировки");
+                throw new IllegalArgumentException(FilmParameter.ERROR_MESSAGE + filmSearchParameter);
         }
+    }
 
+    public List<Film> searchFilmByDirector(String query) {
+        String sqlQuery;
+        sqlQuery = "SELECT f.* " +
+                "FROM film AS f " +
+                "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                "WHERE d.NAME LIKE ? " +
+                "GROUP BY f.film_id " +
+                "ORDER BY count(l.user_id);";
+        return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+    }
+
+    public List<Film> searchFilmByTitle(String query) {
+        String sqlQuery;
+        sqlQuery = "SELECT f.* " +
+                "FROM film AS f " +
+                "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                "WHERE LOWER(f.NAME) LIKE ? " +
+                "GROUP BY f.film_id " +
+                "ORDER BY count(l.user_id);";
+        return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%');
+    }
+
+    public List<Film> searchFilmByDirectorAndTitle(String query) {
+        String sqlQuery;
+        sqlQuery = "SELECT f.* " +
+                "FROM film AS f " +
+                "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
+                "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
+                "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                "WHERE d.NAME LIKE ? " +
+                "OR LOWER(f.NAME) LIKE ? " +
+                "GROUP BY f.film_id " +
+                "ORDER BY count(l.user_id) DESC;";
+        return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
     }
 
     public void isExist(int filmId) {

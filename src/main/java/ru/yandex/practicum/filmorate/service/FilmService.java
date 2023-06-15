@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.Collection;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class FilmService {
@@ -80,5 +81,4 @@ public class FilmService {
     public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
         return filmStorage.searchFilmByParameter(query, filmSearchParameter);
     }
-
 }
