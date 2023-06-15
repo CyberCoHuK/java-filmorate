@@ -24,7 +24,7 @@ public class User {
     String login;
     String name;
     @NotNull
-    @PastOrPresent(message = "Некорректная дата рождения")
+    @PastOrPresent(message = "Некоректная дата рождения")
     LocalDate birthday;
     Set<Integer> friendsList = new HashSet<>();
 }

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -22,16 +21,14 @@ public class FilmMapper implements RowMapper<Film> {
     final JdbcTemplate jdbcTemplate;
     final MpaMapper mpaMapper;
     final GenreMapper genreMapper;
-    final DirectorMapper directorMapper;
 
     @Autowired
-    public FilmMapper(JdbcTemplate jdbcTemplate, MpaMapper mpaMapper, GenreMapper genreMapper,
-                      DirectorMapper directorMapper) {
+    public FilmMapper(JdbcTemplate jdbcTemplate, MpaMapper mpaMapper, GenreMapper genreMapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.mpaMapper = mpaMapper;
         this.genreMapper = genreMapper;
-        this.directorMapper = directorMapper;
     }
+
 
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -44,7 +41,6 @@ public class FilmMapper implements RowMapper<Film> {
                 .mpa(findMpa(rs.getInt("rating_id")))
                 .genres(findGenres(rs.getInt("film_id")))
                 .likesList(new HashSet<>())
-                .directors(findDirector(rs.getInt("film_id")))
                 .build();
     }
 
@@ -63,14 +59,5 @@ public class FilmMapper implements RowMapper<Film> {
                 "WHERE film_id = ?";
 
         return jdbcTemplate.query(genreSql, genreMapper, filmId);
-    }
-
-
-    public List<Director> findDirector(int id) {
-        String sqlQuery =
-                "SELECT * FROM directors d " +
-                        "JOIN films_directors f ON f.director_id = d.id " +
-                        "WHERE f.film_id = ?;";
-        return jdbcTemplate.query(sqlQuery, directorMapper, id);
     }
 }

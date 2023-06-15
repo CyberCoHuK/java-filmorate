@@ -9,7 +9,10 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.ValidationException;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.yandex.practicum.filmorate.Constants.FIRST_FILM_DATE;
@@ -82,58 +85,23 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
+    public Collection<Film> getListOfTopFilms(int count) {
         log.info("Возвращено топ {} фильмов", count);
         return getAllFilms().stream()
                 .sorted((f1, f2) -> f2.getLikesList().size() - f1.getLikesList().size())
                 .limit(count)
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Override
-    public Collection<Film> getUserRecommendations(int userId) {
-        throw new UnsupportedOperationException("Реализация inMemory метода getUserRecommendations " +
-                "не поддерживается");
-    }
-
-    @Override
-    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
-        throw new UnsupportedOperationException("Реализация inMemory метода getFriendsCommonFilms " +
-                "не поддерживается");
-    }
-
-    @Override
-    public void isExist(int filmId) {
-        if (!films.containsKey(filmId)) {
-            throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
-        }
-    }
-
-    public String deleteFilmById(int filmId) {
-        return "Фильм film_id=" + filmId + " успешно удален.";
-    }
-
-    @Override
-    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
-        throw new UnsupportedOperationException("Реализация inMemory метода loadFilmsOfDirectorSortedByYears " +
-                "не поддерживается");
-    }
-
-    @Override
-    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
-        throw new UnsupportedOperationException("Реализация inMemory метода loadFilmsOfDirectorSortedByLikes " +
-                "не поддерживается");
-    }
-
-    @Override
-    public List<Film> searchFilmByParameter(String query, String filmSearchParameter) {
-        throw new UnsupportedOperationException("Реализация inMemory метода searchFilmByParameter " +
-                "не поддерживается");
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_FILM_DATE)) {
             throw new ValidationException("Фильм не может выйти раньше первого фильма в истории");
+        }
+    }
+
+    private void isExist(int filmId) {
+        if (!films.containsKey(filmId)) {
+            throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
     }
 }
