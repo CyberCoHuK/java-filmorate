@@ -1,7 +1,6 @@
 # java-filmorate
 Template repository for Filmorate project.
-![db_filmorate](https://github.com/CyberCoHuK/java-filmorate/assets/108213849/65ba2339-34fa-4f52-b653-3bd6a0daf739)
-
+![db_filmorate](https://github.com/CyberCoHuK/java-filmorate/assets/108213849/d23d6d69-5748-4d0d-b18f-6a75f9020de7)
 
 - Получение количества лайков у фильма
 
