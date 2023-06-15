@@ -1,7 +1,6 @@
 HELP.md
 target/
 .mvn
-.db
 mvnw
 mvnw.cmd
 !**/src/main/**/target/
@@ -34,4 +33,3 @@ build/
 
 ### VS Code ###
 .vscode/
-/db/

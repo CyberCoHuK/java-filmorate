@@ -22,9 +22,8 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public Collection<Genre> findAll() {
         String sqlQuery = "SELECT * FROM genre";
-        Collection<Genre> genres = jdbcTemplate.query(sqlQuery, genreMapper);
-        log.info("Отправлен список жанров. Количество жанров в списке = {}", genres.size());
-        return genres;
+        log.info("Отправлены все жанры");
+        return jdbcTemplate.query(sqlQuery, genreMapper);
     }
 
     @Override

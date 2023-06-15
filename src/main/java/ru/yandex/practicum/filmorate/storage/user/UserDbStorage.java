@@ -34,9 +34,8 @@ public class UserDbStorage implements UserStorage {
     @Override
     public Collection<User> findAllUsers() {
         final String sql = "SELECT * FROM users";
-        Collection<User> users = jdbcTemplate.query(sql, userMapper);
-        log.info("Отправлен список пользователей. Количество пользователей в списке = {}", users.size());
-        return users;
+        log.info("Отправлены все пользователи");
+        return jdbcTemplate.query(sql, userMapper);
     }
 
     @Override
@@ -85,6 +84,8 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User addFriend(int userId, int friendId) {
+        isExist(userId);
+        isExist(friendId);
         final String sqlQuery = "INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)";
         final String checkQuery = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ?";
 
@@ -98,6 +99,7 @@ public class UserDbStorage implements UserStorage {
             jdbcTemplate.update(sqlQuery, friendId, userId, true);
             log.info("Пользователь {} добавил в друзья {}", userId, friendId);
         }
+
         return getById(userId);
     }
 
@@ -135,13 +137,6 @@ public class UserDbStorage implements UserStorage {
                 ")";
         log.info("Отправлен одинаковые друзья пользователей {} и {} ", userId, secondUserId);
         return jdbcTemplate.query(sqlQuery, userMapper, userId, secondUserId);
-    }
-
-    public String deleteUserById(int userId) {
-        String sqlQuery = "DELETE FROM users WHERE user_id = ? ";
-        isExist(userId);
-        jdbcTemplate.update(sqlQuery, userId);
-        return "Пользователь user_id=" + userId + " успешно удален.";
     }
 
     public void isExist(int userId) {
