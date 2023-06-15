@@ -22,9 +22,8 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Collection<Mpa> findAll() {
         String sqlQuery = "SELECT * FROM rating_mpa";
-        Collection<Mpa> ratings = jdbcTemplate.query(sqlQuery, mpaMapper);
-        log.info("Отправлен список рейтингов. Количество рейтингов в списке = {}", ratings.size());
-        return ratings;
+        log.info("Отправлены все рейтинги");
+        return jdbcTemplate.query(sqlQuery, mpaMapper);
     }
 
     @Override

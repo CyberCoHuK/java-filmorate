@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,52 +9,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlGroup;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.feed.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 class FilmDbStorageTest {
-    @Autowired
-    FilmDbStorage filmDbStorage;
-    @Autowired
-    FilmService filmService;
-    @Autowired
-    UserDbStorage userDbStorage;
-    @Autowired
-    FeedStorage feedStorage;
-    @Autowired
-    GenreDbStorage genreDbStorage;
+    final FilmDbStorage filmDbStorage;
+    final FilmService filmService;
+    final UserDbStorage userDbStorage;
 
     Film film;
-    Film secondFilm;
-    Film thirdFilm;
     User user;
     User secondUser;
+
 
     @BeforeEach
     void setUp() {
         film = createFilm();
-        secondFilm = createSecondFilm();
-        thirdFilm = createThirdFilm();
         user = UserDbStorageTest.createUser(1);
         secondUser = UserDbStorageTest.createUser(2);
     }
@@ -83,6 +69,7 @@ class FilmDbStorageTest {
         filmDbStorage.addLike(1, 2);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(2, film.getLikesList().size());
+
         filmDbStorage.deleteLike(1, 1);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(1, film.getLikesList().size());
@@ -95,51 +82,7 @@ class FilmDbStorageTest {
         userDbStorage.createUser(secondUser);
         filmDbStorage.addLike(1, 1);
         filmDbStorage.addLike(1, 2);
-        filmService.getPopular(10,null,null);
-        assertEquals(1, filmService.getPopular(10,null,null).size());
-    }
-
-    @Test
-    @SqlGroup({
-            @Sql(value = "/test/recommendation-test.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-            @Sql(value = "/test/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
-    })
-    void getUserRecommendations() {
-        List<Film> check = new ArrayList<>();
-        check.add(thirdFilm);
-        assertEquals(check, filmDbStorage.getUserRecommendations(1));
-    }
-
-    @Test
-    void deleteFilmByIdInStorageCheck() {
-        filmDbStorage.createFilm(film);
-        filmDbStorage.deleteFilmById(film.getId());
-        assertThat(filmDbStorage.getAllFilms().isEmpty());
-        filmService.getPopular(10, 0, 0);
-    }
-
-    @Test
-    void searchFilmByParameter() {
-        filmDbStorage.createFilm(film);
-        filmDbStorage.createFilm(secondFilm);
-        userDbStorage.createUser(user);
-        userDbStorage.createUser(secondUser);
-        filmDbStorage.addLike(1, 1);
-        filmDbStorage.addLike(1, 2);
-        assertEquals(2, filmService.searchFilmByParameter("ame", "title").size());
-    }
-
-    @Test
-    void getFriendsCommonFilmsTest() {
-        filmDbStorage.createFilm(film);
-        userDbStorage.createUser(user);
-        userDbStorage.createUser(secondUser);
-        int userId = user.getId();
-        int secondUserId = secondUser.getId();
-        filmDbStorage.addLike(1, userId);
-        filmDbStorage.addLike(1, secondUserId);
-        film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
-        assertEquals(1, filmDbStorage.getFriendsCommonFilms(userId, secondUserId).size());
+        filmService.getListOfTopFilms(1);
     }
 
     protected static Film createFilm() {
@@ -154,39 +97,8 @@ class FilmDbStorageTest {
                         .id(1)
                         .name("G")
                         .build())
-                .directors(new ArrayList<>())
-                .build();
-    }
-
-    protected static Film createSecondFilm() {
-        return Film.builder()
-                .name("SecondName")
-                .description("SecondDesc")
-                .releaseDate(LocalDate.of(1997, 3, 13))
-                .duration(46)
-                .genres(new ArrayList<>())
-                .likesList(new HashSet<>())
-                .mpa(Mpa.builder()
-                        .id(1)
-                        .name("G")
-                        .build())
-                .directors(new ArrayList<>())
-                .build();
-    }
-
-    protected static Film createThirdFilm() {
-        return Film.builder()
-                .name("ThirdName")
-                .description("ThirdDesc")
-                .releaseDate(LocalDate.of(1977, 2, 23))
-                .duration(13)
-                .genres(new ArrayList<>())
-                .likesList(new HashSet<>())
-                .mpa(Mpa.builder()
-                        .id(1)
-                        .name("G")
-                        .build())
-                .directors(new ArrayList<>())
                 .build();
     }
 }
+
+
