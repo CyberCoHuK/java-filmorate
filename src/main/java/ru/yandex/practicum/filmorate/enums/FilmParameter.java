@@ -7,7 +7,7 @@ public enum FilmParameter {
     TITLE("title"),
     DIR_AND_TITLE("director,title"),
     TITLE_AND_DIR("title,director"),
-    ERROR_MESSAGE("Указан не корректный параметр: ");
+    UNKNOW("Указан не корректный параметр: ");
 
     private final String value;
 
@@ -21,6 +21,6 @@ public enum FilmParameter {
                 return filmParameter;
             }
         }
-        return ERROR_MESSAGE;
+        return UNKNOW;
     }
 }

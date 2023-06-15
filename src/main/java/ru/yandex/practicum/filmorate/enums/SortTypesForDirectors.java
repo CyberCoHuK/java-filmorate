@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.enums;
 public enum SortTypesForDirectors {
     YEAR("year"),
     LIKES("likes"),
-    UNKNOW("");
+    UNKNOW("Задан не корректный параметр сортировки: ");
 
     private final String sortBy;
 
