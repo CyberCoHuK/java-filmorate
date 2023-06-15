@@ -21,5 +21,7 @@ public interface UserStorage {
 
     Collection<User> getMutualFriends(int userId, int secondUserId);
 
+    String deleteUserById(int userId);
+
     void isExist(int userId);
 }
