@@ -275,7 +275,7 @@ public class FilmDbStorage implements FilmStorage {
             case TITLE_AND_DIR:
                 return searchFilmByDirectorAndTitle(query);
             default:
-                throw new IllegalArgumentException(FilmParameter.ERROR_MESSAGE + filmSearchParameter);
+                throw new IllegalArgumentException(FilmParameter.UNKNOW + filmSearchParameter);
         }
     }
 
@@ -323,7 +323,7 @@ public class FilmDbStorage implements FilmStorage {
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);
 
         if (!filmRows.next()) {
-            log.warn("Фильм с идентификатором {} не найден.", filmId);
+            log.info("Фильм с идентификатором {} не найден.", filmId);
             throw new ObjectNotFoundException("Фильм с идентификатором " + filmId + " не найден.");
         }
     }

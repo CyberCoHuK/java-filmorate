@@ -75,7 +75,7 @@ public class FilmService {
             case LIKES:
                 return filmStorage.loadFilmsOfDirectorSortedByLikes(directorId);
             default:
-                throw new IllegalArgumentException("Задан не корректный параметр сортировки");
+                throw new IllegalArgumentException(SortTypesForDirectors.UNKNOW + sortBy);
         }
     }
 
