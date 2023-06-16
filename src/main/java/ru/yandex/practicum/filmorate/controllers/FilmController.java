@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +26,10 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public Collection<Film> getTopList(@RequestParam(defaultValue = "10", required = false) Integer count) {
-        return filmService.getListOfTopFilms(count);
+    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count,
+                                       @RequestParam(required = false) Integer genreId,
+                                       @RequestParam(required = false) Integer year) {
+        return filmService.getPopular(count, genreId, year);
     }
 
     @PutMapping
@@ -47,5 +50,27 @@ public class FilmController {
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         return filmService.createFilm(film);
+    }
+
+    @DeleteMapping("/{filmId}")
+    public String deleteFilmById(@PathVariable("filmId") int filmId) {
+        return filmService.deleteFilmById(filmId);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmByDirectorId(@PathVariable int directorId, @RequestParam String sortBy) {
+        return filmService.getSortedFilmsByDirectorId(directorId, sortBy.toLowerCase());
+    }
+
+    @GetMapping("/search")
+    public List<Film> searchFilmByParameter(@RequestParam(name = "query") String query,
+                                            @RequestParam(name = "by") String filmSearchParameter) {
+        return filmService.searchFilmByParameter(query.toLowerCase(), filmSearchParameter.toLowerCase());
+    }
+
+    @GetMapping("/common")
+    public List<Film> getFriendsCommonFilms(@RequestParam(name = "userId") int userId,
+                                            @RequestParam(name = "friendId") int friendId) {
+        return filmService.getFriendsCommonFilms(userId, friendId);
     }
 }

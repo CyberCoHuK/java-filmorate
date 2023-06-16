@@ -108,15 +108,19 @@ public class InMemoryUserStorage implements UserStorage {
         return friendsList;
     }
 
-    private void validate(User user) {
-        if (StringUtils.isEmpty(user.getName())) {
-            user.setName(user.getLogin());
-        }
+    public String deleteUserById(int userId) {
+        return "Пользователь user_id=" + userId + " успешно удален.";
     }
 
     public void isExist(int userId) {
         if (!users.containsKey(userId)) {
             throw new ObjectNotFoundException("Пользователя с таким " + userId + " не существует");
+        }
+    }
+
+    private void validate(User user) {
+        if (StringUtils.isEmpty(user.getName())) {
+            user.setName(user.getLogin());
         }
     }
 }

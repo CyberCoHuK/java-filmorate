@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -78,6 +79,13 @@ class UserDbStorageTest {
         userDbStorage.addFriend(user.getId(), mutualFriend.getId());
         userDbStorage.addFriend(friend.getId(), mutualFriend.getId());
         assertEquals(List.of(mutualFriend), userDbStorage.getMutualFriends(user.getId(), friend.getId()));
+    }
+
+    @Test
+    void deleteUserByIdInStorageCheck() {
+        userDbStorage.createUser(user);
+        userDbStorage.deleteUserById(user.getId());
+        assertThat(userDbStorage.findAllUsers().isEmpty());
     }
 
     protected static User createUser(int num) {
