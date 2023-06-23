@@ -106,6 +106,7 @@ class FilmDbStorageTest {
     })
     void getUserRecommendations() {
         List<Film> check = new ArrayList<>();
+        thirdFilm.setId(3L);
         check.add(thirdFilm);
         assertEquals(check, filmDbStorage.getUserRecommendations(1L));
     }
