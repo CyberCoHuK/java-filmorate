@@ -47,7 +47,7 @@ class GenreDbStorageTest {
     void setFilmGenreTest() {
         assertTrue(film.getGenres().isEmpty());
         film.getGenres().add(Genre.builder()
-                .id(1)
+                .id(1L)
                 .name("Комедия")
                 .build());
         assertEquals(1, film.getGenres().size());
@@ -55,7 +55,7 @@ class GenreDbStorageTest {
 
     @Test
     void getGenreForIdTest() {
-        Genre genreTest = genreDbStorage.getById(1);
+        Genre genreTest = genreDbStorage.getById(1L);
         assertEquals("Комедия", genreTest.getName());
     }
 
@@ -64,7 +64,7 @@ class GenreDbStorageTest {
         assertTrue(film.getGenres().isEmpty());
         filmDbStorage.createFilm(film);
         film.getGenres().add(Genre.builder()
-                .id(1)
+                .id(1L)
                 .name("Комедия")
                 .build());
         filmDbStorage.updateFilm(film);
@@ -76,11 +76,11 @@ class GenreDbStorageTest {
         assertTrue(film.getGenres().isEmpty());
         filmDbStorage.createFilm(film);
         film.getGenres().add(Genre.builder()
-                .id(1)
+                .id(1L)
                 .name("Комедия")
                 .build());
         film.getGenres().add(Genre.builder()
-                .id(2)
+                .id(2L)
                 .name("Боевик")
                 .build());
         filmDbStorage.updateFilm(film);
