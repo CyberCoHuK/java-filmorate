@@ -79,11 +79,11 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(film);
         userDbStorage.createUser(user);
         userDbStorage.createUser(secondUser);
-        filmDbStorage.addLike(1, 1);
-        filmDbStorage.addLike(1, 2);
+        filmDbStorage.addLike(1L, 1L);
+        filmDbStorage.addLike(1L, 2L);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(2, film.getLikesList().size());
-        filmDbStorage.deleteLike(1, 1);
+        filmDbStorage.deleteLike(1L, 1L);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(1, film.getLikesList().size());
     }
@@ -93,8 +93,8 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(film);
         userDbStorage.createUser(user);
         userDbStorage.createUser(secondUser);
-        filmDbStorage.addLike(1, 1);
-        filmDbStorage.addLike(1, 2);
+        filmDbStorage.addLike(1L, 1L);
+        filmDbStorage.addLike(1L, 2L);
         filmService.getPopular(10,null,null);
         assertEquals(1, filmService.getPopular(10,null,null).size());
     }
@@ -107,7 +107,7 @@ class FilmDbStorageTest {
     void getUserRecommendations() {
         List<Film> check = new ArrayList<>();
         check.add(thirdFilm);
-        assertEquals(check, filmDbStorage.getUserRecommendations(1));
+        assertEquals(check, filmDbStorage.getUserRecommendations(1L));
     }
 
     @Test
@@ -115,7 +115,7 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(film);
         filmDbStorage.deleteFilmById(film.getId());
         assertThat(filmDbStorage.getAllFilms().isEmpty());
-        filmService.getPopular(10, 0, 0);
+        filmService.getPopular(10, 0L, 0);
     }
 
     @Test
@@ -124,8 +124,8 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(secondFilm);
         userDbStorage.createUser(user);
         userDbStorage.createUser(secondUser);
-        filmDbStorage.addLike(1, 1);
-        filmDbStorage.addLike(1, 2);
+        filmDbStorage.addLike(1L, 1L);
+        filmDbStorage.addLike(1L, 2L);
         assertEquals(2, filmService.searchFilmByParameter("ame", "title").size());
     }
 
@@ -134,10 +134,10 @@ class FilmDbStorageTest {
         filmDbStorage.createFilm(film);
         userDbStorage.createUser(user);
         userDbStorage.createUser(secondUser);
-        int userId = user.getId();
-        int secondUserId = secondUser.getId();
-        filmDbStorage.addLike(1, userId);
-        filmDbStorage.addLike(1, secondUserId);
+        Long userId = user.getId();
+        Long secondUserId = secondUser.getId();
+        filmDbStorage.addLike(1L, userId);
+        filmDbStorage.addLike(1L, secondUserId);
         film.setLikesList(filmDbStorage.getLikesForCurrentFilm(film.getId()));
         assertEquals(1, filmDbStorage.getFriendsCommonFilms(userId, secondUserId).size());
     }
@@ -147,11 +147,11 @@ class FilmDbStorageTest {
                 .name("name")
                 .description("desc")
                 .releaseDate(LocalDate.of(1999, 8, 17))
-                .duration(136)
+                .duration(136L)
                 .genres(new ArrayList<>())
                 .likesList(new HashSet<>())
                 .mpa(Mpa.builder()
-                        .id(1)
+                        .id(1L)
                         .name("G")
                         .build())
                 .directors(new ArrayList<>())
@@ -163,11 +163,11 @@ class FilmDbStorageTest {
                 .name("SecondName")
                 .description("SecondDesc")
                 .releaseDate(LocalDate.of(1997, 3, 13))
-                .duration(46)
+                .duration(46L)
                 .genres(new ArrayList<>())
                 .likesList(new HashSet<>())
                 .mpa(Mpa.builder()
-                        .id(1)
+                        .id(1L)
                         .name("G")
                         .build())
                 .directors(new ArrayList<>())
@@ -179,11 +179,11 @@ class FilmDbStorageTest {
                 .name("ThirdName")
                 .description("ThirdDesc")
                 .releaseDate(LocalDate.of(1977, 2, 23))
-                .duration(13)
+                .duration(13L)
                 .genres(new ArrayList<>())
                 .likesList(new HashSet<>())
                 .mpa(Mpa.builder()
-                        .id(1)
+                        .id(1L)
                         .name("G")
                         .build())
                 .directors(new ArrayList<>())

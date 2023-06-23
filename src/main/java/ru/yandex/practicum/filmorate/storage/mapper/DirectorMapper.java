@@ -13,7 +13,7 @@ public class DirectorMapper implements RowMapper<Director> {
     @Override
     public Director mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Director.builder()
-                .id(rs.getInt("id"))
+                .id(rs.getLong("director_id"))
                 .name(rs.getString("name"))
                 .build();
     }

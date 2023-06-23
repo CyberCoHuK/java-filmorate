@@ -29,7 +29,7 @@ public class ReviewDbStorage implements ReviewStorage {
         return jdbcTemplate.query(sql, reviewMapper, count);
     }
 
-    public List<Review> findMostUsefulReviewsByFilmId(int filmId, int count) {
+    public List<Review> findMostUsefulReviewsByFilmId(Long filmId, int count) {
         String sql = "SELECT * FROM reviews " +
                 "WHERE film_id = ? " +
                 "ORDER BY useful DESC " +
@@ -65,7 +65,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
 
-        Integer reviewId = simpleJdbcInsert.executeAndReturnKey(review.toMap()).intValue();
+        Long reviewId = simpleJdbcInsert.executeAndReturnKey(review.toMap()).longValue();
 
         review.setReviewId(reviewId);
 
@@ -75,7 +75,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Optional<Review> findById(long reviewId) {
+    public Optional<Review> findById(Long reviewId) {
         String sql = "SELECT * FROM reviews " +
                 "WHERE review_id = ?";
 
@@ -91,12 +91,12 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public boolean existsById(long reviewId) {
+    public boolean existsById(Long reviewId) {
         return findById(reviewId).isPresent();
     }
 
     @Override
-    public void deleteById(long reviewId) {
+    public void deleteById(Long reviewId) {
         String sql = "DELETE FROM reviews " +
                 "WHERE review_id = ?";
 
@@ -106,7 +106,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public void changeUseful(long reviewId, int value) {
+    public void changeUseful(Long reviewId, int value) {
         String sql = "UPDATE reviews " +
                 "SET useful = useful + ? " +
                 "WHERE review_id = ?";

@@ -40,8 +40,8 @@ public class ReviewDbStorageTest {
         Review review = Review.builder()
                 .content("The best film")
                 .isPositive(Boolean.FALSE)
-                .userId(3)
-                .filmId(3)
+                .userId(3L)
+                .filmId(3L)
                 .build();
 
         reviewStorage.saveReview(review);
@@ -68,12 +68,12 @@ public class ReviewDbStorageTest {
 
     @Test
     public void shouldThrowExceptionWhenSaveReviewWithUnknownUserId() {
-        int incorrectUserId = 30;
+        Long incorrectUserId = 30L;
         Review review = Review.builder()
                 .content("The best film")
                 .isPositive(Boolean.FALSE)
                 .userId(incorrectUserId)
-                .filmId(3)
+                .filmId(3L)
                 .build();
 
         assertThrows(DataIntegrityViolationException.class, () -> reviewStorage.saveReview(review));
@@ -81,11 +81,11 @@ public class ReviewDbStorageTest {
 
     @Test
     public void shouldThrowExceptionWhenSaveReviewWithUnknownFilmId() {
-        int incorrectFilmId = 30;
+        Long incorrectFilmId = 30L;
         Review review = Review.builder()
                 .content("The best film")
                 .isPositive(Boolean.FALSE)
-                .userId(3)
+                .userId(3L)
                 .filmId(incorrectFilmId)
                 .build();
 
@@ -97,8 +97,8 @@ public class ReviewDbStorageTest {
         Review review = Review.builder()
                 .content("The best film")
                 .isPositive(Boolean.FALSE)
-                .userId(3)
-                .filmId(3)
+                .userId(3L)
+                .filmId(3L)
                 .build();
 
         Review savedReview = reviewStorage.saveReview(review);
@@ -108,15 +108,15 @@ public class ReviewDbStorageTest {
 
     @Test
     public void shouldUpdateReviewInDataBase() {
-        int reviewId = 1;
+        Long reviewId = 1L;
 
         Review review = Review.builder()
                 .reviewId(reviewId)
                 .content("Updated Good film")
                 .isPositive(Boolean.FALSE)
-                .userId(1)
-                .filmId(1)
-                .useful(1)
+                .userId(1L)
+                .filmId(1L)
+                .useful(1L)
                 .build();
 
         reviewStorage.updateReview(review);
@@ -139,12 +139,12 @@ public class ReviewDbStorageTest {
     @Test
     public void shouldReturnReviewById() {
         Review expectedReview = new Review(
-                2,
+                2L,
                 "Bad film",
                 Boolean.FALSE,
-                2,
-                2,
-                0
+                2L,
+                2L,
+                0L
         );
 
         Optional<Review> foundReview = reviewStorage.findById(2L);
@@ -249,7 +249,7 @@ public class ReviewDbStorageTest {
 
         jdbcTemplate.update(sql);
 
-        List<Review> review = new ArrayList<>(reviewStorage.findMostUsefulReviewsByFilmId(3, 1));
+        List<Review> review = new ArrayList<>(reviewStorage.findMostUsefulReviewsByFilmId(3L, 1));
 
         assertEquals(1, review.size());
         assertEquals(5, review.get(0).getUseful());

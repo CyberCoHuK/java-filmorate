@@ -33,42 +33,42 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public User getById(int userId) {
+    public User getById(Long userId) {
         return userStorage.getById(userId);
     }
 
-    public User addFriend(int userId, int friendId) {
+    public User addFriend(Long userId, Long friendId) {
         userStorage.isExist(userId);
         userStorage.isExist(friendId);
         feedStorage.addEvent(userId, EventTypes.FRIEND, Operations.ADD, friendId);
         return userStorage.addFriend(userId, friendId);
     }
 
-    public void deleteFriend(int userId, int friendId) {
+    public void deleteFriend(Long userId, Long friendId) {
         userStorage.isExist(userId);
         userStorage.isExist(friendId);
         feedStorage.addEvent(userId, EventTypes.FRIEND, Operations.REMOVE, friendId);
         userStorage.deleteFriend(userId, friendId);
     }
 
-    public Collection<User> getFriends(int userId) {
+    public Collection<User> getFriends(Long userId) {
         return userStorage.getFriends(userId);
     }
 
-    public Collection<User> getMutualFriends(int userId, int secondUserId) {
+    public Collection<User> getMutualFriends(Long userId, Long secondUserId) {
         return userStorage.getMutualFriends(userId, secondUserId);
     }
 
-    public String deleteUserById(int userId) {
+    public String deleteUserById(Long userId) {
         return userStorage.deleteUserById(userId);
     }
 
-    public Collection<Film> getUserRecommendations(int userId) {
+    public Collection<Film> getUserRecommendations(Long userId) {
         userStorage.isExist(userId);
         return filmStorage.getUserRecommendations(userId);
     }
 
-    public Collection<Event> getFeedById(int userId) {
+    public Collection<Event> getFeedById(Long userId) {
         userStorage.isExist(userId);
         return feedStorage.getFeedById(userId);
     }

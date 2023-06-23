@@ -8,5 +8,5 @@ public interface MpaStorage {
 
     Collection<Mpa> findAll();
 
-    Mpa getById(int id);
+    Mpa getById(Long id);
 }

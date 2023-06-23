@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -17,17 +18,19 @@ import java.util.Objects;
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
-    Integer reviewId;
+    @PositiveOrZero
+    @EqualsAndHashCode.Include
+    Long reviewId;
     @NotBlank(message = "Отзыв не может быть пустым и состоять только из пробелов.")
     String content;
     @JsonProperty(value = "isPositive")
     @NotNull(message = "Тип отзыва - обязательное поле.")
     Boolean isPositive;
     @NotNull(message = "Идентификатор пользователя - обязательное поле.")
-    Integer userId;
+    Long userId;
     @NotNull(message = "Идентификатор фильма - обязательное поле.")
-    Integer filmId;
-    Integer useful;
+    Long filmId;
+    Long useful;
 
     public Map<String, Object> toMap() {
         Map<String, Object> fields = new HashMap<>();

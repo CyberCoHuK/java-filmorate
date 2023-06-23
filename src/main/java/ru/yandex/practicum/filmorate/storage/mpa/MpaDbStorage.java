@@ -28,7 +28,7 @@ public class MpaDbStorage implements MpaStorage {
     }
 
     @Override
-    public Mpa getById(int id) {
+    public Mpa getById(Long id) {
         String sqlQuery = "SELECT * FROM rating_mpa WHERE id = ?";
         SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(sqlQuery, id);
 

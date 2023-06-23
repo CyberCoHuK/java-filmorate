@@ -10,15 +10,15 @@ public interface ReviewStorage {
 
     Review saveReview(Review review);
 
-    Optional<Review> findById(long reviewId);
+    Optional<Review> findById(Long reviewId);
 
     Collection<Review> findMostUsefulReviews(int count);
 
-    Collection<Review> findMostUsefulReviewsByFilmId(int filmId, int count);
+    Collection<Review> findMostUsefulReviewsByFilmId(Long filmId, int count);
 
-    boolean existsById(long reviewId);
+    boolean existsById(Long reviewId);
 
-    void deleteById(long reviewId);
+    void deleteById(Long reviewId);
 
-    void changeUseful(long reviewId, int value);
+    void changeUseful(Long reviewId, int value);
 }

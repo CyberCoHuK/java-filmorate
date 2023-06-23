@@ -25,17 +25,17 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getById(@PathVariable int id) {
+    public User getById(@PathVariable Long id) {
         return userService.getById(id);
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> getFriends(@PathVariable int id) {
+    public Collection<User> getFriends(@PathVariable Long id) {
         return userService.getFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{friendId}")
-    public Collection<User> getMutualFriends(@PathVariable int id, @PathVariable int friendId) {
+    public Collection<User> getMutualFriends(@PathVariable Long id, @PathVariable Long friendId) {
         return userService.getMutualFriends(id, friendId);
     }
 
@@ -50,27 +50,27 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable int id, @PathVariable int friendId) {
+    public User addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.deleteFriend(id, friendId);
     }
 
     @DeleteMapping("/{userId}")
-    public String deleteUserById(@PathVariable("userId") int userId) {
+    public String deleteUserById(@PathVariable("userId") Long userId) {
         return userService.deleteUserById(userId);
     }
 
     @GetMapping("/{id}/recommendations")
-    public Collection<Film> getUserRecommendations(@PathVariable int id) {
+    public Collection<Film> getUserRecommendations(@PathVariable Long id) {
         return userService.getUserRecommendations(id);
     }
 
     @GetMapping("/{id}/feed")
-    public Collection<Event> getFeedById(@PathVariable int id) {
+    public Collection<Event> getFeedById(@PathVariable Long id) {
         return userService.getFeedById(id);
     }
 }

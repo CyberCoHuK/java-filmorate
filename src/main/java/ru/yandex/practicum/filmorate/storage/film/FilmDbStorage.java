@@ -82,10 +82,10 @@ public class FilmDbStorage implements FilmStorage {
         Number key = jdbcInsert.withTableName("film")
                 .usingGeneratedKeyColumns("film_id")
                 .executeAndReturnKey(getFilmFields(film));
-        film.setId(key.intValue());
+        film.setId(key.longValue());
 
 
-        final String updateGenresQuery = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
+        final String updateGenresQuery = "MERGE INTO film_genre (film_id, genre_id) VALUES (?, ?)";
         final String sqlCheckGenre = "SELECT * FROM film_genre WHERE film_id = ? AND genre_id = ?";
         for (Genre g : film.getGenres()) {
             SqlRowSet genreRows = jdbcTemplate.queryForRowSet(sqlCheckGenre, film.getId(), g.getId());
@@ -94,7 +94,7 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
-        final String updateFilmDirectorQuery = "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?)";
+        final String updateFilmDirectorQuery = "MERGE INTO films_directors (film_id, director_id) VALUES (?, ?)";
         final String sqlCheckDirector = "SELECT * FROM films_directors  WHERE film_id = ? AND director_id = ?";
         for (Director d : film.getDirectors()) {
             SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheckDirector, film.getId(), d.getId());
@@ -103,9 +103,9 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
-        final String updateLikesQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
+        final String updateLikesQuery = "MERGE INTO likes (film_id, user_id) VALUES (?, ?)";
         final String sqlCheckLikes = "SELECT * FROM likes  WHERE film_id = ? AND user_id = ?";
-        for (int like : film.getLikesList()) {
+        for (Long like : film.getLikesList()) {
             SqlRowSet directorRows = jdbcTemplate.queryForRowSet(sqlCheckLikes, film.getId(), like);
             if (!directorRows.next()) {
                 jdbcTemplate.update(updateLikesQuery, film.getId(), like);
@@ -117,7 +117,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(int filmId) {
+    public Film getById(Long filmId) {
         isExist(filmId);
         final String sql = "SELECT * FROM film WHERE film_id = ?";
         log.info("Отправлен фильм с индентификатором {} ", filmId);
@@ -125,7 +125,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film addLike(int filmId, int userId) {
+    public Film addLike(Long filmId, Long userId) {
         final String sqlQuery = "MERGE INTO likes (film_id, user_id) VALUES (?, ?)";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
@@ -136,7 +136,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film deleteLike(int filmId, int userId) {
+    public Film deleteLike(Long filmId, Long userId) {
         final String sqlQuery = "DELETE FROM likes WHERE film_id = ? AND user_id = ?";
 
         jdbcTemplate.update(sqlQuery, filmId, userId);
@@ -147,7 +147,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
+    public List<Film> getPopular(Integer count, Long genreId, Integer year) {
 
         if (genreId == null && year == null) {
             String sq = "SELECT film.*, COUNT(l.film_id) as count " +
@@ -158,7 +158,6 @@ public class FilmDbStorage implements FilmStorage {
                     "ORDER BY COUNT DESC " +
                     "LIMIT ?";
             return jdbcTemplate.query(sq, filmMapper, count);
-
         } else if (genreId == null) {
             String sq = "SELECT film.*, COUNT(l.film_id) as count " +
                     "FROM film " +
@@ -190,18 +189,18 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    public Set<Integer> getLikesForCurrentFilm(int filmId) {
+    public Set<Long> getLikesForCurrentFilm(Long filmId) {
         final String sqlQuery = "SELECT user_id FROM likes WHERE film_id = ?";
         SqlRowSet likesRows = jdbcTemplate.queryForRowSet(sqlQuery, filmId);
-        Set<Integer> likes = new HashSet<>();
+        Set<Long> likes = new HashSet<>();
         while (likesRows.next()) {
-            likes.add(likesRows.getInt("user_id"));
+            likes.add(likesRows.getLong("user_id"));
         }
         log.info("Количество лайков фильму {}", likes.size());
         return likes;
     }
 
-    public Collection<Film> getUserRecommendations(int userId) {
+    public Collection<Film> getUserRecommendations(Long userId) {
         final String sql = "SELECT f.* " +
                 "FROM likes AS l1 " +
                 "INNER JOIN film AS f ON l1.film_id = f.film_id " +
@@ -217,7 +216,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, filmMapper, userId, userId, userId);
     }
 
-    public String deleteFilmById(int filmId) {
+    public String deleteFilmById(Long filmId) {
         String sqlQuery = "DELETE FROM film WHERE film_id = ? ";
         int filmRows = jdbcTemplate.update(sqlQuery, filmId);
         if (filmRows == 0) {
@@ -228,7 +227,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByYears(Long directorId) {
         String sqlQuery =
                 "SELECT f.*, m.id " +
                         "FROM film AS f " +
@@ -240,7 +239,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByLikes(Long directorId) {
         String sqlQuery =
                 "SELECT f.*, m.id, count(l.user_id) AS top " +
                         "FROM film AS f " +
@@ -254,7 +253,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+    public List<Film> getFriendsCommonFilms(Long userId, Long friendId) {
         String sqlQuery = "SELECT f.*, count(l.user_id) AS top FROM likes AS l " +
                 "JOIN film AS f ON f.film_id=l.film_id " +
                 "WHERE l.user_id  in (?, ?) " +
@@ -285,7 +284,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM film AS f " +
                 "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
                 "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                "LEFT JOIN DIRECTORS AS d ON d.director_id=fd.director_id " +
                 "WHERE d.NAME LIKE ? " +
                 "GROUP BY f.film_id " +
                 "ORDER BY count(l.user_id);";
@@ -309,7 +308,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM film AS f " +
                 "LEFT JOIN LIKES AS l ON f.film_id=l.film_id " +
                 "LEFT JOIN FILMS_DIRECTORS  AS fd ON f.film_id=fd.film_id " +
-                "LEFT JOIN DIRECTORS AS d ON d.id=fd.director_id " +
+                "LEFT JOIN DIRECTORS AS d ON d.director_id=fd.director_id " +
                 "WHERE d.NAME LIKE ? " +
                 "OR LOWER(f.NAME) LIKE ? " +
                 "GROUP BY f.film_id " +
@@ -317,7 +316,7 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sqlQuery, filmMapper, '%' + query + '%', '%' + query + '%');
     }
 
-    public void isExist(int filmId) {
+    public void isExist(Long filmId) {
         final String checkFilmQuery = "SELECT * FROM film WHERE film_id = ?";
 
         SqlRowSet filmRows = jdbcTemplate.queryForRowSet(checkFilmQuery, filmId);

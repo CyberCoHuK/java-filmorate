@@ -12,26 +12,26 @@ public interface FilmStorage {
 
     Film createFilm(Film film);
 
-    Film getById(int filmId);
+    Film getById(Long filmId);
 
-    Film addLike(int filmId, int userId);
+    Film addLike(Long filmId, Long userId);
 
-    Film deleteLike(int filmId, int userId);
+    Film deleteLike(Long filmId, Long userId);
 
-    List<Film> getPopular(Integer count, Integer genreId, Integer year);
+    List<Film> getPopular(Integer count, Long genreId, Integer year);
 
-    List<Film> getFriendsCommonFilms(int userId, int friendId);
+    List<Film> getFriendsCommonFilms(Long userId, Long friendId);
 
-    String deleteFilmById(int filmId);
+    String deleteFilmById(Long filmId);
 
-    List<Film> loadFilmsOfDirectorSortedByYears(int directorId);
+    List<Film> loadFilmsOfDirectorSortedByYears(Long directorId);
 
-    List<Film> loadFilmsOfDirectorSortedByLikes(int directorId);
+    List<Film> loadFilmsOfDirectorSortedByLikes(Long directorId);
 
-    Collection<Film> getUserRecommendations(int userId);
+    Collection<Film> getUserRecommendations(Long userId);
 
     List<Film> searchFilmByParameter(String query, String filmSearchParameter);
 
-    void isExist(int filmId);
+    void isExist(Long filmId);
 
 }

@@ -35,37 +35,37 @@ public class FilmService {
         return filmStorage.createFilm(film);
     }
 
-    public Film getFilmById(int filmId) {
+    public Film getFilmById(Long filmId) {
         return filmStorage.getById(filmId);
     }
 
-    public Film addLike(int filmId, int userId) {
+    public Film addLike(Long filmId, Long userId) {
         filmStorage.isExist(filmId);
         userStorage.isExist(userId);
         feedStorage.addEvent(userId, EventTypes.LIKE, Operations.ADD, filmId);
         return filmStorage.addLike(filmId, userId);
     }
 
-    public Film deleteLike(int filmId, int userId) {
+    public Film deleteLike(Long filmId, Long userId) {
         filmStorage.isExist(filmId);
         userStorage.isExist(userId);
         feedStorage.addEvent(userId, EventTypes.LIKE, Operations.REMOVE, filmId);
         return filmStorage.deleteLike(filmId, userId);
     }
 
-    public Collection<Film> getPopular(int count, Integer genreId, Integer year) {
+    public Collection<Film> getPopular(Integer count, Long genreId, Integer year) {
         return filmStorage.getPopular(count, genreId, year);
     }
 
-    public String deleteFilmById(int filmId) {
+    public String deleteFilmById(Long filmId) {
         return filmStorage.deleteFilmById(filmId);
     }
 
-    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+    public List<Film> getFriendsCommonFilms(Long userId, Long friendId) {
         return filmStorage.getFriendsCommonFilms(userId, friendId);
     }
 
-    public List<Film> getSortedFilmsByDirectorId(int directorId, String sortBy) {
+    public List<Film> getSortedFilmsByDirectorId(Long directorId, String sortBy) {
         directorStorage.isExist(directorId);
         SortTypesForDirectors sortTypes = SortTypesForDirectors.valueOfSortBy(sortBy);
 

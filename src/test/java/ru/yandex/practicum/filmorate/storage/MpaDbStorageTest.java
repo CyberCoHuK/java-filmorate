@@ -44,7 +44,7 @@ public class MpaDbStorageTest {
 
     @Test
     void getMpaForIdTest() {
-        Mpa mpaTest = mpaDbStorage.getById(5);
+        Mpa mpaTest = mpaDbStorage.getById(5L);
         assertEquals("NC-17", mpaTest.getName());
     }
 
@@ -53,7 +53,7 @@ public class MpaDbStorageTest {
         film.setMpa(null);
         assertNull(film.getMpa());
         film.setMpa(Mpa.builder()
-                .id(5)
+                .id(5L)
                 .name("NC-17")
                 .build());
         filmDbStorage.createFilm(film);

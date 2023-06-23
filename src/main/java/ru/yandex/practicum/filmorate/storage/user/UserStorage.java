@@ -11,17 +11,17 @@ public interface UserStorage {
 
     User updateUser(User user);
 
-    User getById(int userId);
+    User getById(Long userId);
 
-    User addFriend(int userId, int friendId);
+    User addFriend(Long userId, Long friendId);
 
-    void deleteFriend(int userId, int friendId);
+    void deleteFriend(Long userId, Long friendId);
 
-    Collection<User> getFriends(int userId);
+    Collection<User> getFriends(Long userId);
 
-    Collection<User> getMutualFriends(int userId, int secondUserId);
+    Collection<User> getMutualFriends(Long userId, Long secondUserId);
 
-    String deleteUserById(int userId);
+    String deleteUserById(Long userId);
 
-    void isExist(int userId);
+    void isExist(Long userId);
 }
