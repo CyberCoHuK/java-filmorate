@@ -12,12 +12,12 @@ public class ReviewMapper implements RowMapper<Review> {
     @Override
     public Review mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Review.builder()
-                .reviewId(rs.getInt("review_id"))
+                .reviewId(rs.getLong("review_id"))
                 .content(rs.getString("content"))
                 .isPositive(rs.getBoolean("is_positive"))
-                .userId(rs.getInt("user_id"))
-                .filmId(rs.getInt("film_id"))
-                .useful(rs.getInt("useful"))
+                .userId(rs.getLong("user_id"))
+                .filmId(rs.getLong("film_id"))
+                .useful(rs.getLong("useful"))
                 .build();
     }
 }

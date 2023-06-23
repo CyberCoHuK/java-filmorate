@@ -30,7 +30,7 @@ class DirectorDBStorageTest {
 
     @BeforeEach
     void setUp() {
-        director = new Director(1, "First Director");
+        director = new Director(1L, "First Director");
     }
 
     @Test
@@ -43,7 +43,7 @@ class DirectorDBStorageTest {
     @Test
     void getDirectorByIdTest() {
         directorDBStorage.createDirector(director);
-        Director directorTest = directorDBStorage.getDirectorById(1);
+        Director directorTest = directorDBStorage.getDirectorById(1L);
         assertEquals("First Director", directorTest.getName());
     }
 
@@ -52,7 +52,7 @@ class DirectorDBStorageTest {
         directorDBStorage.createDirector(director);
         director.setName("Updated Director");
         directorDBStorage.updateDirector(director);
-        Director directorTest = directorDBStorage.getDirectorById(1);
+        Director directorTest = directorDBStorage.getDirectorById(1L);
         assertEquals("Updated Director", directorTest.getName());
     }
 

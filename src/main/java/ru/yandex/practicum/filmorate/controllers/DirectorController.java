@@ -21,7 +21,7 @@ public class DirectorController {
     }
 
     @GetMapping("/{id}")
-    public Director get(@PathVariable int id) {
+    public Director getDirectorById(@PathVariable Long id) {
         return directorService.getDirectorById(id);
     }
 
@@ -31,12 +31,12 @@ public class DirectorController {
     }
 
     @PutMapping
-    public Director update(@Valid @RequestBody Director director) {
+    public Director updateDirector(@Valid @RequestBody Director director) {
         return directorService.updateDirector(director);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    public void deleteDirector(@PathVariable Long id) {
         directorService.deleteDirector(id);
     }
 }

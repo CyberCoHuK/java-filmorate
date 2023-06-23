@@ -12,7 +12,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void addLike(int reviewId, int userId) {
+    public void addLike(Long reviewId, Long userId) {
         String sqlAddLike = "INSERT INTO reviews_likes (review_id, user_id, is_like) " +
                 "VALUES (?, ?, ?)";
 
@@ -22,7 +22,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void addDislike(int reviewId, int userId) {
+    public void addDislike(Long reviewId, Long userId) {
         String sqlAddLike = "INSERT INTO reviews_likes (review_id, user_id, is_like) " +
                 "VALUES (?, ?, ?)";
 
@@ -32,7 +32,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public boolean deleteLike(int reviewId, int userId) {
+    public boolean deleteLike(Long reviewId, Long userId) {
         String sql = "DELETE FROM reviews_likes " +
                 "WHERE review_id = ? " +
                 "AND user_id = ? ";
@@ -43,7 +43,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public boolean deleteDislike(int reviewId, int userId) {
+    public boolean deleteDislike(Long reviewId, Long userId) {
         String sql = "DELETE FROM reviews_likes " +
                 "WHERE review_id = ?" +
                 "AND user_id = ? ";

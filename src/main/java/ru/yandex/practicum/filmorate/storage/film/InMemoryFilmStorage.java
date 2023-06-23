@@ -17,8 +17,8 @@ import static ru.yandex.practicum.filmorate.Constants.FIRST_FILM_DATE;
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Integer, Film> films = new HashMap<>();
-    private static int filmId = 1;
+    private final Map<Long, Film> films = new HashMap<>();
+    private static Long filmId = 1L;
 
     UserStorage userStorage;
 
@@ -57,14 +57,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film getById(int filmId) {
+    public Film getById(Long filmId) {
         isExist(filmId);
         log.info("Фильм {} возвращен", films.get(filmId));
         return films.get(filmId);
     }
 
     @Override
-    public Film addLike(int filmId, int userId) {
+    public Film addLike(Long filmId, Long userId) {
         isExist(filmId);
         userStorage.isExist(userId);
         films.get(filmId).getLikesList().add(userId);
@@ -73,7 +73,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Film deleteLike(int filmId, int userId) {
+    public Film deleteLike(Long filmId, Long userId) {
         isExist(filmId);
         userStorage.isExist(userId);
         films.get(filmId).getLikesList().remove(userId);
@@ -82,7 +82,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getPopular(Integer count, Integer genreId, Integer year) {
+    public List<Film> getPopular(Integer count, Long genreId, Integer year) {
         log.info("Возвращено топ {} фильмов", count);
         return getAllFilms().stream()
                 .sorted((f1, f2) -> f2.getLikesList().size() - f1.getLikesList().size())
@@ -91,36 +91,36 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getUserRecommendations(int userId) {
+    public Collection<Film> getUserRecommendations(Long userId) {
         throw new UnsupportedOperationException("Реализация inMemory метода getUserRecommendations " +
                 "не поддерживается");
     }
 
     @Override
-    public List<Film> getFriendsCommonFilms(int userId, int friendId) {
+    public List<Film> getFriendsCommonFilms(Long userId, Long friendId) {
         throw new UnsupportedOperationException("Реализация inMemory метода getFriendsCommonFilms " +
                 "не поддерживается");
     }
 
     @Override
-    public void isExist(int filmId) {
+    public void isExist(Long filmId) {
         if (!films.containsKey(filmId)) {
             throw new ObjectNotFoundException("Фильма с таким " + filmId + " не существует");
         }
     }
 
-    public String deleteFilmById(int filmId) {
+    public String deleteFilmById(Long filmId) {
         return "Фильм film_id=" + filmId + " успешно удален.";
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByYears(int directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByYears(Long directorId) {
         throw new UnsupportedOperationException("Реализация inMemory метода loadFilmsOfDirectorSortedByYears " +
                 "не поддерживается");
     }
 
     @Override
-    public List<Film> loadFilmsOfDirectorSortedByLikes(int directorId) {
+    public List<Film> loadFilmsOfDirectorSortedByLikes(Long directorId) {
         throw new UnsupportedOperationException("Реализация inMemory метода loadFilmsOfDirectorSortedByLikes " +
                 "не поддерживается");
     }

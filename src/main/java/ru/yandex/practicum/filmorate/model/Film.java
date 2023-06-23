@@ -18,8 +18,8 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Film {
     @PositiveOrZero
-    @EqualsAndHashCode.Exclude
-    int id;
+    @EqualsAndHashCode.Include
+    Long id;
     @NotBlank(message = "Отсутствует название фильма")
     String name;
     @NotNull
@@ -29,9 +29,9 @@ public class Film {
     @BeginOfCinemaEra("1895-12-28")
     LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма не может быть отрицательной")
-    long duration;
+    Long duration;
     Mpa mpa;
     List<Genre> genres = new ArrayList<>();
-    Set<Integer> likesList = new HashSet<>();
+    Set<Long> likesList = new HashSet<>();
     List<Director> directors = new ArrayList<>();
 }

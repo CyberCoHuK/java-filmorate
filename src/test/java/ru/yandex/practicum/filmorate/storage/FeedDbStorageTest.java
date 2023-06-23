@@ -26,15 +26,15 @@ public class FeedDbStorageTest {
 
     @Test
     public void getFeedByUserId() {
-        assertEquals(3, feedStorage.getFeedById(1).size());
-        assertEquals(1, feedStorage.getFeedById(2).size());
+        assertEquals(3, feedStorage.getFeedById(1L).size());
+        assertEquals(1, feedStorage.getFeedById(2L).size());
     }
 
     @Test
     public void addEvent() {
-        feedStorage.addEvent(2, EventTypes.FRIEND, Operations.ADD, 1);
-        feedStorage.getFeedById(2);
-        assertEquals(2, feedStorage.getFeedById(2).size());
+        feedStorage.addEvent(2L, EventTypes.FRIEND, Operations.ADD, 1L);
+        feedStorage.getFeedById(2L);
+        assertEquals(2, feedStorage.getFeedById(2L).size());
     }
 
 }

@@ -14,7 +14,8 @@ import javax.validation.constraints.Size;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Genre {
     @PositiveOrZero
-    int id;
+    @EqualsAndHashCode.Include
+    Long id;
     @NotNull
     @Size(max = 100, message = "Слишком длинное название жанра. Максимальное количество символов - 100")
     String name;

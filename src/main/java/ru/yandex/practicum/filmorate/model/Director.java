@@ -5,6 +5,8 @@ import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @Builder
@@ -13,7 +15,15 @@ import javax.validation.constraints.PositiveOrZero;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Director {
     @PositiveOrZero
-    private int id;
+    @EqualsAndHashCode.Include
+    private Long id;
     @NotBlank(message = "Отсутствует имя директора")
     String name;
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("id", id);
+        fields.put("name", name);
+        return fields;
+    }
 }

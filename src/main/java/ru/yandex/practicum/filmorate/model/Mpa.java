@@ -14,7 +14,8 @@ import javax.validation.constraints.Size;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Mpa {
     @PositiveOrZero
-    int id;
+    @EqualsAndHashCode.Include
+    Long id;
     @NotNull
     @Size(max = 60, message = "Слишком длинное имя. Максимальное количество символов - 60")
     String name;

@@ -15,7 +15,7 @@ import java.util.Collection;
 public class DirectorService {
     private final DirectorStorage directorStorage;
 
-    public Director getDirectorById(int id) {
+    public Director getDirectorById(Long id) {
         return directorStorage.getDirectorById(id);
     }
 
@@ -27,21 +27,8 @@ public class DirectorService {
         return directorStorage.updateDirector(director);
     }
 
-    public void deleteDirector(int id) {
+    public void deleteDirector(Long id) {
         directorStorage.deleteDirector(id);
-    }
-
-    public void addFilmDirectors(int id, Collection<Director> directors) {
-        directorStorage.saveFilmDirector(id, directors);
-    }
-
-    public void updateFilmDirectors(int id, Collection<Director> directors) {
-        directorStorage.deleteFilmDirector(id);
-        directorStorage.saveFilmDirector(id, directors);
-    }
-
-    public void deleteFilmDirectors(int id) {
-        directorStorage.deleteFilmDirector(id);
     }
 
     public Collection<Director> getAllDirectors() {

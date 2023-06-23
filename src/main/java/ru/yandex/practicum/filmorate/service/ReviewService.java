@@ -28,12 +28,12 @@ public class ReviewService {
     private static final int INCREMENT = 1;
     private static final int DECREMENT = -1;
 
-    public Review getReviewById(int reviewId) {
+    public Review getReviewById(Long reviewId) {
         return reviewStorage.findById(reviewId)
                 .orElseThrow(() -> new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден."));
     }
 
-    public Collection<Review> getReviews(Integer filmId, int count) {
+    public Collection<Review> getReviews(Long filmId, int count) {
         if (Objects.isNull(filmId)) {
             return reviewStorage.findMostUsefulReviews(count);
         }
@@ -42,7 +42,7 @@ public class ReviewService {
     }
 
     public Review createReview(Review review) {
-        review.setUseful(0);
+        review.setUseful(0L);
 
         userStorage.isExist(review.getUserId());
         filmStorage.isExist(review.getFilmId());
@@ -64,7 +64,7 @@ public class ReviewService {
         return updateReview;
     }
 
-    public void deleteReviewById(int reviewId) {
+    public void deleteReviewById(Long reviewId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }
@@ -73,7 +73,7 @@ public class ReviewService {
         reviewStorage.deleteById(reviewId);
     }
 
-    public void addLike(int reviewId, int userId) {
+    public void addLike(Long reviewId, Long userId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }
@@ -85,7 +85,7 @@ public class ReviewService {
         reviewStorage.changeUseful(reviewId, INCREMENT);
     }
 
-    public void addDislike(int reviewId, int userId) {
+    public void addDislike(Long reviewId, Long userId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }
@@ -97,7 +97,7 @@ public class ReviewService {
         reviewStorage.changeUseful(reviewId, DECREMENT);
     }
 
-    public void deleteLike(int reviewId, int userId) {
+    public void deleteLike(Long reviewId, Long userId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }
@@ -112,7 +112,7 @@ public class ReviewService {
         reviewStorage.changeUseful(reviewId, DECREMENT);
     }
 
-    public void deleteDislike(int reviewId, int userId) {
+    public void deleteDislike(Long reviewId, Long userId) {
         if (!reviewStorage.existsById(reviewId)) {
             throw new ObjectNotFoundException("Отзыв с id = " + reviewId + " не найден.");
         }

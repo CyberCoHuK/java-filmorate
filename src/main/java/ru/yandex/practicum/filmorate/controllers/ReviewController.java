@@ -15,13 +15,13 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/{reviewId}")
-    public Review getReviewById(@PathVariable int reviewId) {
+    public Review getReviewById(@PathVariable Long reviewId) {
         return reviewService.getReviewById(reviewId);
     }
 
     @GetMapping
-    public Collection<Review> getReviews(@RequestParam(required = false) Integer filmId,
-                                         @RequestParam(defaultValue = "10", required = false) Integer count) {
+    public Collection<Review> getReviews(@RequestParam(required = false) Long filmId,
+                                         @RequestParam(defaultValue = "10", required = false) int count) {
         return reviewService.getReviews(filmId, count);
     }
 
@@ -36,27 +36,27 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable int id, @PathVariable int userId) {
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         reviewService.addLike(id, userId);
     }
 
     @PutMapping("/{id}/dislike/{userId}")
-    public void addDislike(@PathVariable int id, @PathVariable int userId) {
+    public void addDislike(@PathVariable Long id, @PathVariable Long userId) {
         reviewService.addDislike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
         reviewService.deleteLike(id, userId);
     }
 
     @DeleteMapping("/{id}/dislike/{userId}")
-    public void deleteDislike(@PathVariable int id, @PathVariable int userId) {
+    public void deleteDislike(@PathVariable Long id, @PathVariable Long userId) {
         reviewService.deleteDislike(id, userId);
     }
 
     @DeleteMapping("/{reviewId}")
-    public void deleteReviewById(@PathVariable int reviewId) {
+    public void deleteReviewById(@PathVariable Long reviewId) {
         reviewService.deleteReviewById(reviewId);
     }
 

@@ -2,22 +2,15 @@ package ru.yandex.practicum.filmorate.storage.director;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.mapper.DirectorMapper;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,68 +29,43 @@ public class DirectorDBStorage implements DirectorStorage {
     }
 
     @Override
-    public Director getDirectorById(int id) {
+    public Director getDirectorById(Long id) {
         isExist(id);
-        String sqlQuery = "SELECT id, name FROM directors WHERE id = ?;";
+        String sqlQuery = "SELECT * FROM directors WHERE director_id = ?;";
         log.warn("Директор с идентификатором {} отправлен.", id);
         return jdbcTemplate.queryForObject(sqlQuery, directorMapper, id);
     }
 
     @Override
     public Director createDirector(Director director) {
-        String sqlQuery = "INSERT INTO directors (name) VALUES (?);";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement(sqlQuery, new String[]{"id"});
-            statement.setString(1, director.getName());
-            return statement;
-        }, keyHolder);
-        return getDirectorById(Objects.requireNonNull(keyHolder.getKey()).intValue());
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        Number key = jdbcInsert.withTableName("directors")
+                .usingGeneratedKeyColumns("director_id")
+                .executeAndReturnKey(director.toMap());
+        director.setId(key.longValue());
+        log.info("Создан отзыв с индентификатором {}", director.getId());
+        return director;
     }
 
     @Override
     public Director updateDirector(Director director) {
         isExist(director.getId());
-        String sqlQuery = "UPDATE directors SET name = ? WHERE id = ?;";
+        String sqlQuery = "UPDATE directors SET name = ? WHERE director_id = ?;";
         jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
         log.warn("Директор с идентификатором {} обновлен.", director.getId());
         return getDirectorById(director.getId());
     }
 
     @Override
-    public void deleteDirector(int id) {
+    public void deleteDirector(Long id) {
         isExist(id);
-        String sqlQuery = "DELETE FROM directors WHERE id = ?;";
+        String sqlQuery = "DELETE FROM directors WHERE director_id = ?;";
         log.warn("Директор с идентификатором {} удален.", id);
         jdbcTemplate.update(sqlQuery, id);
     }
 
-    @Override
-    public void saveFilmDirector(int filmId, Collection<Director> directors) {
-        List<Director> directorsDistinct = directors.stream().distinct().collect(Collectors.toList());
-        jdbcTemplate.batchUpdate(
-                "INSERT INTO films_directors (film_id, director_id) VALUES (?, ?);",
-                new BatchPreparedStatementSetter() {
-                    public void setValues(PreparedStatement statement, int i) throws SQLException {
-                        statement.setLong(1, filmId);
-                        statement.setLong(2, directorsDistinct.get(i).getId());
-                    }
-
-                    public int getBatchSize() {
-                        return directorsDistinct.size();
-                    }
-                });
-    }
-
-    @Override
-    public void deleteFilmDirector(int id) {
-        isExist(id);
-        String sqlQuery = "DELETE FROM films_directors WHERE film_id = ?;";
-        jdbcTemplate.update(sqlQuery, id);
-    }
-
-    public void isExist(int directorId) {
-        final String checkUserQuery = "SELECT * FROM directors WHERE id = ?";
+    public void isExist(Long directorId) {
+        final String checkUserQuery = "SELECT * FROM directors WHERE director_id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, directorId);
 
         if (!userRows.next()) {

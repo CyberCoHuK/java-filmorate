@@ -1,21 +1,20 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.mapper.UserMapper;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -41,25 +40,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        final String sql = "INSERT INTO users (email, login, name, birthday) " +
-                "VALUES (?, ?, ?, ?)";
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
         if (StringUtils.isEmpty(user.getName())) {
             user.setName(user.getLogin());
         }
-        jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"user_id"});
-            stmt.setString(1, user.getEmail());
-            stmt.setString(2, user.getLogin());
-            stmt.setString(3, user.getName());
-            stmt.setDate(4, Date.valueOf(user.getBirthday()));
-            return stmt;
-        }, keyHolder);
-
-        if (keyHolder.getKey() != null) {
-            user.setId((Integer) keyHolder.getKey());
-        }
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        Number key = jdbcInsert.withTableName("users")
+                .usingGeneratedKeyColumns("user_id")
+                .executeAndReturnKey(getUserFields(user));
+        user.setId(key.longValue());
         log.info("Создан пользователь с индентификатором {} ", user.getId());
         return user;
     }
@@ -76,7 +64,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User getById(int userId) {
+    public User getById(Long userId) {
         isExist(userId);
         final String sql = "SELECT * FROM users WHERE user_id = ?";
         log.info("Отправлен пользователь с индентификатором {} ", userId);
@@ -84,7 +72,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User addFriend(int userId, int friendId) {
+    public User addFriend(Long userId, Long friendId) {
         final String sqlQuery = "INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)";
         final String checkQuery = "SELECT * FROM friends WHERE user_id = ? AND friend_id = ?";
 
@@ -102,7 +90,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public void deleteFriend(int userId, int friendId) {
+    public void deleteFriend(Long userId, Long friendId) {
         final String sqlQuery = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
 
         jdbcTemplate.update(sqlQuery, userId, friendId);
@@ -110,7 +98,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getFriends(int userId) {
+    public Collection<User> getFriends(Long userId) {
         isExist(userId);
         final String sqlQuery = "SELECT u.* FROM users AS u " +
                 "LEFT JOIN friends AS f ON u.user_id = f.friend_id " +
@@ -120,7 +108,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getMutualFriends(int userId, int secondUserId) {
+    public Collection<User> getMutualFriends(Long userId, Long secondUserId) {
         isExist(userId);
         isExist(secondUserId);
         final String sqlQuery = "SELECT u.* FROM friends AS f " +
@@ -137,14 +125,14 @@ public class UserDbStorage implements UserStorage {
         return jdbcTemplate.query(sqlQuery, userMapper, userId, secondUserId);
     }
 
-    public String deleteUserById(int userId) {
+    public String deleteUserById(Long userId) {
         String sqlQuery = "DELETE FROM users WHERE user_id = ? ";
         isExist(userId);
         jdbcTemplate.update(sqlQuery, userId);
         return "Пользователь user_id=" + userId + " успешно удален.";
     }
 
-    public void isExist(int userId) {
+    public void isExist(Long userId) {
         final String checkUserQuery = "SELECT * FROM users WHERE user_id = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(checkUserQuery, userId);
 
@@ -152,5 +140,14 @@ public class UserDbStorage implements UserStorage {
             log.warn("Пользователь с идентификатором {} не найден.", userId);
             throw new ObjectNotFoundException("Пользователь с идентификатором " + userId + " не найден.");
         }
+    }
+
+    private Map<String, Object> getUserFields(User user) {
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("NAME", user.getName());
+        fields.put("EMAIL", user.getEmail());
+        fields.put("LOGIN", user.getLogin());
+        fields.put("BIRTHDAY", user.getBirthday());
+        return fields;
     }
 }

@@ -15,8 +15,8 @@ import java.util.HashSet;
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private static int userId = 1;
+    private final HashMap<Long, User> users = new HashMap<>();
+    private static Long userId = 1L;
 
     @Override
     public Collection<User> findAllUsers() {
@@ -51,14 +51,14 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getById(int userId) {
+    public User getById(Long userId) {
         isExist(userId);
         log.info("Пользователь {} возвращен", users.get(userId));
         return users.get(userId);
     }
 
     @Override
-    public User addFriend(int userId, int friendId) {
+    public User addFriend(Long userId, Long friendId) {
         isExist(userId);
         isExist(friendId);
         if (users.get(userId).getFriendsList().contains(friendId)) {
@@ -71,7 +71,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteFriend(int userId, int friendId) {
+    public void deleteFriend(Long userId, Long friendId) {
         isExist(userId);
         isExist(friendId);
         log.info("Пользователь {} удалил из друзей пользователя {}", users.get(userId), users.get(friendId));
@@ -80,11 +80,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getFriends(int userId) {
+    public Collection<User> getFriends(Long userId) {
         isExist(userId);
         Collection<User> friendsList = new HashSet<>();
         if (users.get(userId).getFriendsList() != null && users.get(userId).getFriendsList().size() > 0) {
-            for (int id : users.get(userId).getFriendsList()) {
+            for (Long id : users.get(userId).getFriendsList()) {
                 friendsList.add(users.get(id));
             }
             log.info("Запрос получения списка друзей пользователя {} выполнен", userId);
@@ -94,12 +94,12 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Collection<User> getMutualFriends(int userId, int secondUserId) {
+    public Collection<User> getMutualFriends(Long userId, Long secondUserId) {
         log.info("Список общих друзей {} и {} отправлен", userId, secondUserId);
         isExist(userId);
         isExist(secondUserId);
         Collection<User> friendsList = new HashSet<>();
-        for (int id : users.get(userId).getFriendsList()) {
+        for (Long id : users.get(userId).getFriendsList()) {
             if (users.get(secondUserId).getFriendsList().contains(id)) {
                 friendsList.add(users.get(id));
             }
@@ -108,11 +108,11 @@ public class InMemoryUserStorage implements UserStorage {
         return friendsList;
     }
 
-    public String deleteUserById(int userId) {
+    public String deleteUserById(Long userId) {
         return "Пользователь user_id=" + userId + " успешно удален.";
     }
 
-    public void isExist(int userId) {
+    public void isExist(Long userId) {
         if (!users.containsKey(userId)) {
             throw new ObjectNotFoundException("Пользователя с таким " + userId + " не существует");
         }

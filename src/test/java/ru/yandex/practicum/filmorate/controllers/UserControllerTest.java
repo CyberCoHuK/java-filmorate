@@ -150,7 +150,7 @@ public class UserControllerTest {
 
     @Test
     public void isExistCheck() {
-        ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> userController.getById(888));
+        ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> userController.getById(888L));
         assertEquals("Пользователя с таким 888 не существует", ex.getMessage());
     }
 

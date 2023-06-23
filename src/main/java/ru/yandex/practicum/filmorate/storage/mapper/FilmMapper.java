@@ -36,19 +36,19 @@ public class FilmMapper implements RowMapper<Film> {
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         return Film.builder()
-                .id(rs.getInt("film_id"))
+                .id(rs.getLong("film_id"))
                 .name(rs.getString("name"))
                 .description(rs.getString("description"))
                 .releaseDate(rs.getDate("release_date").toLocalDate())
                 .duration(rs.getLong("duration"))
-                .mpa(findMpa(rs.getInt("rating_id")))
-                .genres(findGenres(rs.getInt("film_id")))
+                .mpa(findMpa(rs.getLong("rating_id")))
+                .genres(findGenres(rs.getLong("film_id")))
                 .likesList(new HashSet<>())
-                .directors(findDirector(rs.getInt("film_id")))
+                .directors(findDirector(rs.getLong("film_id")))
                 .build();
     }
 
-    public Mpa findMpa(int ratingId) {
+    public Mpa findMpa(Long ratingId) {
         final String mpaSql = "SELECT id, name " +
                 "FROM rating_mpa " +
                 "WHERE id = ?";
@@ -56,7 +56,7 @@ public class FilmMapper implements RowMapper<Film> {
         return jdbcTemplate.queryForObject(mpaSql, mpaMapper, ratingId);
     }
 
-    protected List<Genre> findGenres(int filmId) {
+    protected List<Genre> findGenres(Long filmId) {
         final String genreSql = "SELECT genre.genre_id, genre.name " +
                 "FROM genre " +
                 "LEFT JOIN film_genre AS fg ON genre.genre_id = fg.genre_id " +
@@ -66,10 +66,10 @@ public class FilmMapper implements RowMapper<Film> {
     }
 
 
-    public List<Director> findDirector(int id) {
+    public List<Director> findDirector(Long id) {
         String sqlQuery =
                 "SELECT * FROM directors d " +
-                        "JOIN films_directors f ON f.director_id = d.id " +
+                        "JOIN films_directors f ON f.director_id = d.director_id " +
                         "WHERE f.film_id = ?;";
         return jdbcTemplate.query(sqlQuery, directorMapper, id);
     }

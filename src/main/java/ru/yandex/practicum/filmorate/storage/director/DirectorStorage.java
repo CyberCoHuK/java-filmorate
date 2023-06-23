@@ -7,17 +7,13 @@ import java.util.Collection;
 public interface DirectorStorage {
     Director createDirector(Director director);
 
-    Director getDirectorById(int id);
+    Director getDirectorById(Long id);
 
     Collection<Director> getAllDirectors();
 
     Director updateDirector(Director director);
 
-    void deleteDirector(int id);
+    void deleteDirector(Long id);
 
-    void saveFilmDirector(int id, Collection<Director> directors);
-
-    void deleteFilmDirector(int id);
-
-    void isExist(int directorId);
+    void isExist(Long directorId);
 }

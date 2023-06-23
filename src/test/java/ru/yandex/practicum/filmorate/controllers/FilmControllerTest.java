@@ -57,13 +57,13 @@ public class FilmControllerTest {
                 .name("name")
                 .description("description")
                 .releaseDate(LocalDate.of(1956, 12, 1))
-                .duration(255)
+                .duration(255L)
                 .build();
         secondFilm = Film.builder()
                 .name("name2")
                 .description("description2")
                 .releaseDate(LocalDate.of(1967, 12, 1))
-                .duration(2115)
+                .duration(2115L)
                 .build();
         user = User.builder()
                 .name("nametest")
@@ -113,7 +113,7 @@ public class FilmControllerTest {
 
     @Test
     public void wrongDurationOfFilm() {
-        film.setDuration(-13);
+        film.setDuration(-13L);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertEquals(1, violations.size());
         ConstraintViolation<Film> violation = violations.iterator().next();
@@ -136,7 +136,8 @@ public class FilmControllerTest {
 
     @Test
     public void getByIdCheck() {
-        ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class, () -> filmController.getFilmById(888));
+        ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class,
+                () -> filmController.getFilmById(888L));
         assertEquals("Фильма с таким 888 не существует", ex.getMessage());
     }
 
@@ -150,7 +151,7 @@ public class FilmControllerTest {
         filmStorage.addLike(film.getId(), secondUser.getId());
         assertEquals(2, filmController.getFilmById(film.getId()).getLikesList().size());
         ObjectNotFoundException ex = assertThrows(ObjectNotFoundException.class,
-                () -> filmController.addLike(film.getId(), 888));
+                () -> filmController.addLike(film.getId(), 888L));
         assertEquals("Пользователя с таким 888 не существует", ex.getMessage());
     }
 
@@ -179,7 +180,7 @@ public class FilmControllerTest {
         List<Film> list = new ArrayList<>();
         list.add(film);
         list.add(secondFilm);
-        assertEquals(list.toString(), filmController.getPopular(10, 9999, 9999).toString());
+        assertEquals(list.toString(), filmController.getPopular(10, 9999L, 9999).toString());
     }
 
     @Test
