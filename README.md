@@ -1,47 +1,163 @@
 # java-filmorate
-Template repository for Filmorate project.
+
+
+Стек: Java, Spring Boot, Maven, Lombok, JUnit, RESTful API, JDBC
+
+
+Данный проект представляет собой бэкенд для сервиса, который работает с фильмами и оценками пользователей и рекомендует фильмы к просмотру.
+
+Основная задача приложения - решить проблему поиска фильмов на вечер. С его помощью вы можете легко найти фильм, который вам понравится.
+
+### Реализованы следующие эндпоинты:
+
+#### 1. Фильмы
++ POST /films - создание фильма
+
++ DELETE /films/{filmId} - удаление фильма по его id
+
++ PUT /films - редактирование фильма
+
++ GET /films - получение списка всех фильмов
+
++ GET /films/{id} - получение информации о фильме по его id
+
++ PUT /films/{id}/like/{userId} — поставить лайк фильму
+
++ DELETE /films/{id}/like/{userId} — удалить лайк фильма
+
++ GET /films/popular?count={limit}&genreId={genreId}&year={year} — возвращает список самых популярных фильмов указанного жанра за нужный год. Если кол-во не указано то 10.
+
++ GET /films/director/{directorId} - получение списка всех фильмов определенного режиссера по его id
+
++ GET /films/search?query={query}&by=director,title - получение списка фильмов отсортированных по популярности с возможность поиска.
+  
+  ° query — текст для поиска.
+  
+  ° by — может принимать значения director (поиск по режиссёру), title (поиск по названию), либо оба значения через запятую при поиске одновременно и по режиссеру и по названию.
++ GET /films/common?userId={userId}&friendId={friendId} - получение списка фильмов отсортированных по популярности общих со своим другом.
+  
+  ° userId — идентификатор пользователя, запрашивающего информацию.
+  
+  ° friendId — идентификатор пользователя, с которым необходимо сравнить список фильмов.
+
+#### 2. Пользователи
+
++ POST /users - создание пользователя
+
++ DELETE /users/{userId} - удаление пользователя
+
++ PUT /users - редактирование пользователя
+
++ GET /users - получение списка всех пользователей
+
++ GET /users/{id} - получение данных о пользователе по id
+
++ PUT /users/{id}/friends/{friendId} — добавление в друзья
+
++ DELETE /users/{id}/friends/{friendId} — удаление из друзей
+
++ GET /users/{id}/friends — возвращает список друзей
+
++ GET /users/{id}/friends/common/{friendId} — возвращает список друзей, общих с другим пользователем
+
++ GET /users/{id}/remmendations - возвращает рекомендации по фильмам для просмотра
+
++ GET /users/{id}/feed - возвращает ленту событий пользователя
+
+#### 3. Режиссеры
+
++ GET /directors - получение списка всех режиссеров
+
++ GET /directors/{id} - получение режиссера по его id
+
++ POST /directors - создание режиссера
+
++ PUT /directors - редактирование режиссера
+
++ DELETE /directors/{id} - удаление режиссера по его id
+  
+#### 4. Жанры
+
++ GET /genres - получение списка всех жанров
+
++ GET /genres/{id} - получение жанра по его id
+
+#### 5. Рейтинг
+
++ GET /mpa - получение списка всех рейтингов
+
++ GET /mpa/{id} - получение рейтинга по его id
+
+#### 6. Отзывы
+
++ POST /reviews - добавление нового отзыва
+
++ PUT /reviews - редактирование уже имеющегося отзыва
+
++ DELETE /reviews/{id} - удаление уже имебщегося отзыва
+
++ GET /reviews/{id} - получение отзыва по его id
+
++ GET /reviews?filmId={filmId}&count={count} - получение всех отзывов по идентификатору фильма, если фильм не указан то все. Если кол-во не указано то 10.
+
++ PUT /reviews/{id}/like/{userId} — пользователь ставит лайк отзыву.
+  
++ PUT /reviews/{id}/dislike/{userId} — пользователь ставит дизлайк отзыву.
+  
++ DELETE /reviews/{id}/like/{userId} — пользователь удаляет лайк/дизлайк отзыву.
+  
++ DELETE /reviews/{id}/dislike/{userId} — пользователь удаляет дизлайк отзыву.
+
+### Валидация
+Данные, которые приходят в запросе на добавление нового фильма или пользователя, проходят проверку по следующим критериям:
+
+#### 1. Фильмы
+ + название не может быть пустым.
+ 
+ + максимальная длина описания — 200 символов
+ 
+ + дата релиза — не раньше 28 декабря 1895 года
+ 
+ + продолжительность фильма должна быть положительной
+
+#### 2. Пользователи
+ + электронная почта не может быть пустой и должна быть электронной почтой (аннотация @Email)
+ 
+ + логин не может быть пустым и содержать пробелы
+ 
+ + имя для отображения может быть пустым — в таком случае будет использован логин
+ 
+ + дата рождения не может быть в будущем.
+
+### Схема базы данных
+Схема отображает отношения таблиц в базе данных:
+
++ film - данные о фильмах (primary key - film_id, foreign keys - rating_id)
++ genre - названия жанров фильма (primary key - genre_id)
++ film_genre - данные о жанрах какого-то фильма (primary key - film_id, genre_id)
++ rating_mpa - определяет возрастное ограничение для фильма (primary key - id)
++ likes - информация о лайках фильма и кто их поставил (primary key - user_id, film_id)
++ users - данные о пользователях (primary key - user_id, foreign keys - friend_id, like_id)
++ friends - содержит информации о статусе «дружбы» между двумя пользователями (primary key - user_id, friend_id)
+  
+  °  status = true — в таблице две записи о дружбе двух пользователей (id1 = id2; id2 = id1).
+  
+  °  status = false — в таблице одна запись о дружбе двух пользователей(id1 = id2).
++ directors - содержить имена режиссеров (primary key - id)
++ film_directors - данные о режиссерах фильмов (primary key - film_id, director_id)
++ reviews - содержит отзывы о фильмах и информацию кто его оставил (primary key - review_id, foregin keys - user_id, film_id)
+  
+  °  is_positive = true — позитивный отзыв о фильме.
+  
+  °  is_positive = false — негативный отзыв о фильме.
++ reviews_like - информация о лайках отзывов и кто их оставил (primary key - review_id, user_id)
+  
+  °  is_like = true — позитивная оценка отзыва о фильме.
+  
+  °  is_like = false — негативная оценка отзыва о фильме.
++ feed - содержит ленту событий на платформе (primary key - event_id, foregin keys - user_id, entity_id)
+
 ![db_filmorate](https://github.com/CyberCoHuK/java-filmorate/assets/108213849/d23d6d69-5748-4d0d-b18f-6a75f9020de7)
 
-- Получение количества лайков у фильма
-
-```roomsql
-    SELECT COUNT(user_id)
-    FROM likes
-    WHERE film_id = {id}
-```
-- Получение списка понравившихся фильмов
-
-```roomsql
-    SELECT f.title
-    FROM likes AS l
-    INNER JOIN film AS f ON (l.film_id = f.film_id)
-    WHERE user_id = {id}
-```
-
-- Получение списка отправленных запросов на добавление в друзья
-
-```roomsql
-    SELECT friend_id,
-    status
-    FROM friends
-    WHERE user_id = {id}
-```
-
-- Получение списка подтвержденных отправленных запросов на добавление в друзья
-
-```roomsql
-    SELECT friend_id
-    FROM friends
-    WHERE user_id = {id}
-    AND status = 'true'
-```
-
-- Получение списка фильмов с жанром {genre}
-
-```roomsql
-    SELECT f.title
-    FROM genre AS g
-    INNER JOIN film_genre AS fg ON (g.genre_id = fg.genre_id)
-    INNER JOIN film AS f ON (fg.film_id = f.film_id)
-    WHERE name = '{genre}'
-```
+ 
+ 
