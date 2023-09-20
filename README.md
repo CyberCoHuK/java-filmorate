@@ -1,4 +1,4 @@
-# java-filmorate
+# Filmorate
 
 
 Стек: Java, Spring Boot, Maven, Lombok, JUnit, RESTful API, JDBC
