@@ -1,8 +1,9 @@
 # Filmorate
 
 
-Стек: Java, Spring Boot, Maven, Lombok, JUnit, RESTful API, JDBC
+***Стек: Java, Spring Boot, Maven, Lombok, JUnit, RESTful API, JDBC***
 
+  ---
 
 Данный проект представляет собой бэкенд для сервиса, который работает с фильмами и оценками пользователей и рекомендует фильмы к просмотру.
 
@@ -13,23 +14,14 @@
 #### 1. Фильмы
   ---
 + POST /films - создание фильма
-
 + DELETE /films/{filmId} - удаление фильма по его id
-
 + PUT /films - редактирование фильма
-
 + GET /films - получение списка всех фильмов
-
 + GET /films/{id} - получение информации о фильме по его id
-
 + PUT /films/{id}/like/{userId} — поставить лайк фильму
-
 + DELETE /films/{id}/like/{userId} — удалить лайк фильма
-
 + GET /films/popular?count={limit}&genreId={genreId}&year={year} — возвращает список самых популярных фильмов указанного жанра за нужный год. Если кол-во не указано то 10.
-
 + GET /films/director/{directorId} - получение списка всех фильмов определенного режиссера по его id
-
 + GET /films/search?query={query}&by=director,title - получение списка фильмов отсортированных по популярности с возможность поиска.
   
   ° query — текст для поиска.
@@ -44,69 +36,45 @@
 #### 2. Пользователи
   ---
 + POST /users - создание пользователя
-
 + DELETE /users/{userId} - удаление пользователя
-
 + PUT /users - редактирование пользователя
-
 + GET /users - получение списка всех пользователей
-
 + GET /users/{id} - получение данных о пользователе по id
-
 + PUT /users/{id}/friends/{friendId} — добавление в друзья
-
 + DELETE /users/{id}/friends/{friendId} — удаление из друзей
-
 + GET /users/{id}/friends — возвращает список друзей
-
 + GET /users/{id}/friends/common/{friendId} — возвращает список друзей, общих с другим пользователем
-
 + GET /users/{id}/remmendations - возвращает рекомендации по фильмам для просмотра
-
 + GET /users/{id}/feed - возвращает ленту событий пользователя
 
 #### 3. Режиссеры
   ---
 + GET /directors - получение списка всех режиссеров
-
 + GET /directors/{id} - получение режиссера по его id
-
 + POST /directors - создание режиссера
-
 + PUT /directors - редактирование режиссера
-
 + DELETE /directors/{id} - удаление режиссера по его id
   
 #### 4. Жанры
   ---
 + GET /genres - получение списка всех жанров
-
 + GET /genres/{id} - получение жанра по его id
 
 #### 5. Рейтинг
   ---
 + GET /mpa - получение списка всех рейтингов
-
 + GET /mpa/{id} - получение рейтинга по его id
 
 #### 6. Отзывы
   ---
 + POST /reviews - добавление нового отзыва
-
 + PUT /reviews - редактирование уже имеющегося отзыва
-
 + DELETE /reviews/{id} - удаление уже имебщегося отзыва
-
 + GET /reviews/{id} - получение отзыва по его id
-
 + GET /reviews?filmId={filmId}&count={count} - получение всех отзывов по идентификатору фильма, если фильм не указан то все. Если кол-во не указано то 10.
-
 + PUT /reviews/{id}/like/{userId} — пользователь ставит лайк отзыву.
-  
 + PUT /reviews/{id}/dislike/{userId} — пользователь ставит дизлайк отзыву.
-  
 + DELETE /reviews/{id}/like/{userId} — пользователь удаляет лайк/дизлайк отзыву.
-  
 + DELETE /reviews/{id}/dislike/{userId} — пользователь удаляет дизлайк отзыву.
 
 Валидация
